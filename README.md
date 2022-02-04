@@ -1,11 +1,4 @@
-Developer: ~littel-wolfur
-License: MIT
-=> web+urbitgraph://~dister-dozzod-middev/citadel App link: ~dister-dozzod-middev/citadel
-=> https://github.com/ryjm/citadel Source repo: https://github.com/ryjm/citadel
-=> https://github.com/ryjm/citadel/issues Bug reports: https://github.com/ryjm/citadel/issues
-
-
-
+#+TITLE: Readme
 Use from the terminal by running `|link %citadel-cli` in the dojo.
 
 Create a new desk from another desk with `;desk new-desk from-desk`
@@ -19,3 +12,5 @@ Templates:
 %gen - generators
 %ted - threads
 %cli - clis
+
+More commands and custom templates soon.
