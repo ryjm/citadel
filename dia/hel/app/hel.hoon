@@ -1,29 +1,28 @@
 /+  default-agent, dbug
 |%
-+$  versioned-state
-    $%  state-0
-    ==
-+$  state-0  [%0 counter=@]
++$  state
+  $%  $:  %0
+          counter=@
+      ==
+  ==
+::
 --
+::
+=|  =state
 %-  agent:dbug
-=|  state-0
-=*  state  -
 ^-  agent:gall
 |_  =bowl:gall
-+*  this     .
-    def      ~(. (default-agent this %|) bowl)
++*  this  .
+    def   ~(. (default-agent this %|) bowl)
 ::
-++  on-init
-  ^-  (quip card _this)
-  ~&  >  'hello world'
-  [~ this(state [%0 0])]
-++  on-save  !>(state)
+++  on-init   on-init:def
+++  on-save   !>(state)
 ++  on-load
-  |=  ole=vase
-  ^-  (quip card _this)
-  ~&  >  'hello again world'
-  =/  old=state-0  !<(state-0 ole)
-  [~ this(state [%0 +(counter.old)])]
+  |=  old=vase
+  ~&  >  'hello world'
+  =/  updated=^state  !<(^state old)
+  `this(state updated(counter +(counter:updated)))
+::
 ++  on-poke   on-poke:def
 ++  on-watch  on-watch:def
 ++  on-leave  on-leave:def
