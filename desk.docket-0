@@ -1,0 +1,11 @@
+:~
+  title+'Citadel'
+  info+'desk/agent/app creation tool'
+  color+0xef.86b4
+  version+[0 1 0]
+  website+'https://github.com/ryjm/citadel'
+  license+'MIT'
+  base+'citadel'
+  site+/~/scry/docs/[~.usr.html]
+==
+
