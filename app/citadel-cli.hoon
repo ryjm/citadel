@@ -18,10 +18,9 @@
 +$  target  [in-group=? =ship =path]
 ::
 +$  command
-  $%  [%target (set target)]                        ::  set messaging target
-      [%width @ud]                                  ::  display width
+  $%
       [%help ~]                                     ::  print usage info
-      [%desk @tas (unit @tas) (unit @tas)]          ::  create a new desk
+      [%desk @tas [%from (unit @tas)] [%diagram (unit @tas)]]          ::  create a new desk
       [%settings ~]
   ==
 ::
@@ -172,19 +171,17 @@
       %+  knee  *command  |.  ~+
       =-  ;~(pfix mic -)
       ;~  pose
-        (stag %target tars)
         ;~(plug (tag %help) (easy ~))
-        ;~  (glue ace)  (tag %desk)
-          ;~  plug  sym
-            (punt ;~(pfix (plus ace) sym))
-            (punt ;~(pfix (plus ace) sym))
-          ==
+        ;~  plug  (tag %desk)
+          ;~(pfix ace sym)
+          (stag %from ;~(pose (cold ~ ;~(pfix ace sig)) (cold [~ %base] (easy ~)) (punt ;~(pfix ace sym))))
+          (stag %diagram (punt ;~(pfix ace sym)))
         ==
         ;~(plug (tag %settings) (easy ~))
       ==
     ::
     ++  tag   |*(a=@tas (cold a (jest a)))
-        ++  bool
+    ++  bool
       ;~  pose
         (cold %| (jest '%.y'))
         (cold %& (jest '%.n'))
@@ -254,8 +251,6 @@
     ^-  (quip card _state)
     ~&  >  job+job
     |^  ?-  -.job
-          %target    (set-target +.job)
-          %width     (set-width +.job)
           %help      help
           %desk      (new-desk +.job)
           %settings  show-settings
@@ -291,7 +286,7 @@
       ==
     ::
     ++  new-desk
-      |=  [title=@tas from=(unit @tas) gram=(unit @tas)]
+      |=  [title=@tas [%from from=(unit @tas)] [%diagram gram=(unit @tas)]]
       ^-  (quip card _state)
       ?^  gram  (new-estate title (^gram title u.gram ~))
       =-  [[- ~] state]

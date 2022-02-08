@@ -21,6 +21,7 @@
   :~  /lib/verb/hoon
       /lib/dbug/hoon
       /lib/shoe/hoon
+      /lib/agentio/hoon
       /lib/default-agent/hoon
       /lib/skeleton/hoon
       /mar/bill/hoon
@@ -102,7 +103,10 @@
 ::
 ++  play
   |%
-    ::  +scop: init desk from files in another desk.
+    ::    +scop: init desk from files in another desk.
+    ::
+    ::  grounds - user and dependency files to seed the desk with.
+    ::            must exist in the given desk.
     ::
     ::  TODO simulate symlinks somehow?
     ::
