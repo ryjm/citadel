@@ -6,6 +6,6 @@
   website+'https://github.com/ryjm/citadel'
   license+'MIT'
   base+'citadel'
-  site+/~/scry/docs/[~.usr.html]
+  glob-http+['https://bootstrap.urbit.org/glob-0v4.d1rjh.hcpp2.nd6gc.gd3tp.rpc8m.glob' 0v4.d1rjh.hcpp2.nd6gc.gd3tp.rpc8m]
 ==
 
