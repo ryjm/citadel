@@ -174,8 +174,8 @@
         ;~(plug (tag %help) (easy ~))
         ;~  plug  (tag %desk)
           ;~(pfix ace sym)
-          (stag %from ;~(pose (cold ~ ;~(pfix ace sig)) (cold [~ %base] (easy ~)) (punt ;~(pfix ace sym))))
-          (stag %diagram (punt ;~(pfix ace sym)))
+          (stag %from ;~(pose (cold ~ ;~(pfix ace sig)) (punt ;~(pfix ace sym)) (cold [~ %base] (easy ~))))
+          (stag %diagram ;~(pose (cold ~ ;~(pfix ace sig)) (punt ;~(pfix ace sym)) (cold ~ (easy ~))))
         ==
         ;~(plug (tag %settings) (easy ~))
       ==
