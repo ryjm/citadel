@@ -73,11 +73,14 @@
   ^-  (quip card _state)
   =/  =outpost  foundation
   =/  desk  name.action
+  =/  bek  byk.bowl
   ?>  ?=(%desk -.action)
-  :_  state(colonies (~(put by colonies) desk [from.action outpost]))
+  =+  .^(from-files=(list path) ct+(en-beam bek(q from.action) /))
+  :: TODO better dependency specification here
+  :_  state(colonies (~(put by colonies) desk [from.action (weld from-files outpost)]))
   :~
     :^  %pass  /citadel/desk/[desk]  %arvo
-    (scop byk.bowl from.action desk [outpost ~])
+    (scop byk.bowl from.action desk [outpost from-files])
   ==
 ::
 ++  on-diagram

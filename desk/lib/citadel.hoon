@@ -132,7 +132,10 @@
       ::
       ++  mage
         |=  =path
-        :-  ?:(?=([%dia @ *] path) t.t.path path)
+        ::  TODO should be the desk containing this file
+        :-  ?:  &(?=([%dia @ *] path) !=(from %citadel))
+          t.t.path
+        path
         ^-  page:clay
         =;  =cage  [p q.q]:cage
         ~|  [%missing-source-file from path]
