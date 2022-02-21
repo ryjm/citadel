@@ -7,6 +7,7 @@
 ++  grow
   |%
   ++  tank  >act<
+  ++  noun  wain
   --
 ::
 ++  grab

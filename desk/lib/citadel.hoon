@@ -121,7 +121,7 @@
         ~|  [%already-exists desk]
         !!
       ::
-      =+  .^(=dome:clay %cv (en-beam bek /))
+      =+  .^(=dome:clay %cv (en-beam bek(q from) /))
       ::
       %^  new-desk:cloy  desk
         ~

@@ -20,7 +20,7 @@
 +$  command
   $%
       [%help ~]                                     ::  print usage info
-      [%desk @tas [%from (unit @tas)] [%diagram (unit @tas)]]          ::  create a new desk
+      [%desk @tas (unit @tas) (unit @tas)]          ::  create a new desk
       [%settings ~]
   ==
 ::
@@ -117,7 +117,11 @@
   ++  on-disconnect   on-disconnect:des
   --
 ::
+=|  cards=(list card)
 |_  =bowl:gall
+::  +this: self
+::
+++  this  .
 ::  +prep: setup & state adapter
 ::
 ++  prep
@@ -132,6 +136,24 @@
       ==
     [cards state]
   [~ state(width 80, audience [[| our-self /citadel] ~ ~])]
+::
+++  emit
+  |=  car=card
+  this(cards [car cards])
+::  +emil: emit a list of cards
+::
+++  emil
+  |=  rac=(list card)
+  |-  ^+  this
+  ?~  rac
+    this
+  =.  cards  [i.rac cards]
+  $(rac t.rac)
+::  +abet: finalize transaction
+::
+++  abet
+  ^-  (quip card _state)
+  [(flop cards) state]
 ::  +connect: connect to citadel
 ::
 ++  connect
@@ -153,7 +175,7 @@
   |=  a=*
   ^-  (quip card _state)
   ?:  ?=(%connect a)
-    [[connect ~] state]
+    abet:(emit connect)
   [~ state]
 ::
 ::  +sh: handle user input
@@ -168,18 +190,21 @@
   ++  parser
     |^
       %+  stag  |
-      %+  knee  *command  |.  ~+
       =-  ;~(pfix mic -)
       ;~  pose
         ;~(plug (tag %help) (easy ~))
+        ::  ;desk new-desk from-desk diagram
         ;~  plug  (tag %desk)
-          ;~(pfix ace sym)
-          (stag %from ;~(pose (cold ~ ;~(pfix ace sig)) (punt ;~(pfix ace sym)) (cold [~ %base] (easy ~))))
-          (stag %diagram ;~(pose (cold ~ ;~(pfix ace sig)) (punt ;~(pfix ace sym)) (cold ~ (easy ~))))
+          spade
+          dusk
+          dusk
         ==
         ;~(plug (tag %settings) (easy ~))
       ==
     ::
+    ++  dusk  ;~(pose (cold ~ spado) (punt spade))
+    ++  spado  ;~(pfix ace sig)
+    ++  spade  ;~(pfix ace sym)
     ++  tag   |*(a=@tas (cold a (jest a)))
     ++  bool
       ;~  pose
@@ -241,7 +266,7 @@
     ^-  (list [@t tank])
     :~
       [%help leaf+";help"]
-      [%desk leaf+";desk [[desk-name] [from (optional)]  [diagram (optional)]"]
+      [%desk leaf+";desk [desk-name] [from (optional)] [diagram (optional)]"]
       [%settings leaf+";settings"]
     ==
   ::  +work: run user command
@@ -249,11 +274,11 @@
   ++  work
     |=  job=command
     ^-  (quip card _state)
-    ~&  >  job+job
+    =/  cmd  (print:sh-out "{<+.job>}")
     |^  ?-  -.job
-          %help      help
-          %desk      (new-desk +.job)
-          %settings  show-settings
+          %help      abet:help
+          %desk      abet:(emit:(new-desk +.job) cmd)
+          %settings  abet:show-settings
         ==
     ::  +act: build action card
     ::
@@ -267,55 +292,38 @@
           %poke
           cage
       ==
-    ::  +set-target: set audience
-    ::
-    ++  set-target
-      |=  tars=(set target)
-      ^-  (quip card _state)
-      =.  audience  tars
-      [~ state]
     ::  +show-settings: print enabled flags, timezone and width settings
     ::
     ++  show-settings
-      ^-  (quip card _state)
-      :_  state
-      =/  targets
-        %+  turn  ~(tap in audience)
-        |=  =target  ~&  target+target  ~
-      :~  (print:sh-out "width: {(scow %ud width)}")
-      ==
+      ^+  this
+      (emit (print:sh-out "width: {(scow %ud width)}"))
     ::
     ++  new-desk
-      |=  [title=@tas [%from from=(unit @tas)] [%diagram gram=(unit @tas)]]
-      ^-  (quip card _state)
+      |=  [title=@tas from=(unit @tas) gram=(unit @tas)]
+      ^+  this
       ?^  gram  (new-estate title (^gram title u.gram ~))
-      =-  [[- ~] state]
-
-      ~&  >  title+title
-      %^  act  %desk  %citadel
-      :-  %citadel-action
-      !>  ^-  action
-      [%desk ?~(from %base u.from) title]
+      %-  emil  :~  (print:sh-out "creating desk: {(scow %tas title)}")
+        %^  act  %desk  %citadel
+        :-  %citadel-action
+        !>  ^-  action
+        [%desk ?~(from %base u.from) title]
+      ==
       ::
     ++  new-estate
       |=  [title=@tas style=gram]
-      ^-  (quip card _state)
-      =-  [[- ~] state]
-      ~&  >  from-diagrams+style
-      %^  act  %diagram  %citadel
-      :-  %citadel-action
-      !>  ^-  action
-      [%diagram [style title]]
-    ::  +set-width: configure cli printing width
-    ::
-    ++  set-width
-      |=  w=@ud
-      [~ state(width w)]
+      ^+  this
+      %-  emil
+      :~  (print:sh-out "diagram: ;desk {(scow %tas +<:style)}")
+        %^  act  %diagram  %citadel
+        :-  %citadel-action
+        !>  ^-  action
+        [%diagram [style title]]
+      ==
     ::  +help: print (link to) usage instructions
     ::
     ++  help
-      ^-  (quip card _state)
-      =-  [[- ~] state]
+      ^+  this
+      %-  emit
       (print:sh-out "see https://github.com/ryjm/citadel")
     --
   --
@@ -335,7 +343,7 @@
   ++  print
     |=  txt=tape
     ^-  card
-    (effect %txt txt)
+    (effect %txt "citadel -> {txt}")
   ::  +print-more: puts lines of text into the cli
   ::
   ++  print-more
@@ -361,7 +369,7 @@
     %+  effect  %pro
     :+  &  %citadel-line
     ^-  tape
-    ">"
+    "> "
   ::
   ++  show-result
     |=  =cage
