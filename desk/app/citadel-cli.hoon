@@ -1,5 +1,5 @@
 /-  *citadel
-/+  *citadel, default-agent, verb, dbug,
+/+  *citadel, default-agent, verb, dbug, pp=pprint,
     auto=language-server-complete, shoe, sole
 ::
 |%
@@ -20,7 +20,9 @@
 +$  command
   $%
       [%help ~]                                     ::  print usage info
-      [%desk @tas (unit @tas) (unit @tas)]          ::  create a new desk
+      [%desk desk (unit desk) (unit desk)]          ::  create a new desk
+      [%colony desk]
+      [%colonies ~]
       [%settings ~]
   ==
 ::
@@ -199,6 +201,8 @@
           dusk
           dusk
         ==
+        ;~(plug (tag %colony) spade)
+        ;~(plug (tag %colonies) (easy ~))
         ;~(plug (tag %settings) (easy ~))
       ==
     ::
@@ -211,54 +215,6 @@
         (cold %| (jest '%.y'))
         (cold %& (jest '%.n'))
       ==
-    ++  ship  ;~(pfix sig fed:ag)
-    ++  path  ;~(pfix fas ;~(plug urs:ab (easy ~)))  ::NOTE  short only, tmp
-    ++  file-path  ;~(pfix fas (more fas (cook crip (star ;~(less fas prn)))))
-    ::  +mang: un/managed indicator prefix
-    ::
-    ++  mang
-      ;~  pose
-        (cold %| (jest '~/'))
-        (cold %& (easy ~))
-      ==
-    ::  +tarl: local target, as /path
-    ::
-    ++  tarl  (stag our-self path)
-    ::  +tarx: local target, maybe managed
-    ::
-    ++  tarx  ;~(plug mang path)
-    ::  +tarp: sponsor target, as ^/path
-    ::
-    ++  tarp
-      =-  ;~(pfix ket (stag - path))
-      (sein:title our.bowl now.bowl our-self)
-    ::  +targ: any target, as tarl, tarp, ~ship/path
-    ::
-    ++  targ
-      ;~  plug
-        mang
-      ::
-        ;~  pose
-          tarl
-          tarp
-          ;~(plug ship path)
-        ==
-      ==
-    ::  +tars: set of comma-separated targs
-    ::
-    ++  tars
-      %+  cook  ~(gas in *(set target))
-      (most ;~(plug com (star ace)) targ)
-    ::  +ships: set of comma-separated ships
-    ::
-    ++  ships
-      %+  cook  ~(gas in *(set ^ship))
-      (most ;~(plug com (star ace)) ship)
-    ::  +text: text message body
-    ::
-    ++  text
-      %+  cook  crip
-      (plus next)
   --
   ::  +tab-list: static list of autocomplete entries
   ::
@@ -267,6 +223,8 @@
     :~
       [%help leaf+";help"]
       [%desk leaf+";desk [desk-name] [from (optional)] [diagram (optional)]"]
+      [%colony leaf+";colony [desk]"]
+      [%colonies leaf+";colonies"]
       [%settings leaf+";settings"]
     ==
   ::  +work: run user command
@@ -274,10 +232,12 @@
   ++  work
     |=  job=command
     ^-  (quip card _state)
-    =/  cmd  (print:sh-out "{<+.job>}")
+    =/  cmd  (print:sh-out "args: {<+.job>}")
     |^  ?-  -.job
           %help      abet:help
           %desk      abet:(emit:(new-desk +.job) cmd)
+          %colonies  abet:show-colonies
+          %colony    abet:(show-colony +.job)
           %settings  abet:show-settings
         ==
     ::  +act: build action card
@@ -298,26 +258,47 @@
       ^+  this
       (emit (print:sh-out "width: {(scow %ud width)}"))
     ::
+    ++  show-colonies
+      ^+  this
+      =/  colonies=(map desk outpost)
+        (scry-for (map desk outpost) %citadel /colonies)
+      %-  emil
+      :~  (prant:sh-out ~[(vase-to-tank:pp !>(colonies))])
+          (note:sh-out "end of colonies")
+      ==
+    ::
+    ++  show-colony
+      |=  =desk
+      ^+  this
+      =/  colony=(unit outpost)
+        (scry-for (unit outpost) %citadel /colony/[desk])
+      %-  emil
+      :~  (prant:sh-out ~[(vase-to-tank:pp !>(colony))])
+          (note:sh-out "end of colony")
+      ==
+    ::
     ++  new-desk
       |=  [title=@tas from=(unit @tas) gram=(unit @tas)]
       ^+  this
-      ?^  gram  (new-estate title (^gram title u.gram ~))
-      %-  emil  :~  (print:sh-out "creating desk: {(scow %tas title)}")
-        %^  act  %desk  %citadel
-        :-  %citadel-action
-        !>  ^-  action
-        [%desk ?~(from %base u.from) title]
+      ?^  gram  (new-estate from title (^gram title u.gram ~))
+      %-  emil
+      :~  (print:sh-out "creating desk: {(scow %tas title)}")
+          ::
+          %^  act  %desk  %citadel
+          :-  %citadel-action
+          !>  ^-  action
+          [%desk ?~(from %base u.from) title]
       ==
       ::
     ++  new-estate
-      |=  [title=@tas style=gram]
+      |=  [from=(unit @tas) title=@tas style=gram]
       ^+  this
       %-  emil
-      :~  (print:sh-out "diagram: ;desk {(scow %tas +<:style)}")
+      :~  (print:sh-out "diagram: {(scow %tas +<:style)}")
         %^  act  %diagram  %citadel
         :-  %citadel-action
         !>  ^-  action
-        [%diagram [style title]]
+        [%diagram from style title]
       ==
     ::  +help: print (link to) usage instructions
     ::
@@ -340,10 +321,15 @@
     [%shoe ~ %sole effect]
   ::  +print: puts some text into the cli as-is
   ::
+  ++  prant
+    |=  tal=(list tank)
+    ^-  card
+    (effect %tan tal)
+  ::
   ++  print
     |=  txt=tape
     ^-  card
-    (effect %txt "citadel -> {txt}")
+    (effect %txt ">> {txt}")
   ::  +print-more: puts lines of text into the cli
   ::
   ++  print-more
@@ -370,13 +356,6 @@
     :+  &  %citadel-line
     ^-  tape
     "> "
-  ::
-  ++  show-result
-    |=  =cage
-    ^-  card
-    =/  typ  p.cage
-    =/  =vase  q.cage
-    (note "result: {(noah vase)}")
   ::
   --
 ::
