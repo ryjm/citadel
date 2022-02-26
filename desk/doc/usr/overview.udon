@@ -5,11 +5,19 @@
 
 Use from the terminal by running `|link %citadel-cli` in the dojo.
 
+Commands are prefixed with `;` and can be tab completed.
+
+### `;desk`
+
 Create a new desk from another desk with `;desk new-desk from-desk`
 
-Create a new desk from base with `;desk new-desk`
+Create a new desk from base with `;desk new-desk` (not recommended, use a smaller desk)
 
 Create a new desk from the `%hel` template with `;desk hello ~ hel`. Can also specify a from desk here.
+
+### `;colony [desk]` and `colonies`
+
+Prints desk dependencies.
 
 ## Templates
 
@@ -22,6 +30,8 @@ Create a new desk from the `%hel` template with `;desk hello ~ hel`. Can also sp
 %ted : threads
 
 %cli : clis (TODO)
+
+Templates are encoded in `lib/citadel/hoon`. Define your own by creating a map of desk -> list of paths (`outpost`) and optionally include placeholder files as list of paths (`atelier`). The latter are not included in the `colonies` state. See the `turbines` or `circuitry` arms for simple examples.
 
 ### Info
 
