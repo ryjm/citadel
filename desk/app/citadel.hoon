@@ -125,8 +125,9 @@
   ^-  [outpost card]
   =*  bek  byk.bowl
   =/  diagrams  .^((list path) ct+(en-beam bek /dia/[+<.gram]))
+  =|  from-files=(list path)
   =?  q.bek  ?=(^ from)  u.from
-  =/  from-files  .^((list path) ct+(en-beam bek /))
+  =?  from-files  ?=(^ from)  .^((list path) ct+(en-beam bek /))
   =/  =grounds
     ?-  +<.gram
       %ent  butlers
@@ -135,6 +136,7 @@
       %ted  circuitry
       %cli  valet
       %hel  crier
+      %prt  [(fuse press foundation) ~]
     ==
   =/  merged=^grounds
     %=  grounds

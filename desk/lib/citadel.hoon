@@ -36,6 +36,7 @@
 ++  pillar
   ^-  outpost:citadel
   %+  fuse  soil
+  %+  fuse  press
   %^  fose  %base  foundation
   :~  /lib/verb/hoon
       /lib/dbug/hoon
@@ -55,7 +56,7 @@
       /lib/strandio/hoon
       /lib/strand/hoon
   ==
-::  +seal - scroll marks
+::  +seals - scroll marks
 ::
 ++  seals
   ^-  outpost:citadel
@@ -64,6 +65,19 @@
   :~  /mar/udon/hoon
       /mar/clue/hoon
   ==  ==
+::  +press - pretty printing
+::
+++  press
+  ^-  outpost:citadel
+  %-  my
+  :~  :-  %base
+  :~  /sur/plum/hoon
+      /sur/xray/hoon
+      /lib/plume/hoon
+      /lib/xray/hoon
+      /lib/pprint/hoon
+  ==  ==
+
 ::    partial diagrams
 ::
 ::  +cutlery - metadata

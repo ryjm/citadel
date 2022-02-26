@@ -19,6 +19,7 @@
       [%ted =imps]                ::  thread
       [%cli =cmds]                ::  agent with cli
       [%hel ~]                    ::  hello world
+      [%prt ~]                    ::  printers
   ==  ==
 ::  TODO customizable diagrams
 ::
