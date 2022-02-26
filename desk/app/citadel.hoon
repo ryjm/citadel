@@ -34,12 +34,15 @@
 ++  on-init   on-init:def
 ++  on-save   !>(state)
 ++  on-load
-  |=  old=vase
+  |=  ole=vase
     ^-  (quip card _this)
     ~&  >  [dap.bowl %load-citadel]
-    ~&  >  ["installing ~pocwet/docs " %load-citadel]
+    ~&  >  "installing ~pocwet/docs"
+    =/  maybe-old  (mule |.(!<(state-0 ole)))
+    =/  old=state-0
+      ?:  ?=(%| -.maybe-old)  [%0 *(map desk outpost)]  +.maybe-old
     =^  cards  state  lore:do
-    [cards this(state !<(state-0 old))]
+    [cards this(state old)]
 ++  on-poke
     |=  [=mark =vase]
     ^-  (quip card _this)
