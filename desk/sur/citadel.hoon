@@ -9,7 +9,7 @@
 +$  atelier  (list path)
 ::  +outpost - dependency paths
 ::
-+$  outpost  (list path)
++$  outpost  (map desk (list path))
 ::
 +$  gram
   $:  nom=term
@@ -32,6 +32,6 @@
 +$  action
   $%
     [%desk from=desk name=@tas]
-    [%diagram =gram name=@tas]
+    [%diagram furm=(unit desk) =gram name=@tas]
   ==
 --

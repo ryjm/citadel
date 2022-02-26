@@ -1,11 +1,11 @@
-/-  *citadel, docket
+/-  *citadel, docket, *treaty
 /+  default-agent, dbug, agentio, *citadel
 =,  play
 |%
 +$  card  card:agent:gall
 ::  colonies - dependencies for desk
 ::
-+$  state-0  [%0 colonies=(map desk [desk outpost])]
++$  state-0  [%0 colonies=(map desk outpost)]
 ::
 --
 ::
@@ -19,12 +19,16 @@
     def   ~(. (default-agent this %.n) bowl)
     io    ~(. agentio bowl)
     do    ~(. +> bowl)
+    ch    ch:do
+    cg    cg:do
 ++  on-peek
   |=  =path
   |^  ^-  (unit (unit cage))
   ?+    path  (on-peek:def path)
-      [%y %colonies * ~]
+      [%x %colony * ~]
     ``noun+!>((~(get by colonies) i.t.t.path))
+      [%x %colonies ~]
+    ``noun+!>(colonies)
   ==
   --
 ++  on-init   on-init:def
@@ -33,8 +37,9 @@
   |=  old=vase
     ^-  (quip card _this)
     ~&  >  [dap.bowl %load-citadel]
-    =+  !<(state-0 old)
-    [~ this(state -)]
+    ~&  >  ["installing ~pocwet/docs " %load-citadel]
+    =^  cards  state  lore:do
+    [cards this(state !<(state-0 old))]
 ++  on-poke
     |=  [=mark =vase]
     ^-  (quip card _this)
@@ -59,6 +64,27 @@
 ++  on-fail   on-fail:def
 --
 |_  =bowl:gall
+++  io    ~(. agentio bowl)
+++  pass  pass:io
+::
+++  cg
+  |%
+  ++  docket-install
+    |=([her=ship there=desk] docket-install+!>([her there]))
+  ++  ally-update      |=(=update:ally ally-update-0+!>(update))
+  --
+::
+++  ch
+  |_  =desk
+  ++  pass  |=(=wire ~(. ^pass [%citadel desk wire]))
+  ++  ally-update
+    |=  [=ship]
+    (poke-our:(pass /treaty-update) %treaty (ally-update:cg [%add ship]))
+  ++  install
+    |=  [=ship remote=^desk]
+    (poke-our:(pass /docket-install) %docket (docket-install:cg ship remote))
+  --
+::
 ::
 ++  on-action
   |=  =action
@@ -71,16 +97,17 @@
 ++  on-desk
   |=  =action
   ^-  (quip card _state)
-  =/  =outpost  foundation
+  ?>  ?=(%desk -.action)
   =/  desk  name.action
   =/  bek  byk.bowl
-  ?>  ?=(%desk -.action)
-  =+  .^(from-files=(list path) ct+(en-beam bek(q from.action) /))
-  :: TODO better dependency specification here
-  :_  state(colonies (~(put by colonies) desk [from.action (weld from-files outpost)]))
+  =+  %-  my
+    :~  :-  from.action
+      .^((list path) ct+(en-beam bek(q from.action) /))
+    ==
+  :_  state(colonies (~(put by colonies.state) desk -))
   :~
     :^  %pass  /citadel/desk/[desk]  %arvo
-    (scop byk.bowl from.action desk [outpost from-files])
+    (scop byk.bowl from.action desk [- ~])
   ==
 ::
 ++  on-diagram
@@ -88,26 +115,54 @@
   ^-  (quip card _state)
   ?>  ?=(%diagram -.action)
   =/  desk  name.action
-  =/  [=outpost =card]  (make-diagram gram.action desk)
+  =/  [=outpost =card]  (make-diagram gram.action desk furm.action)
   :: TODO specify dependency desk in outpost
-  :_  state(colonies (~(put by colonies) desk [%base outpost]))
+  :_  state(colonies (~(put by colonies) desk outpost))
   [card ~]
 ::
 ++  make-diagram
-  |=  [=gram name=@tas]
+  |=  [=gram name=@tas from=(unit desk)]
   ^-  [outpost card]
-  =+  .^(diagrams=(list path) ct+(en-beam byk.bowl /dia/[+<.gram]))
-  =-  :-  outpost:-  :^  %pass  /citadel/desk/diagram  %arvo
-  ::  TODO support filter for specified diagram in /dia
-  (scop byk.bowl %citadel name -(atelier (weld atelier diagrams)))
-  ?-  +<.gram
-    %ent  butlers
-    ::  %rud  frontage TODO frontend app
-    %gen  turbines
-    %ted  circuitry
-    %cli  valet
-    %hel  crier
-  ==
+  =*  bek  byk.bowl
+  =/  diagrams  .^((list path) ct+(en-beam bek /dia/[+<.gram]))
+  =?  q.bek  ?=(^ from)  u.from
+  =/  from-files  .^((list path) ct+(en-beam bek /))
+  =/  =grounds
+    ?-  +<.gram
+      %ent  butlers
+      ::  %rud  frontage TODO frontend app
+      %gen  turbines
+      %ted  circuitry
+      %cli  valet
+      %hel  crier
+    ==
+  =/  merged=^grounds
+    %=  grounds
+      outpost  (fuse (my [q.bek from-files]~) outpost:grounds)
+      atelier  (weld atelier:grounds diagrams)
+    ==
+  :-  outpost:merged
+  :^  %pass  /citadel/desk/diagram  %arvo
+  (scop byk.bowl %citadel name merged)
+::
+++  lore
+  ^-  (quip card _state)
+  =*  cha  ~(. ch q.byk.bowl)
+  =/  charges
+    .^  charge-update:docket
+        %gx
+        (scry:io %docket /charges/noun)
+    ==
+  ?>  ?=(%initial -.charges)
+  :_  state
+  ?.  %-  ~(has by initial.charges)  %docs
+    ~&  >>  "installing ~pocwet/docs"
+    :~
+      (ally-update:cha ~pocwet)
+      (install:cha ~pocwet %docs)
+    ==
+  ~&  >>  "docs installed"
+  ~
 ::
 ++  peer-citadel-primary
   |=  wir=wire
@@ -117,3 +172,4 @@
     [%give %kick ~ ~]~
   [~ state]
 --
+::
