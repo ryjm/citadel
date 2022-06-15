@@ -3,9 +3,11 @@
 .editor {
   height: 100%;
   border-radius: 4px;
+  min-height: 300px;
 
   &.test {
     max-height: 50%;
+    min-height: 200px;
   }
 
   .CodeMirror {

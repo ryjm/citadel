@@ -14,6 +14,7 @@ import { CodeMirrorShim, Editor } from '../components/editor/Editors'
 import useContractStore from '../store/contractStore'
 
 import './EditorView.scss'
+import { isMobileCheck } from '../utils/dimensions';
 
 const WEBTERM_PATH = '/apps/webterm'
 
@@ -53,6 +54,7 @@ const EditorView = () => {
   }
 
   const buttonProps = { style: { padding: 0, marginRight: 24 }, variant: 'unstyled', fontSize: 14 }
+  const isMobile = isMobileCheck()
 
   return (
     <Container className='editor-view'>
@@ -60,22 +62,22 @@ const EditorView = () => {
       <Form onSubmit={submit} style={{ padding: 0, border: '1px solid lightgray', height: '100%', background: 'white' }}>
         <Row style={{ height: 24, background: 'lightgray', padding: '4px 16px', justifyContent: 'space-between' }}>
           <Row>
-            <Button type="submit" {...buttonProps} icon={<FaPlay style={{ marginRight: 8 }} size={14} />}>
+            <Button iconOnly={isMobile} type="submit" {...buttonProps} icon={<FaPlay style={{ marginRight: 8 }} size={14} />}>
               Run
             </Button>
-            <Button {...buttonProps} icon={<FaBug style={{ marginRight: 8 }} size={14} />}>
+            <Button iconOnly={isMobile} {...buttonProps} icon={<FaBug style={{ marginRight: 8 }} size={14} />}>
               Debug
             </Button>
-            <Button {...buttonProps} icon={<FaArrowUp style={{ marginRight: 8 }} size={14} />}>
-              Deploy
+            <Button iconOnly={isMobile} {...buttonProps} icon={<FaArrowUp style={{ marginRight: 8 }} size={14} />}>
+              Format
             </Button>
           </Row>
-          <Button {...buttonProps} icon={<FaCode style={{ marginRight: 8 }} size={14} />}>
-            Format
+          <Button iconOnly={isMobile} {...buttonProps} style={{ ...buttonProps.style, margin: 0 }} icon={<FaCode size={14} />}>
+            Deploy
           </Button>
         </Row>
-        <Row style={{ height: 'calc(100% - 32px)', width: 'calc(100% - 2px)' }}>
-          <Col style={{ height: '100%', width: '60%' }}>
+        <Row style={{ height: 'calc(100% - 32px)', width: 'calc(100% - 2px)', flexDirection: isMobile ? 'column' : 'row' }}>
+          <Col style={{ height: isMobile ? 600 : '100%', width: isMobile ? '100%' : '60%', borderBottom: isMobile ? '1px solid lightgray' : undefined }}>
             <Editor
               editorRef={isContract ? contractEditor : gallEditor}
               text={text[selected]}
@@ -84,7 +86,7 @@ const EditorView = () => {
               isContract={isContract}
             />
           </Col>
-          <Col style={{ height: '100%', width: '40%' }}>
+          <Col style={{ height: isMobile ? 400 : '100%', width: isMobile ? '100%' : '40%' }}>
             <Editor
               editorRef={isContract ? contractTestEditor : gallTestEditor}
               text={text[selectedTest]}
@@ -93,7 +95,7 @@ const EditorView = () => {
               isContract={isContract}
               isTest
             />
-            <Iframe url={WEBTERM_PATH} height='100%' width='100%' />
+            <Iframe url={WEBTERM_PATH} height={isMobile? 400 : '100%'} width='100%' />
           </Col>
         </Row>
       </Form>

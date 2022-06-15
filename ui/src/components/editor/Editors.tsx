@@ -63,10 +63,8 @@ export const Editor = ({
   isTest = false,
 }: EditorProps) => {
   useEffect(() => {
-    if (!editorRef) {
+    if (!editorRef)
       return
-    }
-
     editorRef.current?.setOption('mode', null)
     editorRef.current?.setOption('placeholder', getPlaceholder(isContract, isTest))
   }, [])

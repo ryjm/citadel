@@ -2,6 +2,10 @@
 
 .editor-view {
   height: calc(100vh - 100px);
+
+  @media only screen and (max-width: 600px) {
+    height: calc(100vh - 60px);
+  }
   
   .assets {
     font-family: monospace monospace;
