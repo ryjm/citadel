@@ -7,6 +7,19 @@ import './CliffView.scss'
 const cliffUrl = '/cliff/view/our/citadel/now'
 
 const CliffView = () => {
+  useEffect(() => {
+    const checkCliffInstalled = async () => {
+      const result = await fetch(cliffUrl)
+      if (result.status === 404) {
+        alert(`There was an error loading %cliff, please ensure you have installed %cliff from ~paldev.
+
+You can run "|install ~paldev %cliff" in the webterm insert on the "Contract" page.`)
+      }
+    }
+
+    checkCliffInstalled()
+  }, [])
+
   return (
     <Container className='cliff-view'>
       <Iframe url={cliffUrl} height='100%' width='100%' />

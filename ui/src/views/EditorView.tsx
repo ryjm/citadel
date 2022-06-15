@@ -1,4 +1,4 @@
-import React, { FormEvent, useCallback, useMemo, useRef, useState } from 'react'
+import React, { FormEvent, useCallback, useMemo, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { FaPlay, FaBug, FaArrowUp, FaCode } from 'react-icons/fa';
 import 'codemirror/lib/codemirror.css'
@@ -17,26 +17,6 @@ import './EditorView.scss'
 
 const WEBTERM_PATH = '/apps/webterm'
 
-// import Iframe from 'react-iframe'
-// import { Resizable, ResizeCallback } from 're-resizable'
-// import create from 'zustand'
-// import { persist } from 'zustand/middleware'
-// const termUrl = '/apps/webterm'
-
-// const windowSettings = create(persist((set, get) => ({
-//   termRatio: .66
-// }), {
-//   name: 'citadel-settings'
-// }))
-
-// const Resizer = () => (
-//   <div className='absolute right-0 top-0 px-2 -mr-2'>
-//     <div className='flex items-center h-screen bg-gray-200'>
-//       <SelectorIcon className='h-6 w-6 text-gray-800 rotate-90' />
-//     </div>
-//   </div>
-// )
-
 type SelectedEditor = 'contract' | 'gall' | 'contractTest' | 'gallTest'
 
 const EditorView = () => {
@@ -45,7 +25,6 @@ const EditorView = () => {
   const gallEditor = useRef<CodeMirrorShim>()
   const contractTestEditor = useRef<CodeMirrorShim>()
   const gallTestEditor = useRef<CodeMirrorShim>()
-  const [submitted, setSubmitted] = useState(false)
   const { text, setLoading, setTextState, submitTest } = useContractStore()
 
   const isContract = useMemo(() => location.pathname === '/', [location])
@@ -123,3 +102,23 @@ const EditorView = () => {
 }
 
 export default EditorView
+
+// import Iframe from 'react-iframe'
+// import { Resizable, ResizeCallback } from 're-resizable'
+// import create from 'zustand'
+// import { persist } from 'zustand/middleware'
+// const termUrl = '/apps/webterm'
+
+// const windowSettings = create(persist((set, get) => ({
+//   termRatio: .66
+// }), {
+//   name: 'citadel-settings'
+// }))
+
+// const Resizer = () => (
+//   <div className='absolute right-0 top-0 px-2 -mr-2'>
+//     <div className='flex items-center h-screen bg-gray-200'>
+//       <SelectorIcon className='h-6 w-6 text-gray-800 rotate-90' />
+//     </div>
+//   </div>
+// )

@@ -7,6 +7,19 @@ import './DocsView.scss'
 const docsUrl = '/~/scry/docs/usr/citadel/overview.html'
 
 const DocsView = () => {
+  useEffect(() => {
+    const checkDocsInstalled = async () => {
+      const result = await fetch(docsUrl)
+      if (result.status === 404) {
+        alert(`There was an error loading %docs, please ensure you have installed %docs from ~pocwet.
+
+You can run "|install ~pocwet %docs" in the webterm insert on the "Contract" page.`)
+      }
+    }
+
+    checkDocsInstalled()
+  }, [])
+
   return (
     <Container className='docs-view'>
       <Iframe url={docsUrl} height='100%' width='100%' />
