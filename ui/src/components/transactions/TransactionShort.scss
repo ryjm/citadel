@@ -1,0 +1,9 @@
+@use '../../styles/colors.scss' as colors;
+
+.transaction-short {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  background: colors.$light-gray;
+  border-radius: 4px;
+  max-width: 600px;
+}

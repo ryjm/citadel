@@ -1,0 +1,26 @@
+@use '../../styles/colors.scss' as colors;
+
+.dropdown {
+  position: relative;
+  cursor: pointer;
+  background-color: white;
+  padding: 4px 8px;
+
+  .background {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    cursor: default;
+  }
+  .content {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    background-color: inherit;
+    padding: 4px 8px;
+    min-width: 100%;
+    border: 1px solid colors.$light-gray;
+  }
+}

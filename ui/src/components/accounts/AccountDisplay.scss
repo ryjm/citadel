@@ -1,0 +1,18 @@
+@use '../../styles/colors.scss' as colors;
+
+.account-display {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  background: colors.$light-gray;
+  border-radius: 4px;
+  max-width: 600px;
+
+  .icon {
+    padding: 4px;
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}

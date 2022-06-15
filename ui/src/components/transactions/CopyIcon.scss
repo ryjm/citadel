@@ -1,0 +1,12 @@
+@use '../../styles/colors.scss' as colors;
+
+.copy-icon {
+  .icon {
+    padding: 4px;
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}

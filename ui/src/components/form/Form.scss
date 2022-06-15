@@ -1,0 +1,9 @@
+@use '../../styles/colors.scss' as colors;
+
+form.form {
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: colors.$light-gray;
+  display: flex;
+  flex-direction: column;
+}
