@@ -20,6 +20,7 @@
       [%cli =cmds]                ::  agent with cli
       [%hel ~]                    ::  hello world
       [%prt ~]                    ::  printers
+      [%doc ~]                    ::  docs
   ==  ==
 ::  TODO customizable diagrams
 ::

@@ -21,6 +21,7 @@
   $%
       [%help ~]                                     ::  print usage info
       [%desk desk (unit desk) (unit desk)]          ::  create a new desk
+      [%update-kelvin (set desk) weft]          ::  create a new desk
       [%colony desk]
       [%colonies ~]
       [%settings ~]
@@ -201,14 +202,23 @@
           dusk
           dusk
         ==
+        ::  ;update-kelvin [deska deskb ~] [%zuse 418]
+        ;~(plug (tag %update-kelvin) ;~(pfix ace ;~(pose dall spads)) ;~(pfix ace wuft))
         ;~(plug (tag %colony) spade)
         ;~(plug (tag %colonies) (easy ~))
         ;~(plug (tag %settings) (easy ~))
       ==
     ::
+    ++  dall  (cold *(set desk) (jest '%all'))
+    ++  wuft
+      %+  cook  weft
+      ;~(plug ;~(pfix cen sym) ;~(pfix ace dem))
     ++  dusk  ;~(pose (cold ~ spado) (punt spade))
     ++  spado  ;~(pfix ace sig)
     ++  spade  ;~(pfix ace sym)
+    ++  spads
+      %+  cook  ~(gas in *(set desk))
+      (most ;~(plug com (star ace)) sym)
     ++  tag   |*(a=@tas (cold a (jest a)))
     ++  bool
       ;~  pose
@@ -223,6 +233,7 @@
     :~
       [%help leaf+";help"]
       [%desk leaf+";desk [desk-name] [from (optional)] [diagram (optional)]"]
+      [%update-kelvin leaf+";update-kelvin deska, deskb %zuse 418"]
       [%colony leaf+";colony [desk]"]
       [%colonies leaf+";colonies"]
       [%settings leaf+";settings"]
@@ -238,6 +249,7 @@
           %desk      abet:(emit:(new-desk +.job) cmd)
           %colonies  abet:show-colonies
           %colony    abet:(show-colony +.job)
+          %update-kelvin  abet:(emit:(update-kelvin +.job) cmd)
           %settings  abet:show-settings
         ==
     ::  +act: build action card
@@ -295,10 +307,35 @@
       ^+  this
       %-  emil
       :~  (print:sh-out "diagram: {(scow %tas +<:style)}")
-        %^  act  %diagram  %citadel
-        :-  %citadel-action
-        !>  ^-  action
-        [%diagram from style title]
+      %^  act  %diagram  %citadel
+      :-  %citadel-action
+      !>  ^-  action
+      [%diagram from style title]
+      ==
+    ++  update-kelvin
+      |=  [deks=(set desk) kelvin=*]
+      ^+  this
+      =+  .^  =dais:clay  %cb
+      /(scot %p our.bowl)/[q.byk.bowl]/(scot %da now.bowl)/kelvin
+      ==
+      =/  res  (mule |.((vale.dais kelvin)))
+      ?:  ?=(%| -.res)
+        ~|(%citadel-mark-fail (mean leaf+"citadel: failed to validate kelvin" p.res))
+      =/  kelv=vase  +.res
+      =*  byk  byk.bowl
+      =+  .^(all=(set desk) %cd /(scot %p our.bowl)//(scot %da now.bowl))
+      =.  all  (~(del in all) %base)
+      =.  all  (~(del in all) %home)
+      =.  all  (~(del in all) %kids)
+      =/  desks  ?:  =(0 ~(wyt in deks))  all
+        %-  ~(int in deks)  all
+      ~&  >  update-kelvin+desks
+      %-  emil
+      %+  turn  ~(tap in desks)
+      |=  =desk
+      =/  =path  (en-beam byk(q desk) /sys/kelvin)
+      :*  %pass  /file  %arvo  %c
+          %info  (foal:space:userlib path kelvin+kelv)
       ==
     ::  +help: print (link to) usage instructions
     ::

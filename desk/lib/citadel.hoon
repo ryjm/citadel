@@ -30,6 +30,8 @@
   %-  my
   :~  :-  %garden
   :~  /mar/docket-0/hoon
+      /lib/docket/hoon
+      /sur/docket/hoon
   ==  ==
 ::  +pillar - agent and garden desiderata
 ::
@@ -46,6 +48,7 @@
       /lib/skeleton/hoon
       /mar/bill/hoon
       /mar/mime/hoon
+      /sur/verb/hoon
   ==
 ::  +cellar - threads
 ::
@@ -64,6 +67,8 @@
   :~  :-  %docs
   :~  /mar/udon/hoon
       /mar/clue/hoon
+      /lib/cram/hoon
+      /sur/docs/hoon
   ==  ==
 ::  +press - pretty printing
 ::
@@ -84,7 +89,7 @@
 ::
 ++  cutlery
   ^-  atelier:citadel
-  :~  /dia/bas/docket-0/hoon
+  :~  /dia/bas/desk/docket-0
       /dia/bas/desk/bill
   ==
 ::  +scrolls - ~pocwet/docs materials
@@ -125,6 +130,11 @@
   %^  build-estate  &  ~
   :~  /dia/hel/app/hel/hoon
   ==
+::  +library - docs
+++  library
+  ^-  grounds:citadel
+  %^  build-estate  &  `seals
+  scrolls
 ::  +frontage - apps with agent and frontend
 ::
 ++  frontage
@@ -164,19 +174,21 @@
     ::  TODO simulate symlinks somehow?
     ::
     ++  scop
-      |=  $:  bek=beak
+      |=  $:  =bowl:gall
               from=desk
               =desk
               =grounds:citadel
           ==
+      =/  bek  byk.bowl
       =/  desks  .^((set ^desk) %cd (en-beam bek(q from) /))
       ?:  (~(has in desks) desk)
         ~|  [%already-exists desk]
         !!
-      ::
+
       %^  new-desk:cloy  desk  ~
       |^
       =/  all=(map ^desk (list path))
+        ?:  =(~ atelier.grounds)  outpost.grounds
         %+  ~(put by outpost.grounds)  %citadel  atelier.grounds
       %-  ~(gas by *(map path page:clay))
       =-  %+  roll  -
@@ -188,22 +200,34 @@
       %-  ~(urn by all)
       |=  [des=@tas files=(list path)]
       ^-  (list [path page:clay])
-      =+  .^(=dome:clay %cv (en-beam bek(q des) /))
-      ::
-      (turn files (cury (cury mage dome) des))
+      =/  [=ship orig=^desk =case:clay]  bek
+      =+  .^(=rang:clay %cx /(scot %p our.bowl)//(scot %da now.bowl)/rang)
+      =+  .^(=dome:clay %cv (en-beam bek(q from) /))
+      =/  =yaki
+        %-  ~(got by hut.rang)
+        %-  ~(got by hit.dome)
+        let.dome
+        ~&  >  %yaki
+      =/  paths=(list [=path =lobe])
+        %+  murn  files
+        |=  =path
+        ?.  %-  ~(has by q.yaki)  path  ~
+          :-  ~
+          :-  path
+          %-  ~(got by q.yaki)  path
+      (turn paths (cury (cury mage rang) des))
       ::  +mage - page from clay. %dia paths in %citadel
       ::          have the form /dia/<name>/...
       ::
       ++  mage
-        |=  [=dome:clay d=^desk =path]
+        |=  [=rang:clay d=^desk =path =lobe]
         ::  TODO should be the desk containing this file
         :-  ?:  &(?=([%dia @ *] path) =(from %citadel))
           t.t.path
         path
         ^-  page:clay
-        =;  =cage  [p q.q]:cage
         ~|  [%missing-source-file [from q.bek] path]
-        (need (~(get an:cloy ank.dome) path))
-      --
+        (~(got by lat.rang) lobe)
+     --
     --
   --

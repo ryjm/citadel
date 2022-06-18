@@ -107,10 +107,11 @@
     :~  :-  from.action
       .^((list path) ct+(en-beam bek(q from.action) /))
     ==
+  ~&  >  [%from-files -]
   :_  state(colonies (~(put by colonies.state) desk -))
   :~
     :^  %pass  /citadel/desk/[desk]  %arvo
-    (scop byk.bowl from.action desk [- ~])
+    (scop bowl from.action desk [- ~])
   ==
 ::
 ++  on-diagram
@@ -131,16 +132,21 @@
   =|  from-files=(list path)
   =?  q.bek  ?=(^ from)  u.from
   =?  from-files  ?=(^ from)  .^((list path) ct+(en-beam bek /))
+  ~&  >>  from-files
+  ~&  >>  q.bek
+
   =/  =grounds
     ?-  +<.gram
       %ent  butlers
       ::  %rud  frontage TODO frontend app
       %gen  turbines
+      %doc  library
       %ted  circuitry
       %cli  valet
       %hel  crier
       %prt  [(fuse press foundation) ~]
     ==
+  ~&  >>  grounds
   =/  merged=^grounds
     %=  grounds
       outpost  (fuse (my [q.bek from-files]~) outpost:grounds)
@@ -148,7 +154,7 @@
     ==
   :-  outpost:merged
   :^  %pass  /citadel/desk/diagram  %arvo
-  (scop byk.bowl %citadel name merged)
+  (scop bowl %citadel name merged)
 ::
 ++  lore
   ^-  (quip card _state)
