@@ -302,41 +302,41 @@
           [%desk ?~(from %base u.from) title]
       ==
       ::
-    ++  new-estate
-      |=  [from=(unit @tas) title=@tas style=gram]
-      ^+  this
-      %-  emil
-      :~  (print:sh-out "diagram: {(scow %tas +<:style)}")
-      %^  act  %diagram  %citadel
-      :-  %citadel-action
-      !>  ^-  action
-      [%diagram from style title]
-      ==
-    ++  update-kelvin
-      |=  [deks=(set desk) kelvin=*]
-      ^+  this
-      =+  .^  =dais:clay  %cb
-      /(scot %p our.bowl)/[q.byk.bowl]/(scot %da now.bowl)/kelvin
-      ==
-      =/  res  (mule |.((vale.dais kelvin)))
-      ?:  ?=(%| -.res)
-        ~|(%citadel-mark-fail (mean leaf+"citadel: failed to validate kelvin" p.res))
-      =/  kelv=vase  +.res
-      =*  byk  byk.bowl
-      =+  .^(all=(set desk) %cd /(scot %p our.bowl)//(scot %da now.bowl))
-      =.  all  (~(del in all) %base)
-      =.  all  (~(del in all) %home)
-      =.  all  (~(del in all) %kids)
-      =/  desks  ?:  =(0 ~(wyt in deks))  all
-        %-  ~(int in deks)  all
-      ~&  >  update-kelvin+desks
-      %-  emil
-      %+  turn  ~(tap in desks)
-      |=  =desk
-      =/  =path  (en-beam byk(q desk) /sys/kelvin)
-      :*  %pass  /file  %arvo  %c
-          %info  (foal:space:userlib path kelvin+kelv)
-      ==
+      ++  new-estate
+        |=  [from=(unit @tas) title=@tas style=gram]
+        ^+  this
+        %-  emil
+        :~  (print:sh-out "diagram: {(scow %tas +<:style)}")
+        %^  act  %diagram  %citadel
+        :-  %citadel-action
+        !>  ^-  action
+        [%diagram from style title]
+        ==
+      ++  update-kelvin
+        |=  [deks=(set desk) kelvin=*]
+        ^+  this
+        =+  .^  =dais:clay  %cb
+        /(scot %p our.bowl)/[q.byk.bowl]/(scot %da now.bowl)/kelvin
+        ==
+        =/  res  (mule |.((vale.dais kelvin)))
+        ?:  ?=(%| -.res)
+          ~|(%citadel-mark-fail (mean leaf+"citadel: failed to validate kelvin" p.res))
+        =/  kelv=vase  +.res
+        =*  byk  byk.bowl
+        =+  .^(all=(set desk) %cd /(scot %p our.bowl)//(scot %da now.bowl))
+        =.  all  (~(del in all) %base)
+        =.  all  (~(del in all) %home)
+        =.  all  (~(del in all) %kids)
+        =/  desks  ?:  =(0 ~(wyt in deks))  all
+          %-  ~(int in deks)  all
+        ~&  >  update-kelvin+desks
+        %-  emil
+        %+  turn  ~(tap in desks)
+        |=  =desk
+        =/  =path  (en-beam byk(q desk) /sys/kelvin)
+        :*  %pass  /file  %arvo  %c
+            %info  (foal:space:userlib path kelvin+kelv)
+        ==
     ::  +help: print (link to) usage instructions
     ::
     ++  help
