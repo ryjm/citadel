@@ -46,13 +46,6 @@ const EditorView = () => {
     setTextState(newText)
   }, [text, setTextState])
 
-  const onPaste = (editor: SelectedEditor) => (cm: CodeMirrorShim, e: ClipboardEvent) => {
-    const pastedText = e?.clipboardData?.getData('Text')
-    if (pastedText) {
-      setText(editor)(text[editor] + pastedText)
-    }
-  }
-
   const buttonProps = { style: { padding: 0, marginRight: 24 }, variant: 'unstyled', fontSize: 14 }
   const isMobile = isMobileCheck()
 
@@ -69,11 +62,11 @@ const EditorView = () => {
               Debug
             </Button>
             <Button iconOnly={isMobile} {...buttonProps} icon={<FaArrowUp style={{ marginRight: 8 }} size={14} />}>
-              Format
+              Deploy
             </Button>
           </Row>
-          <Button iconOnly={isMobile} {...buttonProps} style={{ ...buttonProps.style, margin: 0 }} icon={<FaCode size={14} />}>
-            Deploy
+          <Button iconOnly={isMobile} {...buttonProps} style={{ ...buttonProps.style, margin: 0 }} icon={<FaCode size={14} style={{ marginRight: 8 }} />}>
+            Format
           </Button>
         </Row>
         <Row style={{ height: 'calc(100% - 32px)', width: 'calc(100% - 2px)', flexDirection: isMobile ? 'column' : 'row' }}>
@@ -82,7 +75,6 @@ const EditorView = () => {
               editorRef={isContract ? contractEditor : gallEditor}
               text={text[selected]}
               setText={setText(selected)}
-              onPaste={onPaste(selected)}
               isContract={isContract}
             />
           </Col>
@@ -91,7 +83,6 @@ const EditorView = () => {
               editorRef={isContract ? contractTestEditor : gallTestEditor}
               text={text[selectedTest]}
               setText={setText(selectedTest)}
-              onPaste={onPaste(selectedTest)}
               isContract={isContract}
               isTest
             />

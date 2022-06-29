@@ -1,7 +1,9 @@
 import React, { useCallback, useEffect } from 'react'
 import { Controlled as CodeEditor } from 'react-codemirror2'
+import '../../utils/codemirror-hoon'
 
 import './Editors.scss'
+require('codemirror/lib/codemirror.css')
 
 export interface CodeMirrorShim {
   setValue: (value: string) => void
@@ -38,7 +40,7 @@ const HOON_CONFIG = {
 }
 
 const defaultOptions = {
-  mode: HOON_CONFIG,
+  mode: 'hoon',
   lineNumbers: true,
   lineWrapping: true,
   scrollbarStyle: 'native',
@@ -49,7 +51,6 @@ export interface EditorProps {
   editorRef: any
   text: string,
   setText: (inputText: string) => void
-  onPaste: (cm: CodeMirrorShim, e: ClipboardEvent) => void
   isContract?: boolean
   isTest?: boolean
 }
@@ -58,7 +59,6 @@ export const Editor = ({
   editorRef,
   text,
   setText,
-  onPaste,
   isContract = false,
   isTest = false,
 }: EditorProps) => {
@@ -74,9 +74,13 @@ export const Editor = ({
     placeholder: getPlaceholder(isContract, isTest),
     extraKeys: {
       'Enter': () => {
-        const lastNewline = text.match(/\n */g)?.pop()
-        const indent = lastNewline ? lastNewline.slice(1) : ''
-        setText(text + '\n' + indent)
+        const editor = editorRef?.current
+        if (editor) {
+          const cursor = editor.getCursor()
+          const line = editor.getLine(cursor.line)
+          const indent = (line.match(/^\s+/) || [''])[0]
+          editor.replaceRange('\n' + indent, cursor)
+        }
       },
       'Esc': () => {
         editorRef?.current?.getInputField().blur()
@@ -93,6 +97,15 @@ export const Editor = ({
 
     setText(value)
   }, [text, setText])
+
+  const onPaste = (cm: CodeMirrorShim, e: ClipboardEvent) => {
+    const pastedText = e?.clipboardData?.getData('Text')
+    const editor = editorRef?.current
+    if (editor && pastedText) {
+      const cursor = editor.getCursor()
+      editor.replaceRange(pastedText, cursor)
+    }
+  }
 
   return (
     <CodeEditor
