@@ -13,7 +13,7 @@
 ::
 +$  gram
   $:  nom=term
-  $%  [%ent pokes=(list @tas)]    ::  agent
+  $%  [%ent ~]    ::  agent
       ::[%rud =pages]               ::  agent with frontend
       [%gen =engine]              ::  generator
       [%ted =imps]                ::  thread
@@ -31,9 +31,20 @@
 +$  cmds  (unit @t)
 ::
 +$  app  [desk=term title=@t]
+::
 +$  action
   $%
     [%desk from=desk name=@tas]
     [%diagram furm=(unit desk) =gram name=@tas]
+  ==
++$  poke-action
+  $%
+    [%run =arena =survey]
+  ==
++$  arena  ?(%contract %gall)
+::
++$  survey
+  $:  code=@t
+      test=@t
   ==
 --

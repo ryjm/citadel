@@ -46,23 +46,24 @@ const useContractStore = create<ContractStore>(persist<ContractStore>(
 
       const json: any = {}
       if (isContract) {
-        json.contract = {
+        json.run = {
+          arena: 'contract',
+          survey: {
           code: contract,
           test: contractTest
+          }
         }
       } else {
-        json.gall = {
+        json.run = {
+          arena: 'gall',
+          survey: {
           code: gall,
           test: gallTest
+          }
         }
       }
-
-      // so the `json` will look like:
-      // { contract: { code, test } } or
-      // { gall: { code, test } }
-
-      // the `mark` needs to be updated
-      await api.poke({ app: 'citadel', mark: 'citadel-poke', json })
+      console.log(2, JSON.stringify(json))
+      await api.poke({ app: 'citadel', mark: 'citadel-poke-action', json })
     }
   }),
   {

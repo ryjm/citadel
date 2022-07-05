@@ -30,7 +30,7 @@
   },
   "proxy": "https://fabnev.labwet.art",
   "scripts": {
-    "start": "sed -i '' -e 's/compress: true/compress: false/' ./node_modules/react-scripts/config/webpackDevServer.config.js && react-scripts start",
+    "start": "echo $(pwd) && sed -i -e 's/compress: true/compress: false/' ./node_modules/react-scripts/config/webpackDevServer.config.js && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

@@ -86,7 +86,7 @@ const EditorView = () => {
               isContract={isContract}
               isTest
             />
-            <Iframe url={WEBTERM_PATH} height={isMobile? 400 : '100%'} width='100%' />
+            <Iframe url={WEBTERM_PATH} height={isMobile? '40%' : '100%'} width='100%' />
           </Col>
         </Row>
       </Form>

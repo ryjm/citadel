@@ -1,11 +1,14 @@
 /-  citadel
 =,  clay
 |%
+::    +fose
+::
 ++  fose
   |=  [=desk init=outpost:citadel rest=(list path)]
   ^-  outpost:citadel
   ~!  desk
   %+  ~(jab by init)  desk  (cury welp rest)
+::    +fuse
 ::
 ++  fuse
   |=  [init=outpost:citadel rest=outpost:citadel]
@@ -73,6 +76,7 @@
 ::  +press - pretty printing
 ::
 ++  press
+
   ^-  outpost:citadel
   %-  my
   :~  :-  %base
@@ -82,7 +86,7 @@
       /lib/xray/hoon
       /lib/pprint/hoon
   ==  ==
-
+::
 ::    partial diagrams
 ::
 ::  +cutlery - metadata
@@ -103,10 +107,10 @@
       /dia/docs/doc/usr/overview/udon
       /dia/docs/doc/clue
   ==
-::
 ::  +mansion - all requisites
 ::
 ++  mansion  ^-  grounds:citadel  [pillar cutlery]
+::
 ::    complete diagrams
 ::
 ::  +butlers - agent examples
@@ -131,6 +135,7 @@
   :~  /dia/hel/app/hel/hoon
   ==
 ::  +library - docs
+::
 ++  library
   ^-  grounds:citadel
   %^  build-estate  &  `seals
@@ -154,7 +159,8 @@
   :-  foundation
   :~  /dia/gen/app/gen/hoon
   ==
-::
+::    +build-estate
+::  raises the roof
 ++  build-estate
   |=  [lor=? mout=(unit outpost:citadel) =atelier:citadel]
   ^-  grounds:citadel
@@ -164,8 +170,33 @@
     -
   (welp atelier:mansion atelier)
 ::
+::  clay utilities
+::
 ++  play
-  |%
+  |_  [=bowl:gall =desk]
+    ::    +cite
+    ::
+    ::  write file to desk.
+    ++  cite
+      |=  [dusk=^desk =path data=cage]
+      =-  [%pass /write/citadel %arvo %c %info -]~
+      =/  fath=^path  (weld /(scot %p our.bowl)/[dusk]/(scot %da now.bowl) path)
+      %+  foal:space:userlib
+        fath
+      data
+    ::    +zuck
+    ::
+    ::  copies smart-lib from a ziggurat desk.
+    ++  zuck
+      |^  
+      ~|  "citadel: missing smart-lib in {<desk>}"
+      (cite %citadel /lib/zig/compiled/smart-lib/noun [%noun !>((need smar))])
+      ::      
+      ++  smar
+        ^-  (unit *)
+        %-  file:space:userlib
+        /(scot %p our.bowl)/[desk]/(scot %da now.bowl)/lib/zig/compiled/smart-lib/noun
+      --
     ::    +scop: init desk from files in another desk.
     ::
     ::  grounds - user and dependency files to seed the desk with.
@@ -174,9 +205,7 @@
     ::  TODO simulate symlinks somehow?
     ::
     ++  scop
-      |=  $:  =bowl:gall
-              from=desk
-              =desk
+      |=  $:  from=^desk
               =grounds:citadel
           ==
       =/  bek  byk.bowl
@@ -184,7 +213,6 @@
       ?:  (~(has in desks) desk)
         ~|  [%already-exists desk]
         !!
-
       %^  new-desk:cloy  desk  ~
       |^
       =/  all=(map ^desk (list path))
@@ -215,12 +243,12 @@
           :-  ~
           :-  path
           %-  ~(got by q.yaki)  path
-      (turn paths (cury (cury mage rang) des))
+      (turn paths (cury mage rang))
       ::  +mage - page from clay. %dia paths in %citadel
       ::          have the form /dia/<name>/...
       ::
       ++  mage
-        |=  [=rang:clay d=^desk =path =lobe]
+        |=  [=rang:clay =path =lobe]
         ::  TODO should be the desk containing this file
         :-  ?:  &(?=([%dia @ *] path) =(from %citadel))
           t.t.path
