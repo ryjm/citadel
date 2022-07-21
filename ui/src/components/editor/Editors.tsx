@@ -111,11 +111,7 @@ export const Editor = ({
 
   return (
     <CodeEditor
-<<<<<<< Updated upstream
-      className={`editor ${isTest ? 'test' : ''}`}
-=======
       className={`editor ${isTest ? 'test' : ''} ${!selected ? 'hidden' : ''}`}
->>>>>>> Stashed changes
       value={text}
       options={options}
       onBeforeChange={textChange}

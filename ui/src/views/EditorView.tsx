@@ -1,38 +1,3 @@
-<<<<<<< Updated upstream
-import React, { FormEvent, useCallback, useMemo, useRef } from 'react'
-import { useLocation } from 'react-router-dom'
-import { FaPlay, FaBug, FaArrowUp, FaCode } from 'react-icons/fa';
-import 'codemirror/lib/codemirror.css'
-import 'codemirror/theme/material.css'
-import 'codemirror/addon/display/placeholder'
-import Iframe from 'react-iframe';
-import Button from '../components/form/Button'
-import Form from '../components/form/Form'
-import Col from '../components/spacing/Col'
-import Container from '../components/spacing/Container'
-import Row from '../components/spacing/Row'
-import { CodeMirrorShim, Editor } from '../components/editor/Editors'
-import useContractStore from '../store/contractStore'
-
-import './EditorView.scss'
-import { isMobileCheck } from '../utils/dimensions';
-
-const WEBTERM_PATH = '/apps/webterm'
-
-type SelectedEditor = 'contract' | 'gall' | 'contractTest' | 'gallTest'
-
-const EditorView = () => {
-  const location = useLocation()
-  const contractEditor = useRef<CodeMirrorShim>()
-  const gallEditor = useRef<CodeMirrorShim>()
-  const contractTestEditor = useRef<CodeMirrorShim>()
-  const gallTestEditor = useRef<CodeMirrorShim>()
-  const { text, setLoading, setTextState, submitTest } = useContractStore()
-
-  const isContract = useMemo(() => location.pathname === '/', [location])
-  const selected = useMemo(() => isContract ? 'contract' : 'gall', [isContract])
-  const selectedTest = useMemo(() => `${selected}Test` as SelectedEditor, [selected])
-=======
 import React, { FormEvent, useCallback, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import 'codemirror/lib/codemirror.css'
@@ -77,7 +42,6 @@ const EditorView = ({ hide = false }: { hide?: boolean }) => {
   const [isContract, setIsContract] = useState(true)
   const [subGall, setSubGall] = useState<SubGall>('app')
   const selected = useMemo(() => `${isContract ? `contract_${subContract}` : `gall_${subGall}`}` as SelectedEditor, [isContract, subContract, subGall])
->>>>>>> Stashed changes
 
   const submit = useCallback(async (e: FormEvent) => {
     e.preventDefault()
@@ -93,53 +57,6 @@ const EditorView = ({ hide = false }: { hide?: boolean }) => {
     setTextState(newText)
   }, [text, setTextState])
 
-<<<<<<< Updated upstream
-  const buttonProps = { style: { padding: 0, marginRight: 24 }, variant: 'unstyled', fontSize: 14 }
-  const isMobile = isMobileCheck()
-
-  return (
-    <Container className='editor-view'>
-      {/* <h2>Test & Deploy {isContract ? 'Contract' : 'Gall App'}</h2> */}
-      <Form onSubmit={submit} style={{ padding: 0, border: '1px solid lightgray', height: '100%', background: 'white' }}>
-        <Row style={{ height: 24, background: 'lightgray', padding: '4px 16px', justifyContent: 'space-between' }}>
-          <Row>
-            <Button iconOnly={isMobile} type="submit" {...buttonProps} icon={<FaPlay style={{ marginRight: 8 }} size={14} />}>
-              Run
-            </Button>
-            <Button iconOnly={isMobile} {...buttonProps} icon={<FaBug style={{ marginRight: 8 }} size={14} />}>
-              Debug
-            </Button>
-            <Button iconOnly={isMobile} {...buttonProps} icon={<FaArrowUp style={{ marginRight: 8 }} size={14} />}>
-              Deploy
-            </Button>
-          </Row>
-          <Button iconOnly={isMobile} {...buttonProps} style={{ ...buttonProps.style, margin: 0 }} icon={<FaCode size={14} style={{ marginRight: 8 }} />}>
-            Format
-          </Button>
-        </Row>
-        <Row style={{ height: 'calc(100% - 32px)', width: 'calc(100% - 2px)', flexDirection: isMobile ? 'column' : 'row' }}>
-          <Col style={{ height: isMobile ? 600 : '100%', width: isMobile ? '100%' : '60%', borderBottom: isMobile ? '1px solid lightgray' : undefined }}>
-            <Editor
-              editorRef={isContract ? contractEditor : gallEditor}
-              text={text[selected]}
-              setText={setText(selected)}
-              isContract={isContract}
-            />
-          </Col>
-          <Col style={{ height: isMobile ? 400 : '100%', width: isMobile ? '100%' : '40%' }}>
-            <Editor
-              editorRef={isContract ? contractTestEditor : gallTestEditor}
-              text={text[selectedTest]}
-              setText={setText(selectedTest)}
-              isContract={isContract}
-              isTest
-            />
-            <Iframe url={WEBTERM_PATH} height={isMobile? '40%' : '100%'} width='100%' />
-          </Col>
-        </Row>
-      </Form>
-    </Container>
-=======
   const isMobile = isMobileCheck()
 
   return (
@@ -185,7 +102,6 @@ const EditorView = ({ hide = false }: { hide?: boolean }) => {
         </Col> */}
       </Row>
     </Form>
->>>>>>> Stashed changes
   )
 }
 
