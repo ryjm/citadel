@@ -7,11 +7,9 @@ import './Navbar.scss'
 import { isMobileCheck } from '../../utils/dimensions'
 import Dropdown from '../form/Dropdown'
 import Text from '../text/Text'
-import useWalletStore from '../../store/walletStore'
 
 const Navbar = () => {
   const isMobile = isMobileCheck()
-  const { selectedTown } = useWalletStore()
 
   const dropdownContent = (setOpen: Function) => (
     <>

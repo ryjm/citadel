@@ -8,11 +8,12 @@ import { initialApp } from "../code-text/gall/app";
 import { initialLib } from "../code-text/gall/lib";
 import { initialSur } from "../code-text/gall/sur";
 import { fungibleTokenTestData } from "../code-text/test-data/fungible";
-import { DEV_MOLDS } from "../types/Molds";
+import { DEV_MOLDS, Molds } from "../types/Molds";
 import { EditorTextState, Project } from "../types/Project";
 import { Test } from "../types/TestData";
 import { TestGrain } from "../types/TestGrain";
-import { handleBookUpdate, handleTxnUpdate } from "./subscriptions/wallet";
+import { handleMoldsUpdate } from "./subscriptions/contract";
+import { createSubscription } from "./subscriptions/createSubscription";
 
 export interface Route { route: string, subRoute?: string }
 
@@ -31,6 +32,7 @@ export interface ContractStore {
   addApp: (app: string) => void
   setCurrentApp: (currentApp: string) => void
   removeApp: (app: string) => void
+  setMolds: (molds: Molds) => void
   setTextState: (text: EditorTextState) => void
   saveFiles: () => Promise<void>
   submitTest: (isContract: boolean) => Promise<void>
@@ -54,6 +56,8 @@ const useContractStore = create<ContractStore>(persist<ContractStore>(
     setRoute: (route: Route) => set({ route }),
     setLoading: (loading: boolean) => set({ loading }),
     init: async () => {
+      api.subscribe(createSubscription('citadel', '/citadel/types', handleMoldsUpdate(get, set)))
+
       if (get().projects.length > 0) {
         set({ route: { route: 'contract', subRoute: 'main' } })
       }
@@ -89,6 +93,10 @@ const useContractStore = create<ContractStore>(persist<ContractStore>(
       const { openApps, currentApp } = get()
       set({ openApps: openApps.filter(a => a !== app), currentApp: currentApp === app ? openApps[0] || '' : currentApp })
     },
+    setMolds: (molds: Molds) => {
+      const { projects, currentProject } = get()
+      set({ projects: projects.map(p => p.title === currentProject ? { ...p, molds } : p) })
+    },
     setTextState: (text: EditorTextState) => set({ projects: get().projects.map((p) => p.title === get().currentProject ? { ...p, text } : p) }),
     saveFiles: async () => {
       console.log(1, 'saving')
@@ -98,16 +106,14 @@ const useContractStore = create<ContractStore>(persist<ContractStore>(
         console.log(3, 'poking')
         await api.poke({
           app: 'citadel',
-          mark: 'citadel-action',
+          mark: 'citadel-poke-action',
           json: {
+            // {\"save\":\{\"gall\":\{\"groms\":null,\"charter\":\"\"}}}
             save: {
-              // contract: 'contract',
-              // {\"save\":\{\"gall\":\{\"groms\":null,\"charter\":\"\"}}}
-              gall: {
-                groms: null,
-                // groms: ['lib', {mext: 'libtext', musk: 'project-name', path: 'lib/hoon'}],
-                charter: text.contract_main,
-              }
+              arena: 'contract',
+              // groms: ['lib', {mext: 'libtext', musk: 'project-name', path: 'lib/hoon'}],
+              groms: [],
+              charter: text.contract_main,
             }
           }
         })

@@ -1,3 +1,3 @@
 import { HoonType } from "./HoonType";
 
-export type UqbarType = HoonType | '%id'
+export type UqbarType = HoonType | '%id' | '%grain'

@@ -8,7 +8,6 @@ import NewProjectView from './NewProjectView';
 
 const MainView = () => {
   const { route } = useContractStore()
-  console.log('ROUTE', route, !route.route.includes('app'))
 
   return (
     <>
