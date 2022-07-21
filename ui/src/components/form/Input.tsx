@@ -14,7 +14,7 @@ const Input: React.FC<InputProps> = ({
 }) => {
   return (
     <Col className="input-container" style={containerStyle}>
-      {!!label && <label style={{ fontSize: 14, marginBottom: 4 }}>{label}</label>}
+      {!!label && <label style={{ fontSize: 14, marginBottom: 0 }}>{label}</label>}
       <input type="text" {...props} className={`input ${props.className || ''}`} />
     </Col>
   )

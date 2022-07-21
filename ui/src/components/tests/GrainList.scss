@@ -1,0 +1,9 @@
+@use '../../styles/colors.scss' as colors;
+
+.grain {
+  &.clone {
+    + .grain {
+      display: none!important;
+    }
+  }
+}

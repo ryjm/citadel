@@ -1,9 +1,13 @@
 @use '../styles/colors.scss' as colors;
 
 .cliff-view {
+<<<<<<< Updated upstream
   height: calc(100vh - 100px);
 
   @media only screen and (max-width: 600px) {
     height: calc(100vh - 60px);
   }
+=======
+  
+>>>>>>> Stashed changes
 }

@@ -2,8 +2,10 @@
 import React from 'react'
 import './Button.scss'
 
+export type ButtonVariant = 'dark' | 'unstyled' | undefined
+
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: string
+  variant?: ButtonVariant 
   icon?: JSX.Element
   iconOnly?: boolean
 }

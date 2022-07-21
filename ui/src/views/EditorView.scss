@@ -1,12 +1,47 @@
 @use '../styles/colors.scss' as colors;
 
 .editor-view {
+<<<<<<< Updated upstream
   height: calc(100vh - 100px);
 
   @media only screen and (max-width: 600px) {
     height: calc(100vh - 60px);
   }
   
+=======
+  .tab {
+    border-radius: 8px 8px 0px 0px;
+    text-decoration: none;
+    padding: 4px 8px;
+    width: 80px;
+    height: 20px;
+    justify-content: center;
+    cursor: pointer;
+    text-align: center;
+
+    &.selected {
+      background-color: white;
+    }
+  }
+
+  .sub-tab {
+    padding: 4px 8px;
+    font-size: 14px;
+    width: 80px;
+    cursor: pointer;
+    background-color: white;
+    justify-content: center;
+
+    &:last-of-type {
+      border-top-right-radius: 8px;
+    }
+
+    &.selected {
+      text-decoration: underline;
+    }
+  }
+
+>>>>>>> Stashed changes
   .assets {
     font-family: monospace monospace;
   }

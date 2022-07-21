@@ -4,6 +4,7 @@
   height: 100%;
   border-radius: 4px;
   min-height: 300px;
+  max-height: calc(100vh - 52px);
 
   &.test {
     max-height: 50%;
@@ -12,5 +13,10 @@
 
   .CodeMirror {
     height: 100%;
+  }
+
+  &.hidden {
+    visibility: hidden;
+    position: absolute;
   }
 }

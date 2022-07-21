@@ -18,7 +18,6 @@ const Dropdown: React.FC<DropdownProps> = ({
   return (
     <div {...props} className={`dropdown ${props.className || ''}`} onClick={() => {
       setOpen(!open)
-      console.log('HERe')
       }}>
       {open && <div className="background" onClick={() => setOpen(false)} />}
       {children}

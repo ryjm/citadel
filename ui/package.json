@@ -17,6 +17,7 @@
     "file-saver": "^2.0.5",
     "http-proxy-middleware": "^2.0.6",
     "react": "^17.0.2",
+    "react-beautiful-dnd": "^13.1.0",
     "react-codemirror2": "^7.2.1",
     "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",
@@ -28,9 +29,10 @@
     "xterm-addon-fit": "^0.5.0",
     "zustand": "^3.7.1"
   },
-  "proxy": "https://fabnev.labwet.art",
+  "proxy": "http://localhost:8080",
   "scripts": {
-    "start": "echo $(pwd) && sed -i -e 's/compress: true/compress: false/' ./node_modules/react-scripts/config/webpackDevServer.config.js && react-scripts start",
+    "start:mac": "sed -i '' -e 's/compress: true/compress: false/' ./node_modules/react-scripts/config/webpackDevServer.config.js && react-scripts start",
+    "start:linux": "echo $(pwd) && sed -i -e 's/compress: true/compress: false/' ./node_modules/react-scripts/config/webpackDevServer.config.js && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

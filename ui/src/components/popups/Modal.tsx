@@ -25,13 +25,13 @@ const Modal: React.FC<ModalProps> = ({
 
   return (
     <div className="modal" onClick={hide}>
-      <div {...props} className={`content ${props.className || ''}`}>
+      <div {...props} className={`content ${props.className || ''}`} onClick={dontHide}>
         {!hideClose && (
           <div className="close" onClick={hide}>
             &#215;
           </div>
         )}
-        <div style={{ height: '100%' }} onClick={dontHide}>{props.children}</div>
+        <div style={{ height: '100%' }}>{props.children}</div>
       </div>
     </div>
   )

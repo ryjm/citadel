@@ -1,0 +1,48 @@
+@use '../../styles/colors.scss' as colors;
+
+.tests {
+  height: 100%;
+  border-radius: 4px;
+  min-height: 300px;
+
+  .section-header {
+    justify-content: space-between;
+    padding: 4px 8px;
+    border-bottom: 1px solid lightgray;
+
+    .title {
+      padding: 4px;
+      font-weight: bold;
+    }
+
+    .action {
+      padding: 4px;
+      cursor: pointer;
+      &:hover {
+        opacity: 0.6;
+      }
+    }
+  }
+
+  .text-area {
+    min-height: 120px;
+  }
+
+  .actions {
+    .action {
+      .input {
+
+      }
+
+      .output {
+
+      }
+    }
+  }
+
+  .grains {
+    .grain {
+      
+    }
+  }
+}

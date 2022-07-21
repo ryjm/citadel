@@ -1,8 +1,8 @@
 import React from 'react'
 import './TextArea.scss'
 
-interface TextAreaProps extends React.HTMLAttributes<HTMLTextAreaElement> {
-  ref: any
+interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  ref?: any
 }
 
 const TextArea: React.FC<TextAreaProps> = (props) => {

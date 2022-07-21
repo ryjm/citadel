@@ -51,6 +51,7 @@ export interface EditorProps {
   editorRef: any
   text: string,
   setText: (inputText: string) => void
+  selected: boolean
   isContract?: boolean
   isTest?: boolean
 }
@@ -59,6 +60,7 @@ export const Editor = ({
   editorRef,
   text,
   setText,
+  selected,
   isContract = false,
   isTest = false,
 }: EditorProps) => {
@@ -109,7 +111,11 @@ export const Editor = ({
 
   return (
     <CodeEditor
+<<<<<<< Updated upstream
       className={`editor ${isTest ? 'test' : ''}`}
+=======
+      className={`editor ${isTest ? 'test' : ''} ${!selected ? 'hidden' : ''}`}
+>>>>>>> Stashed changes
       value={text}
       options={options}
       onBeforeChange={textChange}
