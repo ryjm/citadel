@@ -1,92 +1,85 @@
 |%
-+$  kind  ::  $type subset for printing
-  $@  %noun
-  $%  [%cell p=kind q=kind]
-      [%atom p=@tas q=(unit @)]
-      [%face p=@tas q=kind]
-      [%fork p=(set type)]
-      [%hold p=type q=hoon]
-  ==
+::
 ++  en-vase
   |=  [typ=type arg=*]
   ^-  json
   ?-    typ
       %void  !!
-      %noun      (en-noun arg)
+      %noun  (en-noun arg)
+    ::
       [%atom *]  (en-dime p.typ ;;(@ arg))
+    ::
       [%cell *]
     =/  hed=json  $(typ p.typ, arg -.arg)
     =/  tal=json  $(typ q.typ, arg +.arg)
-    ::  unify objects (tuples with faces)
     ::
     ?:  ?&  !!?=([%o ^] hed)
             !!?=([%o ^] tal)
         ==
       [%o (~(uni by ?>(?=(%o -.hed) p.hed)) ?>(?=(%o -.tal) p.tal))]
-    ::  unify arrays into a tuple
     ::
     ?:  ?=([%a *] tal)
       [%a hed p.tal]
-    ::  simple cell
+    ::
+    ::  unit
+    ?~  hed  tal
     ::
     [%a hed tal ~]
-  ::
+    ::
       [%core *]  !!
+    ::
       [%face *]  [%o (malt `(list [@t json])`[;;(@t p.typ) $(typ q.typ)]~)]
+    ::
       [%fork *]
-    =/  tyz  (turn ~(tap in p.typ) peel)  ::  unwrap each fork
-    =.  tyz                               ::  flatten fork of forks
+    =/  tyz=(list type)  (turn ~(tap in p.typ) peel)
+    =.  tyz
       %-  zing
       %+  turn  tyz
       |=  tep=type
       ^-  (list type)
-      ?:(?=(%fork -.tep) ~(tap in p.tep) [tep]~)
-    ::~&  fork/(turn tyz kind)
-    ::  unwrap single-case fork
+      ?:(?=(%fork -.tep) ~(tap in p.tep) ~[tep])
     ::
     ?:  =(1 (lent tyz))
       $(typ (head tyz))
     ::  $?
     ::
-    ?:  (levy tyz |=(t=type ?=(%atom -.t)))
+    ?:  (levy tyz |=([t=type] ?=(%atom -.t)))
       =/  aura
+      ::
         =/  hid  (head tyz)
         ?>(?=([%atom @ *] hid) p.hid)
-      ?>  (levy tyz |=(t=type ?>(?=([%atom * *] t) =(aura p.t))))
+      ?>  (levy tyz |=([t=type] ?>(?=([%atom * *] t) =(aura p.t))))
       (en-dime aura ;;(@ arg))
     ::  $%
     ::
-    ?:  (levy tyz |=(t=type ?=([%cell [%atom * ^] *] t)))
+    ?:  (levy tyz |=([t=type] ?=([%cell [%atom * ^] *] t)))
       =/  aura
         =/  hid  (head tyz)
         ?>(?=([%cell [%atom @ ^] *] hid) p.p.hid)
       ::
+      =/  hid  (head tyz)
       =/  val  ;;(@ -.arg)
       ?>  ((sane aura) val)
+      ::
       =/  tag  ?:(?=(?(%t %ta %tas) aura) val (scot aura val))
       =/  tin=type
-        |-  ^-  type
+        |-
+        ^-  type
         ?~  tyz  !!
-        ?>  ?=([%cell [%atom @ ^] *] i.tyz)
-        =/  tug   u.q.p.i.tyz
-        ?:  =(val tug)
-          q.i.tyz
+        =/  ty=type  i.tyz
+        ?>  ?=([%cell [%atom @ ^] *] ty)
+        ?:  =(val u.q.p.ty)  q.ty
         $(tyz t.tyz)
-      ::
-      :-  %o
-      %-  malt  ^-  (list [@t json])
-      :~  [%tag s/tag]
-          [%val $(typ tin, arg +.arg)]
-      ==
+      %+  frond:enjs:format  tag  $(typ tin, arg +.arg)
     ::  non-$% fork of cells
     ::
-    ?:  (levy tyz |=(t=type ?=([%cell *] t)))
+    ?:  (levy tyz |=([t=type] ?=([%cell *] t)))
       ~|  cell-fork/tyz
-      !!
+      ~!  tyz  !!
     ::  $@
     ::
     =/  [atoms=(list type) cells=(list type)]
-      (skid tyz |=(t=type ?=(%atom -.t)))
+      (skid tyz |=([t=type] ?=(%atom -.t)))
     ?@  arg
       $(p.typ (sy atoms))
     $(p.typ (sy cells))
@@ -94,66 +87,80 @@
       [%hint *]  $(typ q.typ)
       [%hold *]  $(typ (~(play ut p.typ) q.typ))
   ==
-::  +peel: recursively unwrap type (note: doesn't unwrap forks)
+::  +peel: recursively unwrap type
 ::
 ++  peel
-  |=  typ=type
+  |=  [typ=type]
+  =|  [cos=(unit term)]
   ^-  type
+  |-   =*  loop  $
   ?+  typ  typ
+    [%atom *]  ?~  cos  typ  ;;(type [%face u.cos typ])
+    ::
     %void      !!
-    [%cell *]  [%cell $(typ p.typ) $(typ q.typ)]
-    [%face *]  $(typ q.typ)
-    [%hint *]  $(typ q.typ)
-    [%hold *]  $(typ (~(play ut p.typ) q.typ))
+    ::
+    [%cell *]
+      ?^  cos
+        =/  coll  [%cell loop(typ p.typ) loop(typ q.typ)]
+        ;;(type [%face u.cos coll])
+      [%cell loop(typ p.typ) loop(typ q.typ)]
+    ::
+    [%face *]
+      ?~  cos  q.typ
+      ?:  =(-.q.typ %hold)  loop(typ q.typ)
+      loop(typ q.typ, cos ~)
+    ::
+    [%hint *]
+      =/  =note  q.p.typ
+      ?+    -.note  loop(typ q.typ)
+          %made
+            ?^  q.note  loop(typ q.typ)
+            loop(typ q.typ, cos `p.note)
+      ==
+    ::
+    [%hold *]  loop(typ (~(play ut p.typ) q.typ))
   ==
 ::
 ++  en-noun
   |=  arg=*
   ^-  json
-  ?@  arg
-    (en-dime %$ arg)
-  [%a ~[$(arg -.arg) $(arg +.arg)]]
+   ?@  arg
+     %+  frond:enjs:format  ;;(@t arg)  ~
+   [%a ~[$(arg -.arg) $(arg +.arg)]]
 ::
 ++  en-dime
   |=  [aura=@tas dat=@]
   ^-  json
   ?+    aura  $(aura %ud)
-      %c
-    !!
+      %c  !!
   ::
-      %da
-    !!
+      %$  $(aura %ui)
   ::
-      %dr
-    !!
+      %da  [%s (scot %da dat)]
+  ::
+      %dr  [%s (scot %dr dat)]
   ::
       %f  [%b ;;(? dat)]
+  ::
       %n  ~
+  ::
       %p  [%s (scot %p dat)]
+  ::
       %q  [%s (scot %q dat)]
   ::
-      ?(%rh %rq %rd %rs)
-    !!
+      ?(%rh %rq %rd %rs)  [%s (scot %rs dat)]
   ::
-      %s
-    !!
+      %s  [%s dat]
   ::
-      ?(%t %ta %tas)  [%s dat]
-      %ub
-    !!
+     ?(%t %ta %tas)  [%s dat]
   ::
-      %uc
-    !!
+     ?(%ub %uc)  (numb:enjs:format dat)
   ::
-      ?(%ud %ui)  [%n `@t`(rsh [3 2] (scot %ui dat))]
-      %ux
-    !!
+     %ux  [%s (scot %ux dat)]
+     %uv  [%s (scot %uv dat)]
   ::
-      %uv
-    !!
-  ::
-      %uw
-    !!
-  ::
+     %ui  [%n `@t`(rsh [3 2] (scot %ui dat))]
+     %ud  [%n `@t`(rsh [3 2] (scot %ud dat))]
   ==
+
 --

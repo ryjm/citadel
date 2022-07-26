@@ -1,28 +1,47 @@
+::  * imports
 /-  *citadel, docket, *treaty
-/+  *zig-mill, smart=zig-sys-smart, default-agent, dbug, agentio, *citadel
+/+  *zig-mill, smart=zig-sys-smart, default-agent, dbug, agentio, *citadel, server, verb
 /*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
 !:
+::  * types
 |%
-+$  card  card:agent:gall
-+$  cards  (list card)
-::  colonies - dependencies for desk
+
+::  ** state
 ::
-+$  state-0  [%0 colonies=(map desk outpost)]
+ +$  state-0  [%0 colonies=(map desk outpost)]
 ::
+ +$  state-1
+   $:  %1
+       colonies=(map desk outpost)
+       projects=(map desk (set deed))
+   ==
+::
+::  **  project types
+::
++$  mode  ?(%view %edit)
 --
 ::
+
+::  * agent
+::
+%+  verb  |
 %-  agent:dbug
-=|  state-0
+=|  state-1
 =*  state  -
 ^-  agent:gall
 =<
 |_  =bowl:gall
+::
+::  ** aliases
 +*  this  .
     def   ~(. (default-agent this %.n) bowl)
     io    ~(. agentio bowl)
     do    ~(. +> bowl)
     ch    ch:do
     cg    cg:do
+    cc    cc:do
+::
+::  ** on-peek
 ++  on-peek
   |=  =path
   |^  ^-  (unit (unit cage))
@@ -33,18 +52,34 @@
     ``noun+!>(colonies)
   ==
   --
-++  on-init   on-init:def
+::  ** on-init
+++  on-init
+  ^-  (quip card _this)
+  :_  this
+  :~
+    [%pass /eyre %arvo %e %connect [~ /citadel/types] dap.bowl]
+  ==
+::  ** on-save
 ++  on-save   !>(state)
+::  ** on-load
 ++  on-load
   |=  ole=vase
     ^-  (quip card _this)
     ~&  >  [dap.bowl %load-citadel]
-    ~&  >  "installing ~pocwet/docs"
     =/  maybe-old  (mule |.(!<(state-0 ole)))
     =/  old=state-0
       ?:  ?=(%| -.maybe-old)  [%0 *(map desk outpost)]  +.maybe-old
-    =^  cards  state  lore:do
-    [cards this(state old)]
+    =/  new=state-1
+      [%1 colonies.old *(map desk (set deed))]
+    :: TODO install docs elsewhere
+    :: =^  cards  state  lore:do
+    =/  bindings
+      :~
+        [%pass /eyre %arvo %e %connect [~ /citadel/types] dap.bowl]
+        [%pass /citadel/types %agent [our.bowl dap.bowl] %watch /citadel/types]
+      ==
+    [bindings this(state new)]
+::  ** on-poke
 ++  on-poke
     |=  [=mark =vase]
     ^-  (quip card _this)
@@ -53,33 +88,73 @@
           %citadel-action
         =+  !<(poke=action vase)
         (on-action:do poke)
-          %citadel-poke-action
-        =+  !<(poke=poke-action vase)
-        (on-poke-action:do poke)
+          %citadel-action
+        =+  !<(poke=action vase)
+        (on-action:do poke)
+          %handle-http-request
+        =+  !<([eyre-id=@ta =inbound-request:eyre] vase)
+        :_  state
+        %+  give-simple-payload:app:server  eyre-id
+        %+  require-authorization:app:server  inbound-request
+        on-http-request:do
       ==
     [cards this]
+::  ** on-leave
+++  on-leave  on-leave:def
+::  ** on-arvo
+++  on-arvo
+  |=  [=wire =sign-arvo]
+  ^-  (quip card _this)
+  =^  cards  state
+    ?+  wire  (on-arvo:def wire sign-arvo)
+      [%eyre ~]             [~ state]
+    ==
+  [cards this]
+::  ** on-watch
 ++  on-watch
     |=  =path
     ^-  (quip card _this)
     =^  cards  state
       ?+  path  (on-watch:def path)
-        [%citadel-primary *]   (peer-citadel-primary:do t.path)
+        [%http-response *]  [~ state]
+        [%citadel %types *]  [~ state]
+        [%citadel-primary *]  (peer-citadel-primary:do t.path)
       ==
     [cards this]
-++  on-leave  on-leave:def
-++  on-agent  on-agent:def
-++  on-arvo   on-arvo:def
+::  ** on-agent
+++  on-agent
+    |=  [=wire =sign:agent:gall]
+    |^  ^-  (quip card _this)
+    ?+    -.sign  (on-agent:def wire sign)
+        %kick  `this
+        %fact
+      ?+    wire  (on-agent:def wire sign)
+         [%citadel %types ~]
+           ~&  >>  %citadel-wire
+           ~&  >>  [%citadel-type !<(json q.cage.sign)]
+           `this
+        ==
+      ==
+   --
+::  ** on-fail
 ++  on-fail   on-fail:def
 --
+::  * helper cores
 |_  =bowl:gall
+::  ** io
 ++  io    ~(. agentio bowl)
+::  ** passing
 ++  pass  pass:io
+::  ** docket
 ++  cg
   |%
+::  *** docket-install
   ++  docket-install
     |=([her=ship there=desk] docket-install+!>([her there]))
+::  *** ally-update
   ++  ally-update      |=(=update:ally ally-update-0+!>(update))
   --
+::  ** docket
 ++  ch
   |_  =desk
   ++  pass  |=(=wire ~(. ^pass [%citadel desk wire]))
@@ -90,8 +165,10 @@
     |=  [=ship remote=^desk]
     (poke-our:(pass /docket-install) %docket (docket-install:cg ship remote))
   --
+::  ** contract
 ++  zh
   |_  [code=@t mesk=(unit [desk path])]
+::  *** make-wheat
   ++  make-wheat
     ^-  [cards wheat:smart]
     ~&  >>  "in make-wheat"
@@ -106,10 +183,9 @@
     =/  [raw=(list [face=term =path]) contract-hoon=hoon]
       (parse-pile (trip contract-text))
     ~&  >>  "made raw: {<(lent raw)>}"
-    =/  =cards
-      (~(cite play [bowl desk]) desk pax [%hoon [[%atom %t ~] code]])
+    =/  =cards  (~(hite play bowl desk) pax contract-text)
     ~&  >>  "made cards: {<(lent cards)>}"
-    :: ~!  smart-lib-noun  
+    :: ~!  smart-lib-noun
     :: =/  smart-lib=vase  ;;(vase (cue q.q.smart-lib-noun))
     =/  smart-txt  .^(@t %cx /(scot %p our.bowl)/zig/(scot %da now.bowl)/lib/zig/sys/smart/hoon)
     =/  hoon-txt  .^(@t %cx /(scot %p our.bowl)/zig/(scot %da now.bowl)/lib/zig/sys/hoon/hoon)
@@ -149,6 +225,7 @@
         :-    %|         ::  germ
           wheat
     ==
+::  *** test contract
   ++  test-contract
     |=  =wheat:smart
     =/  yok=yolk:smart
@@ -210,6 +287,7 @@
     $:  raw=(list [face=term =path])
         =hoon
     ==
+::  *** parsers
   ++  parse-pile
     |=  tex=tape
     ^-  small-pile
@@ -244,26 +322,102 @@
     %+  mast  gap
     ;~(pfix fas bus gap fel)
   --
+::  ** mold responses
+++  cc
+  |%
+  ++  peer-types  !!
+  --
+::  **  project
+++  pc
+  |%
+::  *** clay work
+  ++  work
+  |_  [bowl:gall =mode =beam]
+::  *** utilities
+  ++  arch  ~+  .^(^arch %cy rend)
+  ++  tree  ~+  .^((list path) %ct rend)
+  ++  cass  ~+  .^(cass:clay %cw rend)
+  ++  last  ~+  ud:.^(cass:clay %cw rend(r.beam da+now))
+  ++  rend  ~+  (en-beam beam)
+  ::
+  ++  have  ?=(^ [fil:arch])
+  ++  peak  ?=(~ s.beam)
+  ::
+::  **** file tree
+  ++  free
+    %+  turn  (sort ~(tap in ~(key by dir:arch)) aor)
+    |=  k=@ta
+    ^-  [dir=? path]
+    =+  naf=(snoc s.beam k)
+    =+  arf=arch(s.beam naf)
+    ?^  fil.arf              [| /[k]]
+    ?.  ?=([^ ~ ~] dir.arf)  [& /[k]]
+    =+  dep=$(s.beam naf, k p.n.dir.arf)
+    [-.dep k +.dep]
+  ::
+::  **** paths
+  ++  sput  ~+  (spud dap mode spot)
+  ++  spot  ~+
+    ^-  path
+    =+  ?:(=(da+now r.beam) rend(r.beam tas+%now) rend)
+    ?.  =(p.beam our)  -
+    [%our (slag 1 -)]
+::
+::  **** file viewing
+  ++  show  ~+
+    ^-  (unit mime)
+    ~|  %shouldnt-have-shown
+    ?.  ?=(^ [fil:arch])  ~
+    =/  =mark  (rear s.beam)
+    ?:  =(%mime mark)  `.^(mime %cx rend)
+    =;  =tube:clay
+      `!<(mime (tube .^(vase %cr rend)))
+    .^(tube:clay %cc rend(r.beam da+now, s.beam /[mark]/mime))
+  ::
+  ::
+  ++  down
+    |=  request:http
+    ^-  simple-payload:http
+    ?.  ?=(%'GET' method)  deny
+    =+  m=show
+    ?~  m  miss
+    :_  `q.u.m
+    [200 ['content-type'^(en-mite:mimes:html p.u.m)]~]
+  ::
+
+  ++  deny  [[405 ~] `(as-octs:mimes:html 'method not allow')]
+  ++  miss  [[404 ~] `(as-octs:mimes:html 'file not found')]
+  ++  wack  [[400 ~] `(as-octs:mimes:html 'invalid request')]
+  ::
+  --  --
+::  * handlers
+::  ** on-action
 ++  on-action
   |=  =action
   ^-  (quip card _state)
   ?-    -.action
       %desk  (on-desk action)
       %diagram  (on-diagram action)
+      %run  (on-run action)
+      %save  (on-save action)
   ==
-::
-++  on-poke-action
-  |=  =poke-action
-  ^-  (quip card _state)
-  ?-    -.poke-action
-      %run  (on-run poke-action)
+::  ** on-http-request
+++  on-http-request
+  |=  =inbound-request:eyre
+  ^-  simple-payload:http
+  =+  request-line=(parse-request-line:server url.request.inbound-request)
+  ?+    request-line  not-found:gen:server
+      [[[~ %json] [%citadel %types ~]] ~]
+    %-  json-response:gen:server
+    *json
   ==
-::
+::  ** on-desk
 ++  on-desk
   |=  =action
   ^-  (quip card _state)
+  ~!  action
   ?>  ?=(%desk -.action)
-  =/  desk  name.action
+  =/  =desk  name.action
   =/  bek  byk.bowl
   =+  %-  my
     :~  :-  from.action
@@ -275,7 +429,7 @@
     :^  %pass  /citadel/desk/[desk]  %arvo
     (~(scop play [bowl desk]) from.action [- ~])
   ==
-::
+::  ** on-diagram
 ++  on-diagram
   |=  =action
   ^-  (quip card _state)
@@ -285,23 +439,56 @@
   :: TODO specify dependency desk in outpost
   :_  state(colonies (~(put by colonies) desk outpost))
   [card ~]
-::
-++  on-run
-  |=  =poke-action
+::  ** on-save
+++  on-save
+  |=  =action
   ^-  (quip card _state)
-  ?>  ?=(%run -.poke-action)
-  ~&  >>  poke-action
-  ?-    arena.poke-action
+  ?>  ?=(%save -.action)
+  =/  dummy-json=json  .^(json cx+(en-beam byk.bowl /dummy/json))
+  =/  dummy-card=card
+    [%give %fact ~[/citadel/types] %json !>(dummy-json)]
+  =/  cards  (~(gite play [bowl q.byk.bowl]) deeds.survey.action)
+  =/  deeds=(list deed)  deeds.survey.action
+  =|  updated=(map desk (set deed))
+  |-
+  =|  stad=(set deed)
+  ?~  deeds
+    :_  state(projects updated)
+    [dummy-card (flop cards)]
+  =/  project  (fall project.scroll.i.deeds q.byk.bowl)
+  =+  (~(get by projects.state) project)
+  =?  stad  =(^ -)  ->
+  =^  new-desk  state
+    ?~  stad  (on-action [%diagram `%citadel [project [%doc ~]] project])  [~ state]
+  %=    $
+      cards  (weld cards new-desk)
+      state  state
+      deeds  t.deeds
+      updated
+    %+  ~(put by projects.state)  project
+    (~(put in stad) i.deeds)
+  ==
+::
+::  *** TODO update project state
+::  add the saved deeds to the corresponding project(s) in the `project` map. should
+::  it update any desk files that are not in the project state yet? needs to account
+::  for dependencies?
+
+::  ** on-run
+++  on-run
+  |=  =action
+  ^-  (quip card _state)
+  ?>  ?=(%run -.action)
+  ~&  >>  action
+  ?-    -.survey.action
       %contract
-    ~&  >>  "in contract"
     ~&  >>  "making wheat"
-    =/  [=cards =wheat:smart]  ~(make-wheat zh code.survey.poke-action ~)
+    =/  [=cards =wheat:smart]  ~(make-wheat zh charter.survey.action ~)
     ~&  >>  "made wheat: {<wheat>}"
     [cards state]
       %gall
-    ~&  >>  "in gall"
-    =/  zest  ~(test-contract zh code.survey.poke-action ~)
-    =/  [=cards =wheat:smart]  ~(make-wheat zh code.survey.poke-action ~)
+    =/  zest  ~(test-contract zh charter.survey.action ~)
+    =/  [=cards =wheat:smart]  ~(make-wheat zh charter.survey.action ~)
     ~&  >>  "made wheat: {<owns.wheat>}"
     =/  res
       %-  road  |.
@@ -311,7 +498,7 @@
     ::~&  >  "zesting results: {<res>}"
     [cards state]
   ==
-::
+::  * utils
 ++  make-diagram
   |=  [=gram =desk from=(unit desk)]
   ^-  [outpost card]
@@ -361,7 +548,6 @@
     ==
   ~&  >>  "docs installed"
   ~
-::
 ++  peer-citadel-primary
   |=  wir=wire
   ^-  (quip card _state)
@@ -370,4 +556,3 @@
     [%give %kick ~ ~]~
   [~ state]
 --
-::

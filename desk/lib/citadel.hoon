@@ -1,23 +1,24 @@
-/-  citadel
+/-  *citadel
 =,  clay
 |%
+::  * desk/diagram composition
 ::    +fose
 ::
 ++  fose
-  |=  [=desk init=outpost:citadel rest=(list path)]
-  ^-  outpost:citadel
+  |=  [=desk init=outpost rest=(list path)]
+  ^-  outpost
   ~!  desk
   %+  ~(jab by init)  desk  (cury welp rest)
 ::    +fuse
 ::
 ++  fuse
-  |=  [init=outpost:citadel rest=outpost:citadel]
-  ^-  outpost:citadel
+  |=  [init=outpost rest=outpost]
+  ^-  outpost
   %-  (~(uno by init) rest)  |=([=desk a=(list path) b=(list path)] (welp a b))
 :: +foundation - bare minimum
 ::
 ++  foundation
-  ^-  outpost:citadel
+  ^-  outpost
   %-  my
   :~  :-  %base
   :~  /mar/noun/hoon
@@ -29,7 +30,7 @@
 ::  +soil - fertilized
 ::
 ++  soil
-  ^-  outpost:citadel
+  ^-  outpost
   %-  my
   :~  :-  %garden
   :~  /mar/docket-0/hoon
@@ -39,7 +40,7 @@
 ::  +pillar - agent and garden desiderata
 ::
 ++  pillar
-  ^-  outpost:citadel
+  ^-  outpost
   %+  fuse  soil
   %+  fuse  press
   %^  fose  %base  foundation
@@ -56,7 +57,7 @@
 ::  +cellar - threads
 ::
 ++  cellar
-  ^-  outpost:citadel
+  ^-  outpost
   %^  fose  %base  foundation
   :~  /sur/spider/hoon
       /lib/strandio/hoon
@@ -65,7 +66,7 @@
 ::  +seals - scroll marks
 ::
 ++  seals
-  ^-  outpost:citadel
+  ^-  outpost
   %-  my
   :~  :-  %docs
   :~  /mar/udon/hoon
@@ -77,7 +78,7 @@
 ::
 ++  press
 
-  ^-  outpost:citadel
+  ^-  outpost
   %-  my
   :~  :-  %base
   :~  /sur/plum/hoon
@@ -92,14 +93,14 @@
 ::  +cutlery - metadata
 ::
 ++  cutlery
-  ^-  atelier:citadel
+  ^-  atelier
   :~  /dia/bas/desk/docket-0
       /dia/bas/desk/bill
   ==
 ::  +scrolls - ~pocwet/docs materials
 ::
 ++  scrolls
-  ^-  atelier:citadel
+  ^-  atelier
   :~  /dia/docs/doc/dev/agent-1/udon
       /dia/docs/doc/dev/agent-2/udon
       /dia/docs/doc/dev/basic/udon
@@ -109,94 +110,130 @@
   ==
 ::  +mansion - all requisites
 ::
-++  mansion  ^-  grounds:citadel  [pillar cutlery]
+++  mansion  ^-  grounds  [pillar cutlery]
 ::
 ::    complete diagrams
 ::
 ::  +butlers - agent examples
 ::
 ++  butlers
-  ^-  grounds:citadel
+  ^-  grounds
   %^  build-estate  &  ~
   :~  /dia/ent/app/ent/hoon
   ==
 ::  +valet - cli examples
 ::
 ++  valet
-  ^-  grounds:citadel
+  ^-  grounds
   %^  build-estate  &  ~
   :~  /dia/cli/app/cli/hoon
   ==
 ::  +crier - hello world examples
 ::
 ++  crier
-  ^-  grounds:citadel
+  ^-  grounds
   %^  build-estate  &  ~
   :~  /dia/hel/app/hel/hoon
   ==
 ::  +library - docs
 ::
 ++  library
-  ^-  grounds:citadel
+  ^-  grounds
   %^  build-estate  &  `seals
   scrolls
 ::  +frontage - apps with agent and frontend
 ::
 ++  frontage
-  ^-  grounds:citadel
+  ^-  grounds
   mansion
 ::  +circuitry - thread examples
 ::
 ++  circuitry
-  ^-  grounds:citadel
+  ^-  grounds
     :-  foundation
     :~  /dia/ted/ted/hi/hoon
     ==
 ::  +turbines - generator examples
 ::
 ++  turbines
-  ^-  grounds:citadel
+  ^-  grounds
   :-  foundation
   :~  /dia/gen/app/gen/hoon
   ==
 ::    +build-estate
 ::  raises the roof
 ++  build-estate
-  |=  [lor=? mout=(unit outpost:citadel) =atelier:citadel]
-  ^-  grounds:citadel
+  |=  [lor=? mout=(unit outpost) =atelier]
+  ^-  grounds
   =+  ?~  mout  outpost:mansion
     (fuse outpost:mansion u.mout)
   :-  ?:  lor  (fuse seals -)
     -
   (welp atelier:mansion atelier)
+::  * clay utils
 ::
 ::  clay utilities
 ::
+::  ** file motion
 ++  play
   |_  [=bowl:gall =desk]
+::  *** write
+::  **** cite
     ::    +cite
     ::
     ::  write file to desk.
     ++  cite
-      |=  [dusk=^desk =path data=cage]
-      =-  [%pass /write/citadel %arvo %c %info -]~
-      =/  fath=^path  (weld /(scot %p our.bowl)/[dusk]/(scot %da now.bowl) path)
-      %+  foal:space:userlib
-        fath
-      data
+      |=  [=path data=cage]
+      ^-  cards
+      =*  bek  byk.bowl
+      ~&  >>  "saving to {<desk>} at {<path>}"
+      =/  desks  .^((set ^desk) %cd (en-beam bek /))
+      ~|  "failed write to {<desk>}"
+      ?<  (~(has in desks) desk)
+      =-  [%pass /citadel/write %arvo %c %info -]~
+      =/  fath=^path  (weld /(scot %p our.bowl)/[desk]/(scot %da now.bowl) path)
+      ~&  >>  "saved to {<desk>} at {<path>}"
+      (foal:space:userlib fath data)
+::  **** hite
+    ::    +hite
+    ::
+    ::  write text as hoon to desk.
+    ++  hite
+      |=  [=path txt=@t]
+      ^-  cards
+      =-  (cite path -)
+      [%hoon [[%atom %t ~] txt]]
+::  **** gite
+    ::    +gite
+    ::
+    ::  write deeds
+    ++  gite
+      |=  deeds=(list deed)
+      ^-  cards
+      %-  zing
+      %+  turn  deeds
+      |=  =deed
+      ^-  cards
+      =,  scroll.deed
+      ?<  =(~ text)
+      =.  desk  ?.  =(~ project)  +.project  desk
+      (hite (weld /(scot %tas -.deed) path) +.text)
+    ::
+::  **** smart-lib copy
     ::    +zuck
     ::
     ::  copies smart-lib from a ziggurat desk.
     ++  zuck
-      |^  
-      ~|  "citadel: missing smart-lib in {<desk>}"
-      (cite %citadel /lib/zig/compiled/smart-lib/noun [%noun !>((need smar))])
+      |=  dusk=^desk
+      |^  ~|  "citadel: missing smart-lib in {<desk>}"
+      (cite /lib/zig/compiled/smart-lib/noun [%noun !>((need smar))])
       ::      
       ++  smar
         ^-  (unit *)
         %-  file:space:userlib
-        /(scot %p our.bowl)/[desk]/(scot %da now.bowl)/lib/zig/compiled/smart-lib/noun
+        /(scot %p our.bowl)/[dusk]/(scot %da now.bowl)/lib/zig/compiled/smart-lib/noun
       --
+::  ** from desk
     ::    +scop: init desk from files in another desk.
     ::
     ::  grounds - user and dependency files to seed the desk with.
@@ -206,7 +243,7 @@
     ::
     ++  scop
       |=  $:  from=^desk
-              =grounds:citadel
+              =grounds
           ==
       =/  bek  byk.bowl
       =/  desks  .^((set ^desk) %cd (en-beam bek(q from) /))
