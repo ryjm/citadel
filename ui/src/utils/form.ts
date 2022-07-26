@@ -2,7 +2,6 @@ import { TestAction, TestActionValue } from "../types/TestAction"
 import { Test } from "../types/TestData"
 import { TestGrain, TestRice, TestRiceValue } from "../types/TestGrain"
 import { UqbarType } from "../types/UqbarType"
-import { getHoonDate } from "./date"
 import { removeDots } from "./format"
 
 const GRAIN_FORM_VALUES_COMMON: { [key: string]: any } = {
@@ -38,7 +37,7 @@ export interface FormField { value: string, type: UqbarType }
 export const generateFormValues = (type: 'grain' | 'test', data: TestRice | TestAction, edit?: Test | TestGrain): { [key: string]: FormField } => {
   // TODO: populate the fields with the values from "edit" arg
   const allFields = type === 'grain' ? { ...GRAIN_FORM_VALUES_COMMON, ...data } : { ...TEST_FORM_VALUES_COMMON, ...data }
-  Object.keys(allFields).forEach((key) => allFields[key] = { type: allFields[key], value: edit ? findValue(edit, key) : '' })
+  Object.keys(allFields).forEach((key) => allFields[key] = { type: allFields[key], value: edit ? findValue(edit, key) : allFields[key].includes('%grain') ? [] : '' })
   return allFields
 }
 
@@ -47,19 +46,16 @@ export const testFromForm = (testFormValues: { [key: string]: FormField }, actio
     cart: {
       me: testFormValues.me.value,
       from: testFormValues.from.value,
-      now: getHoonDate(new Date()), // '~2022.2.8..16.48.20..b53a'
+      batch: 0,
       'town-id': testFormValues['town-id'].value,
-      owns: []
-    },
-    embryo: {
-      action: Object.keys(testFormValues).reduce((acc, key) => {
-        if (!Object.keys(TEST_FORM_VALUES_COMMON).includes(key)) {
-          acc[key] = testFormValues[key].value as TestActionValue
-        }
-        return acc
-      }, { type: actionType } as TestAction),
       grains: []
-    }
+    },
+    action: Object.keys(testFormValues).reduce((acc, key) => {
+      if (!Object.keys(TEST_FORM_VALUES_COMMON).includes(key)) {
+        acc[key] = testFormValues[key].value as TestActionValue
+      }
+      return acc
+    }, { type: actionType } as TestAction),
   }
 })
 
@@ -118,9 +114,14 @@ export const validateWithType = (type: UqbarType, value: string) => {
 }
 
 export const validate = (type: TypeAnnotation) => (value?: string): boolean => {
+  if (typeof type === 'string' && type.includes('%grain')) {
+    // grains will be handled with drag-and-drop
+    return true
+  }
+
   if (Array.isArray(type)) {
     const [modifier, uType] = type
-    if (modifier === '%unit') {
+     if (modifier === '%unit') {
       if (!value) {
         return true
       } else {
@@ -148,7 +149,7 @@ export const validate = (type: TypeAnnotation) => (value?: string): boolean => {
 export const validateFormValues = (formValues: { [key: string]: FormField }) =>
   Object.keys(formValues).reduce((acc, key) => {
     const { value, type } = formValues[key]
-    const isValid = validate(type)(removeDots(value))
+    const isValid = Array.isArray(value) || validate(type)(removeDots(value))
 
     return acc || (isValid ? '' : `Form Error: ${key} must be of type ${type}`)
   }, '')

@@ -11,8 +11,8 @@ import './NewProjectView.scss'
 import useContractStore from '../store/contractStore';
 import Input from '../components/form/Input';
 
-type CreationStep = 'title' | 'project' | 'token' |  'template'
-export type CreationOption = 'contract' | 'gall' | 'fungible' | 'nft' | 'issue' | 'wrapper' | 'title'
+type CreationStep = 'title' | 'project' | 'token' |  'template' | 'tokenName'
+export type CreationOption = 'contract' | 'gall' | 'fungible' | 'nft' | 'issue' | 'wrapper' | 'title' | 'tokenName'
 
 const NewProjectView = ({ hide = false }: { hide?: boolean }) => {
   const { projects, createProject, setRoute } = useContractStore()
@@ -33,8 +33,17 @@ const NewProjectView = ({ hide = false }: { hide?: boolean }) => {
         setOptions({ ...options, token: option })
         setStep('template')
         break
+      case 'template':
+        if (option === 'issue') {
+          setOptions({ ...options, template: option })
+          setStep('tokenName')
+        } else {
+          createProject({ ...options, template: option })
+          setRoute({ route: 'contract', subRoute: 'main' })
+        }
+        break
       default:
-        createProject({ ...options, template: option })
+        createProject(options as { [key: string]: string })
         setRoute({ route: 'contract', subRoute: 'main' })
         break
     }
@@ -58,6 +67,10 @@ const NewProjectView = ({ hide = false }: { hide?: boolean }) => {
         setOptions({ ...options, token: undefined })
         setStep('token')
         break
+      case 'tokenName':
+        setOptions({ ...options, template: undefined })
+        setStep('template')
+        break
     }
   }, [step, setStep, options, setOptions, setRoute])
 
@@ -70,13 +83,13 @@ const NewProjectView = ({ hide = false }: { hide?: boolean }) => {
       justifyContent: 'center',
     }
 
+    const backButton = <Button style={{ position: 'absolute', left: 0 }} iconOnly onClick={onBack} variant="unstyled" icon={<FaArrowLeft />} />
+
     if (step === 'title') {
       return (
         <>
           <Row style={{ width: '100%', position: 'relative', justifyContent: 'center' }}>
-            {projects.length > 0 && (
-              <Button style={{ position: 'absolute', left: 0 }} iconOnly onClick={onBack} variant="unstyled" icon={<FaArrowLeft />} />
-            )}
+            {projects.length > 0 && backButton}
             <h3>New Project Title:</h3>
           </Row>
           <Input
@@ -94,7 +107,7 @@ const NewProjectView = ({ hide = false }: { hide?: boolean }) => {
       return (
         <>
           <Row style={{ width: '100%', position: 'relative', justifyContent: 'center' }}>
-            <Button style={{ position: 'absolute', left: 0 }} iconOnly onClick={onBack} variant="unstyled" icon={<FaArrowLeft />} />
+            {backButton}
             <h3>Select Your Project Type:</h3>
           </Row>
           <Row style={{ flexWrap: 'wrap', width: '100%', justifyContent: 'space-between', marginTop: 12 }}>
@@ -111,7 +124,7 @@ const NewProjectView = ({ hide = false }: { hide?: boolean }) => {
       return (
         <>
           <Row style={{ width: '100%', position: 'relative', justifyContent: 'center' }}>
-            <Button style={{ position: 'absolute', left: 0 }} iconOnly onClick={onBack} variant="unstyled" icon={<FaArrowLeft />} />
+            {backButton}
             <h3>Select Token Type:</h3>
           </Row>
           <Row style={{ flexWrap: 'wrap', width: '100%', justifyContent: 'space-between', marginTop: 12 }}>
@@ -124,11 +137,11 @@ const NewProjectView = ({ hide = false }: { hide?: boolean }) => {
           </Row>
         </>
       )
-    } else {
+    } else if (step === 'template') {
       return (
         <>
           <Row style={{ width: '100%', position: 'relative', justifyContent: 'center' }}>
-            <Button style={{ position: 'absolute', left: 0 }} iconOnly onClick={onBack} variant="unstyled" icon={<FaArrowLeft />} />
+            {backButton}
             <h3>Select Template Type:</h3>
           </Row>
           <Row style={{ flexWrap: 'wrap', width: '100%', justifyContent: 'space-between', marginTop: 12 }}>
@@ -139,6 +152,24 @@ const NewProjectView = ({ hide = false }: { hide?: boolean }) => {
               Wrapper Logic for Token
             </Button>
           </Row>
+        </>
+      )
+    } else {
+      return (
+        <>
+          <Row style={{ width: '100%', position: 'relative', justifyContent: 'center' }}>
+            {backButton}
+            <h3>Token Name:</h3>
+          </Row>
+          <Input
+            style={{ width: 220 }}
+            onChange={(e) => setOptions({ ...options, tokenName: e.target.value })}
+            value={options.tokenName || ''}
+            placeholder="3-4 characters"
+          />
+          <Button variant='dark' style={{ marginTop: 16, width: 240, justifyContent: 'center' }} onClick={onSelect('tokenName')}>
+            Next
+          </Button>
         </>
       )
     }

@@ -1,9 +1,9 @@
 import create from "zustand"
 import { persist } from "zustand/middleware"
 import api from "../api";
-import { initialMain } from "../code-text/contract/main";
-import { initialTests } from "../code-text/contract/tests";
-import { initialTypes } from "../code-text/contract/types";
+import { initialMain } from "../code-text/contract/fungible/main";
+import { initialTests } from "../code-text/contract/fungible/tests";
+import { initialTypes } from "../code-text/contract/fungible/types";
 import { initialApp } from "../code-text/gall/app";
 import { initialLib } from "../code-text/gall/lib";
 import { initialSur } from "../code-text/gall/sur";
@@ -107,7 +107,22 @@ const useContractStore = create<ContractStore>(persist<ContractStore>(
         await api.poke({
           app: 'citadel',
           mark: 'citadel-poke-action',
-          json: {
+          json:
+          // {
+          //   arena: 'contract',
+          //   groms: [
+          //     {
+          //      dir: 'lib',
+          //      scroll: {
+          //        mext: '/-  citadel',
+          //        musk: 'citadel',
+          //        path: '/scratch/hoon'
+          //      }
+          //     }
+          //   ],
+          //   charter: text.contract_main
+          // }
+          {
             // {\"save\":\{\"gall\":\{\"groms\":null,\"charter\":\"\"}}}
             save: {
               arena: 'contract',
@@ -155,7 +170,8 @@ const useContractStore = create<ContractStore>(persist<ContractStore>(
     },
     updateTest: (newTest: Test) => {
       const { projects, currentProject } = get()
-      set({ projects: projects.map(p => p.title === currentProject ? { ...p, testData: { ...p.testData, tests: p.testData.tests.map((test) => test.input.cart.now === newTest.input.cart.now ? newTest : test) } } : p) })
+      // TODO: change the unique identifier for test to id
+      set({ projects: projects.map(p => p.title === currentProject ? { ...p, testData: { ...p.testData, tests: p.testData.tests.map((test) => test.input.cart.batch === newTest.input.cart.batch ? newTest : test) } } : p) })
     },
     removeTest: (index: number) => {
       const { projects, currentProject } = get()

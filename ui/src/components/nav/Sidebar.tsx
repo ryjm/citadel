@@ -54,7 +54,7 @@ export const Sidebar = () => {
   const isContractRoute = route.route === 'contract'
 
   return (
-    <Col style={{ height: '100%', width: 'calc(100% - 1px)', maxWidth: 239, borderRight: '1px solid black' }}>
+    <Col style={{ height: '100%', width: 'calc(100% - 1px)', maxWidth: 239, minWidth: 209, borderRight: '1px solid black' }}>
       <Col style={{ width: '100%', height: '60%', overflow: 'scroll' }}>
         <Text style={{ fontSize: 16, fontWeight: 600, padding: '16px 24px' }}>PROJECT EXPLORER</Text>
         <Row style={{ padding: '8px 12px' }}>

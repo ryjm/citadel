@@ -22,7 +22,6 @@ const Link: React.FC<LinkProps> = ({
       if (props.onClick) {
         props.onClick(e)
       } else {
-        console.log(route, subRoute)
         setRoute({ route, subRoute })
       }
     }} className={`link ${props.className || ''} ${type} ${underline ? 'underline' : ''}`}>

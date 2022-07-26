@@ -2,41 +2,54 @@ import { TestAction } from "./TestAction"
 import { TestRice } from "./TestGrain"
 
 export const DEV_MOLDS: Molds = {
-  actions: {
-    give: {
-      to: '%id',
-      account: ['%unit', '%id'],
-      amount: '@ud',
-      budget: '@ud'
+  "actions": {
+    "take": {
+      "to": "%id",
+      "amount": "@ud",
+      "from-account": "%grain",
+      "to-account": ["%unit", "%grain"]
     },
-    take: {
-      to: '%id',
-      account: ['%unit', '%id'],
-      'from-account': '%id',
-      amount: '@ud'
+    "set-allowance": {
+      "who": "%id",
+      "amount": "@ud",
+      "account": "%grain"
     },
-    'set-allowance': {
-      who: '%id',
-      amount: '@ud'
+    "give": {
+      "budget": "@ud",
+      "to": "%id",
+      "amount": "@ud",
+      "from-account": "%grain",
+      "to-account": ["%unit", "%grain"]
     }
   },
-  rice: {
-    'token-metadata': {
-      name: '@t',
-      symbol: '@t',
-      decimals: '@ud',
-      supply: '@ud',
-      cap: ['%unit', '@ud'],
-      mintable: '?',
-      minters: ['%set', '%id'],
-      deployer: '%id',  //  will be 0x0
-      salt: '@'
+  "rice": {
+    "token-metadata": {
+      "name": "@t",
+      "salt": "@",
+      "decimals": "@ud",
+      "deployer": "%id",
+      "cap": [
+        "%unit",
+        "@ud"
+      ],
+      "minters": [
+        "%set",
+        "%id"
+      ],
+      "symbol": "@t",
+      "supply": "@ud",
+      "mintable": "?"
     },
-    account: {
-      salt: '@',
-      'metadata-id': '@ux',
-      balance: '@ud',
-      allowances: ['%map', { '[sender, %id]': '@ud' }]
+    "account": {
+      "balance": "@ud",
+      "metadata-id": "@ux",
+      "salt": "@",
+      "allowances": [
+        "%map",
+        {
+          "[sender, %id]": "@ud"
+        }
+      ]
     }
   }
 }

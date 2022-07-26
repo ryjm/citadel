@@ -5,21 +5,19 @@ export const fungibleTokenTestData : TestData = {
     {
       input: {
         cart: {
-          me: "0xbeef",
-          from: "0xbeef",
-          now: "~2022.6.19..18.12.18..1e4",
-          'town-id': "0x1",
-          owns: []
-        },
-        embryo: {
-          action: {
-            type: "give",
-            to: "0xcafe",
-            account: "0xcafe",
-            amount: "100",
-            budget: "10"
-          },
+          me:  "0xcafe",
+          from: "0xcafe",
+          batch: 0,
+          "town-id": "0x1",
           grains: []
+        },
+        action: {
+          type: "give",
+          budget: "10",
+          to: "0xbeef",
+          amount: "100",
+          "from-account": [],
+          "to-account": []
         }
       }
     }

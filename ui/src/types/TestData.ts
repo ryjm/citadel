@@ -6,14 +6,11 @@ export interface Test {
     cart: {
       me: string
       from: string
-      now: string
+      batch: number
       'town-id': string
-      owns: string[]
-    }
-    embryo: {
-      action: TestAction
       grains: string[]
     }
+    action: TestAction
   }
   output?: {
     [key: string]: any

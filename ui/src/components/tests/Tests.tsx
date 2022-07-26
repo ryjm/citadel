@@ -55,7 +55,7 @@ export const TestView = () => {
   }, [molds.actions, setTestFormValues])
 
   const editTest = useCallback((test: Test) => {
-    selectAction(test.input.embryo.action.type, test)
+    selectAction(test.input.action.type, test)
     setShowTestModal(true)
     setEdit(test)
   }, [selectAction, setShowTestModal])
@@ -82,9 +82,13 @@ export const TestView = () => {
     if (isUpdate && edit) {
       const newTest = testFromForm(testFormValues, actionType)
       const oldTest = edit as any
-      newTest.input.cart.owns = oldTest.input.cart.owns
-      newTest.input.cart.now = oldTest.input.cart.now
-      newTest.input.embryo.grains = oldTest.input.embryo.grains
+      newTest.input.cart.grains = oldTest.input.cart.grains
+      newTest.input.cart.batch = oldTest.input.cart.batch
+      Object.keys(oldTest.input.action).forEach(key => {
+        if (testFormValues[key].type.includes('%grain')) {
+          newTest.input.action[key] = oldTest.input.action[key]
+        }
+      })
       updateTest(newTest)
     } else {
       addTest(testFromForm(testFormValues, actionType))
@@ -127,17 +131,25 @@ export const TestView = () => {
         return setGrains(newGrains)
       }
       // if the source is "grains", then add to the destination action or cart as appropriate
-      const [now, iden] = destination.droppableId.split(DROPPABLE_DIVIDER)
-      const test = testData.tests.find((t) => t.input.cart.now === now)
+      const [batch, iden]: string[] = destination.droppableId.split(DROPPABLE_DIVIDER)
+      const test = testData.tests.find((t) => t.input.cart.batch === Number(batch))
       if (test) {
         const newTest = { ...test }
-        if (newTest.input.embryo.action.type === iden) {
-          if (!newTest.input.embryo.grains.find((grain) => grain === testData.grains[source.index].id)) {
-            newTest.input.embryo.grains.push(testData.grains[source.index].id)
+        const field: any = newTest.input.action[iden]
+
+        if (field instanceof Array) {
+          if (!field.find((g: string) => g === testData.grains[source.index].id)) {
+            // replace the grain entirely if the type is not a %set, %list, %map
+            const typeInfo = molds.actions[newTest.input.action.type as string][iden] as (string | string[])
+            if (typeInfo === '%grain' || (typeInfo.includes('%grain') && typeInfo.includes('%unit'))) {
+              newTest.input.action[iden] = [testData.grains[source.index].id]
+            } else {
+              field.push(testData.grains[source.index].id)
+            }
           }
         } else {
-          if (!newTest.input.cart.owns.find((grain) => grain === testData.grains[source.index].id)) {
-            newTest.input.cart.owns.push(testData.grains[source.index].id)
+          if (!newTest.input.cart.grains.find((g) => g === testData.grains[source.index].id)) {
+            newTest.input.cart.grains.push(testData.grains[source.index].id)
           }
         }
         updateTest(newTest)
@@ -146,7 +158,7 @@ export const TestView = () => {
       // if the source is not "grains", then remove from the source action or cart as appropriate
 
     }
-  }, [testData, updateTest, setGrains]);
+  }, [testData, molds, updateTest, setGrains]);
 
   const hideTestModal = () => {
     if (window.confirm('Are you sure you want to discard your changes?')) {
@@ -176,7 +188,7 @@ export const TestView = () => {
             <Row className="title">Tests</Row>
             <Row className="action" onClick={() => setShowTestModal(true)}>+ Add Test</Row>
           </Row>
-          <TestList editTest={editTest} />
+          <TestList editTest={editTest} molds={molds} />
         </Col>
         <Col style={{ height: isMobile ? 600 : '100%', width: isMobile ? '100%' : '50%' }}>
           <Col style={{ height: isMobile ? 400 : '70%', width: '100%', borderLeft: '1px solid lightgray' }}>
@@ -198,6 +210,8 @@ export const TestView = () => {
               ))}
             </Select>
             {Object.keys(testFormValues).map((key) => (
+              testFormValues[key].type.includes('%grain') ? 
+              null :
               <div key={key}>
                 {key === '%id' && <h4 key="cart" style={{ marginBottom: 0 }}>Cart</h4>}
                 <Input

@@ -3,24 +3,20 @@
     "take": {
       "to": "%id",
       "amount": "@ud",
-      "account": [
-        "%unit",
-        "%id"
-      ],
-      "from-account": "%id"
+      "from-account": "%grain",
+      "to-account": ["%unit", "%grain"]
     },
     "set-allowance": {
       "who": "%id",
-      "amount": "@ud"
+      "amount": "@ud",
+      "account": "%grain"
     },
     "give": {
       "budget": "@ud",
       "to": "%id",
       "amount": "@ud",
-      "account": [
-        "%unit",
-        "%id"
-      ]
+      "from-account": "%grain",
+      "to-account": ["%unit", "%grain"]
     }
   },
   "rice": {

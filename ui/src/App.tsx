@@ -19,10 +19,10 @@ function App() {
       <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Col style={{ width: '100%', height: '100%' }}>
         <Row style={{ height: '100%', width: '100%' }}>
-          <Col style={{ height: '100%', width: '20%', maxWidth: 240 }}>
+          <Col style={{ height: '100%', width: '20%', maxWidth: 240, minWidth: 210 }}>
             <Sidebar />
           </Col>
-          <Col style={ {minWidth: '80%', width: 'calc(100% - 240px)', height: '100%', position: 'relative' }}>
+          <Col style={{ minWidth: 'calc(100% - 240px)', width: '80%', maxWidth: 'calc(100% - 210px)', height: '100%', position: 'relative' }}>
             <Routes>
               <Route path="/" element={<MainView />} />
               {/* <Route path="/" element={<EditorView />} />
