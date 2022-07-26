@@ -102,37 +102,19 @@ const useContractStore = create<ContractStore>(persist<ContractStore>(
       console.log(1, 'saving')
       const { text } = get().projects.find(p => p.title === get().currentProject) || { text: null }
       console.log(2, text)
-      if (text) {
-        console.log(3, 'poking')
-        await api.poke({
+      if (text !== null) {
+      await api.poke({
           app: 'citadel',
-          mark: 'citadel-poke-action',
-          json:
-          // {
-          //   arena: 'contract',
-          //   groms: [
-          //     {
-          //      dir: 'lib',
-          //      scroll: {
-          //        mext: '/-  citadel',
-          //        musk: 'citadel',
-          //        path: '/scratch/hoon'
-          //      }
-          //     }
-          //   ],
-          //   charter: text.contract_main
-          // }
-          {
+          mark: 'citadel-action',
+          json: {
             // {\"save\":\{\"gall\":\{\"groms\":null,\"charter\":\"\"}}}
             save: {
               arena: 'contract',
-              // groms: ['lib', {mext: 'libtext', musk: 'project-name', path: 'lib/hoon'}],
-              groms: [],
-              charter: text.contract_main,
+              deeds: [{dir: 'lib', scroll: {text: 'libtext', project: 'project-name', path: '/lib/hoon'}}],
+              charter: text.contract_main
             }
           }
         })
-        console.log(4)
       }
     },
     submitTest: async (isContract: boolean) => {
