@@ -1,6 +1,6 @@
 ::  * imports
 /-  *citadel, docket, *treaty
-/+  *zig-mill, smart=zig-sys-smart, default-agent, dbug, agentio, *citadel, server, verb
+/+  *zig-mill, smart=zig-sys-smart, default-agent, dbug, agentio, *citadel, server, verb, etch
 /*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
 !:
 ::  * types
@@ -15,6 +15,10 @@
        colonies=(map desk outpost)
        projects=(map desk (set deed))
    ==
+ +$  versioned-state
+  $%  state-0
+      state-1
+  ==
 ::
 ::  **  project types
 ::
@@ -50,6 +54,12 @@
     ``noun+!>((~(get by colonies) i.t.t.path))
       [%x %colonies ~]
     ``noun+!>(colonies)
+      [%x %projects ~]
+    ``noun+!>(projects)
+      [%x %projects-json ~]
+    ``json+!>((en-vase:etch !>(projects.state)))
+      [%x %project * ~]
+    ``noun+!>((~(get by projects) i.t.t.path))
   ==
   --
 ::  ** on-init
@@ -58,6 +68,7 @@
   :_  this
   :~
     [%pass /eyre %arvo %e %connect [~ /citadel/types] dap.bowl]
+    [%pass /eyre %arvo %e %connect [~ /citadel] dap.bowl]
   ==
 ::  ** on-save
 ++  on-save   !>(state)
@@ -66,16 +77,20 @@
   |=  ole=vase
     ^-  (quip card _this)
     ~&  >  [dap.bowl %load-citadel]
-    =/  maybe-old  (mule |.(!<(state-0 ole)))
-    =/  old=state-0
-      ?:  ?=(%| -.maybe-old)  [%0 *(map desk outpost)]  +.maybe-old
+    =/  maybe-old  (mule |.(!<(versioned-state ole)))
+    =/  old=versioned-state
+      ?:  ?=(%| -.maybe-old)  !<(versioned-state ole)  +.maybe-old
     =/  new=state-1
-      [%1 colonies.old *(map desk (set deed))]
+    ?-  -.old
+      %0  [%1 colonies.old *(map desk (set deed))]
+      %1  old
+    ==
     :: TODO install docs elsewhere
     :: =^  cards  state  lore:do
     =/  bindings
       :~
         [%pass /eyre %arvo %e %connect [~ /citadel/types] dap.bowl]
+        [%pass /eyre %arvo %e %connect [~ /citadel] dap.bowl]
         [%pass /citadel/types %agent [our.bowl dap.bowl] %watch /citadel/types]
       ==
     [bindings this(state new)]
@@ -400,6 +415,7 @@
       %diagram  (on-diagram action)
       %run  (on-run action)
       %save  (on-save action)
+      %delete  (on-delete action)
   ==
 ::  ** on-http-request
 ++  on-http-request
@@ -410,6 +426,10 @@
       [[[~ %json] [%citadel %types ~]] ~]
     %-  json-response:gen:server
     *json
+    [[[~ %json] [%citadel %projects ~]] ~]
+    %-  json-response:gen:server
+    =-  ~&  >  [%here -]  -
+    %-  en-vase:etch  !>(projects.state)
   ==
 ::  ** on-desk
 ++  on-desk
@@ -437,7 +457,7 @@
   =/  desk  name.action
   =/  [=outpost =card]  (make-diagram gram.action desk furm.action)
   :: TODO specify dependency desk in outpost
-  :_  state(colonies (~(put by colonies) desk outpost))
+  :_  state(colonies (~(put by colonies) desk outpost), projects (~(put by projects) desk ~))
   [card ~]
 ::  ** on-save
 ++  on-save
@@ -451,29 +471,35 @@
   =/  deeds=(list deed)  deeds.survey.action
   =|  updated=(map desk (set deed))
   |-
-  =|  stad=(set deed)
   ?~  deeds
-    :_  state(projects updated)
-    [dummy-card (flop cards)]
+    :_  state
+    (flop [dummy-card cards])
   =/  project  (fall project.scroll.i.deeds q.byk.bowl)
-  =+  (~(get by projects.state) project)
-  =?  stad  =(^ -)  ->
-  =^  new-desk  state
-    ?~  stad  (on-action [%diagram `%citadel [project [%doc ~]] project])  [~ state]
-  %=    $
-      cards  (weld cards new-desk)
-      state  state
-      deeds  t.deeds
-      updated
-    %+  ~(put by projects.state)  project
+  =/  dats=(unit (set deed))  (~(get by projects.state) project)
+  =/  stad=(set deed)  (biff dats same)
+  =/  desks  .^((set ^desk) %cd (en-beam byk.bowl /))
+  =/  [sdac=^cards =_state]
+    ?:  (~(has in desks) project)  `state
+    (on-action [%diagram `%citadel [project [%doc ~]] project])
+  =/  updated=(map desk (set deed))
+    %+  ~(put by projects)  project
     (~(put in stad) i.deeds)
+  %=    $
+      cards  (weld cards sdac)
+      deeds  t.deeds
+      projects  updated
   ==
 ::
-::  *** TODO update project state
+::  *** TODO polish project tracking
 ::  add the saved deeds to the corresponding project(s) in the `project` map. should
 ::  it update any desk files that are not in the project state yet? needs to account
 ::  for dependencies?
-
+::  ** on-delete
+++  on-delete
+  |=  =action
+  ^-  (quip card _state)
+  ?>  ?=(%delete -.action)
+  `state(projects (~(del by projects) project.action))
 ::  ** on-run
 ++  on-run
   |=  =action

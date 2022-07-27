@@ -13,6 +13,8 @@
     =,  enjs
     =<
     ?-    -.act
+        %delete
+      (frond %delete s+project.act)
         %run
       %+  frond  %run
       %-  pairs
@@ -80,6 +82,7 @@
     =<  %-  of  :~
       save+survey
       run+survey
+      delete+(su sym)
     ==
     |%
     ++  survey

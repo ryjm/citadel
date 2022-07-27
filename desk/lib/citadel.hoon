@@ -187,9 +187,7 @@
       ^-  cards
       =*  bek  byk.bowl
       ~&  >>  "saving to {<desk>} at {<path>}"
-      =/  desks  .^((set ^desk) %cd (en-beam bek /))
       ~|  "failed write to {<desk>}"
-      ?<  (~(has in desks) desk)
       =-  [%pass /citadel/write %arvo %c %info -]~
       =/  fath=^path  (weld /(scot %p our.bowl)/[desk]/(scot %da now.bowl) path)
       ~&  >>  "saved to {<desk>} at {<path>}"

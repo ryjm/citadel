@@ -58,6 +58,7 @@
     [%diagram furm=(unit desk) =gram name=@tas]
     [%run =survey]
     [%save =survey]
+    [%delete project=desk]
   ==
 ::
 ::  ** contract compilation

@@ -18,12 +18,11 @@
         ==
       [%o (~(uni by ?>(?=(%o -.hed) p.hed)) ?>(?=(%o -.tal) p.tal))]
     ::
+    ?~  hed  tal
     ?:  ?=([%a *] tal)
       [%a hed p.tal]
     ::
-    ::  unit
-    ?~  hed  tal
-    ::
+    ?~  tal  [%a hed ~]
     [%a hed tal ~]
     ::
       [%core *]  !!
@@ -115,7 +114,8 @@
       ?+    -.note  loop(typ q.typ)
           %made
             ?^  q.note  loop(typ q.typ)
-            loop(typ q.typ, cos `p.note)
+            ::  disable for now, too slow
+            loop(typ q.typ, cos ~)
       ==
     ::
     [%hold *]  loop(typ (~(play ut p.typ) q.typ))
