@@ -70,6 +70,7 @@
   %-  my
   :~  :-  %docs
   :~  /mar/udon/hoon
+      /mar/json/hoon
       /mar/clue/hoon
       /lib/cram/hoon
       /sur/docs/hoon
@@ -199,8 +200,10 @@
     ++  hite
       |=  [=path txt=@t]
       ^-  cards
+      =/  =mark  (rear path)
+      =/  =type  [%atom %t ~]
       =-  (cite path -)
-      [%hoon [[%atom %t ~] txt]]
+      [mark [type ?:(=(%hoon mark) txt (need (de-json:html txt)))]]
 ::  **** gite
     ::    +gite
     ::
