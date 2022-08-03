@@ -1,4 +1,5 @@
 /-  *citadel
+/+  *etch
 =,  format
 ::
 |_  act=action
@@ -21,6 +22,9 @@
         :~  ['arena' s+arena.survey.act]
             ['deeds' a+(turn deeds.survey.act |=(g=^deed (deed g)))]
             ['charter' s+charter.survey.act]
+            ['bran' (en-vase !>(bran.act))]
+            ['interface' (en-vase !>(interface.act))]
+            ['types' (en-vase !>(types.act))]
         ==
         %save
       %+  frond  %save
@@ -81,10 +85,18 @@
     %.  jon
     =<  %-  of  :~
       save+survey
-      run+survey
+      run+run
       delete+(su sym)
     ==
     |%
+    ++  run
+      %-  ot
+      :~  survey+survey
+          bran+(at [ni ni ni ni])
+          interface+lumps
+          types+lumps
+      ==
+    ++  lumps  ~
     ++  survey
       ^-  $-(json ^survey)
       %-  ot

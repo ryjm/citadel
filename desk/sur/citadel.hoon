@@ -1,3 +1,4 @@
+/+  smart=zig-sys-smart
 :: dia definitions
 ::
 |%
@@ -56,7 +57,7 @@
   $%
     [%desk from=desk name=@tas]
     [%diagram furm=(unit desk) =gram name=@tas]
-    [%run =survey]
+    [%run =survey =bran:smart interface=lumps:smart types=lumps:smart]
     [%save =survey]
     [%delete project=desk]
   ==
