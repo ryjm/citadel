@@ -19,13 +19,14 @@
    $:  %1
        colonies=(map desk outpost)
        projects=(map desk (set deed))
+       factory=(map desk granary:mill)
    ==
  +$  versioned-state
   $%  state-0
       state-1
   ==
 ::
-::  **  project types
+::  ** project types
 ::
 +$  mode  ?(%view %edit)
 --
@@ -65,6 +66,10 @@
     ``json+!>((en-vase:etch !>(projects.state)))
       [%x %project * ~]
     ``noun+!>((~(get by projects) i.t.t.path))
+      [%x %factory @ ~]
+    ``noun+!>((~(get by factory) i.t.t.path))
+      [%x %factory @ @ ~]
+    ``noun+!>((get:big:uq (~(got by factory) i.t.t.path) (slav %ux i.t.t.t.path)))
   ==
   --
 ::  ** on-init
@@ -87,7 +92,7 @@
       ?:  ?=(%| -.maybe-old)  !<(versioned-state ole)  +.maybe-old
     =/  new=state-1
     ?-  -.old
-      %0  [%1 colonies.old *(map desk (set deed))]
+      %0  [%1 colonies.old *(map desk (set deed)) *(map desk granary:mill)]
       %1  old
     ==
     :: TODO install docs elsewhere
@@ -151,7 +156,6 @@
       ?+    wire  (on-agent:def wire sign)
          [%citadel %types ~]
            ~&  >>  %citadel-wire
-           ~&  >>  [%citadel-type !<(json q.cage.sign)]
            `this
         ==
       ==
@@ -185,10 +189,15 @@
     |=  [=ship remote=^desk]
     (poke-our:(pass /docket-install) %docket (docket-install:cg ship remote))
   --
-::  ** contract
+::  ** uqbar
+::  uqbar contracts.
+
+::  per-desk/contract module.
 ++  zh
   |_  [code=@t mesk=(unit [desk path])]
 ::  *** make-wheat
+::  creates a wheat against the current contract. runs a full compilation using the
+::  libraries in the %zig desk.   
 ++  make-wheat
   |=  [=bran:smart interface=lumps:smart types=lumps:smart]
   ^-  [cards wheat:smart]
@@ -205,8 +214,8 @@
   =/  =cards  (~(hite play bowl desk) pax contract-text)
   :: ~!  smart-lib-noun
   :: =/  smart-lib=vase  ;;(vase (cue q.q.smart-lib-noun))
-  =/  smart-txt  .^(@t %cx /(scot %p our.bowl)/zig/(scot %da now.bowl)/lib/zig/sys/smart/hoon)
-  =/  hoon-txt  .^(@t %cx /(scot %p our.bowl)/zig/(scot %da now.bowl)/lib/zig/sys/hoon/hoon)
+  =/  smart-txt  .^(@t %cx /(scot %p our.bowl)/citadel/(scot %da now.bowl)/lib/zig/sys/smart/hoon)
+  =/  hoon-txt  .^(@t %cx /(scot %p our.bowl)/citadel/(scot %da now.bowl)/lib/zig/sys/hoon/hoon)
   =/  hoe  (slap !>(~) (ream hoon-txt))
   =/  smart-lib=vase  (slap hoe (ream smart-txt))
   ::
@@ -214,6 +223,7 @@
     %+  turn  raw
     |=  [face=term =path]
     =/  pax=^path  (en-beam bek(q desk) path)
+    ~&  >>  building+pax
     %-  road  |.
     ~_  leaf/"{pax}: build failed"
     `hoon`[%ktts face (reck pax)]
@@ -225,21 +235,27 @@
   [`[bat=q.cont pay=full-nock] interface types bran]
 ++  cid  `@ux`'citadel-contract'
 ++  tid  0x0
-::  *** test contract
-++  test-contract
-  |=  =wheat:smart
+::  *** test mill
+::  an example fake mill.
+++  test-mill
   =/  =yolk:smart
   [%give [holder-2:zigs 69 [%grain holder-1:zigs]] `[%grain holder-2:zigs]]
   =/  =shell:smart
     [caller-1 ~ id.p:wheat:zigs 1 1.000.000 town-id 1]
-  =/  egg  [fake-sig shell yolk]
-  =/  res
-    %+  ~(mill mil miller town-id 1)
-       fake-land
-    egg
-  res
+  (fondle-mill yolk shell fake-granary)
+
+::  *** fondle-mill
+::  mills yolk and shell on fake-land.
+++  fondle-mill
+  |=  [=yolk:smart =shell:smart =granary:mill]
+  =/  =egg:smart  [fake-sig shell yolk]
+  =/  =land:mill  ;;(land:mill [granary fake-populace])
+  %+  ~(mill mil miller town-id 1)
+    land
+  egg
 ::  *** fake data
 ::  **** mill
+::  initializes a dummy mill for testing.
 ++  big  (bi:merk id:smart grain:smart)  ::  merkle engine for granary
 ++  pig  (bi:merk id:smart @ud)          ::                for populace
 ++  init-now  *@da
@@ -254,11 +270,13 @@
 +$  mill-result
   [fee=@ud =land:mill burned=granary:mill =errorcode:smart hits=(list hints:zink) =crow:smart]
 ::  ***** callers
+::  fake callers used in +test-mill
 ++  miller    ^-  caller:smart  [0x1512.3341 1 0x1.1512.3341]
 ++  caller-1  ^-  caller:smart  [0xbeef 1 0x1.beef]
 ++  caller-2  ^-  caller:smart  [0xdead 1 0x1.dead]
 ++  caller-3  ^-  caller:smart  [0xcafe 1 0x1.cafe]
 ::  **** scry wheat
+::  fake grain representing the compiled trivial-scry contract.
 ++  scry-wheat
   ^-  grain:smart
   =/  cont  ;;([bat=* pay=*] (cue q.q.scry-contract))
@@ -275,6 +293,7 @@
   ==
 
 ::  **** granary
+::  fake granary containing all the grains used by the dummy mill.
 ++  fake-granary
   ^-  granary:mill
   %+  gas:big  *(merk:merk id:smart grain:smart)
@@ -285,19 +304,23 @@
       [id.p:miller-account:zigs miller-account:zigs]
   ==
 ::  **** populace
+
 ++  fake-populace
   ^-  populace:mill
   %+  gas:pig  *(merk:merk id:smart @ud)
   ~[[holder-1:zigs 0] [holder-2:zigs 0] [holder-3:zigs 0]]
 ::  **** land
+
 ++  fake-land
   ^-  land:mill
   [fake-granary fake-populace] 
 
 ::  *** fake zigs
+::  represents the %zig contract.
 ++  zigs
   |_  =grain:smart
 ::  **** grains
+::  fake grains
 ++  holder-1  0xbeef
 ++  holder-2  0xdead
 ++  holder-3  0xcafe
@@ -362,6 +385,7 @@
 --
 
 ::  *** parsers
+::  contract-specific parsing.
 +$  small-pile
   $:  raw=(list [face=term =path])
       =hoon
@@ -470,7 +494,8 @@
   ::
   --  --
 ::  * handlers
-::  ** on-action
+::  ** main
+::  *** on-action
 ++  on-action
   |=  =action
   ^-  (quip card _state)
@@ -478,10 +503,12 @@
       %desk  (on-desk action)
       %diagram  (on-diagram action)
       %run  (on-run action)
+      %mill  (on-mill action)
       %save  (on-save action)
       %delete  (on-delete action)
   ==
-::  ** on-http-request
+::  ** frontend
+::  *** on-http-request
 ++  on-http-request
   |=  =inbound-request:eyre
   ^-  simple-payload:http
@@ -495,7 +522,8 @@
     =-  ~&  >  [%here -]  -
     %-  en-vase:etch  !>(projects.state)
   ==
-::  ** on-desk
+::  ** desks
+::  *** on-desk
 ++  on-desk
   |=  =action
   ^-  (quip card _state)
@@ -513,7 +541,7 @@
     :^  %pass  /citadel/desk/[desk]  %arvo
     (~(scop play [bowl desk]) from.action [- ~])
   ==
-::  ** on-diagram
+::  *** on-diagram
 ++  on-diagram
   |=  =action
   ^-  (quip card _state)
@@ -523,11 +551,17 @@
   :: TODO specify dependency desk in outpost
   :_  state(colonies (~(put by colonies) desk outpost), projects (~(put by projects) desk ~))
   [card ~]
-::  ** on-save
+::  ** projects
+::  *** on-save
 ++  on-save
   |=  =action
   ^-  (quip card _state)
   ?>  ?=(%save -.action)
+  ~&  %here
+  =/  desks  .^((set ^desk) %cd (en-beam byk.bowl /))
+  =/  [sdac=^cards =_state]
+    ?:  (~(has in desks) project.survey.action)  `state
+    (on-action [%diagram `%citadel [project.survey.action [%doc ~]] project.survey.action])
   =/  dummy-json=json  .^(json cx+(en-beam byk.bowl /dummy/json))
   =/  dummy-card=card
     [%give %fact ~[/citadel/types] %json !>(dummy-json)]
@@ -537,14 +571,11 @@
   |-
   ?~  deeds
     :_  state
-    (flop [dummy-card cards])
+    (flop [dummy-card (weld cards sdac)])
   =/  project  (fall project.scroll.i.deeds q.byk.bowl)
   =/  dats=(unit (set deed))  (~(get by projects.state) project)
   =/  stad=(set deed)  (biff dats same)
   =/  desks  .^((set ^desk) %cd (en-beam byk.bowl /))
-  =/  [sdac=^cards =_state]
-    ?:  (~(has in desks) project)  `state
-    (on-action [%diagram `%citadel [project [%doc ~]] project])
   =/  updated=(map desk (set deed))
     %+  ~(put by projects)  project
     (~(put in stad) i.deeds)
@@ -553,18 +584,21 @@
       deeds  t.deeds
       projects  updated
   ==
-::
-::  *** TODO polish project tracking
+
+::  **** TODO polish project tracking
 ::  add the saved deeds to the corresponding project(s) in the `project` map. should
 ::  it update any desk files that are not in the project state yet? needs to account
 ::  for dependencies?
-::  ** on-delete
+::  *** on-delete
 ++  on-delete
   |=  =action
   ^-  (quip card _state)
   ?>  ?=(%delete -.action)
   `state(projects (~(del by projects) project.action))
-::  ** on-run
+::  ** contracts
+::  *** on-run
+::  currently creates a wheat from an action containing the needed bran, interface,
+::  and types.
 ++  on-run
   |=  =action
   ^-  (quip card _state)
@@ -580,6 +614,37 @@
     [cards state]
       %gall
     !!
+  ==
+::  *** on-mill
+::  given a text representation of a contract, creates a wheat and updates the
+::  factory with the result.
+++  on-mill
+  |=  =action
+  ^-  (quip card _state)
+  ?>  ?=(%mill -.action)
+  ?-    -.survey.action
+      %contract
+    =,  survey.action
+    ?.  (~(has by projects) project)
+      ~|  "citadel: attempting to mill unknown project {<project.survey.action>}"
+      !!
+
+    =/  [=cards =wheat:smart]
+      %^    ~(make-wheat zh charter ~)
+          bran.action
+        interface.action
+      types.action
+    =/  =granary:mill
+      =-  ?~  -  fake-granary:zh  -
+      (biff (~(get by factory) project) same)
+    ~&  gran+granary
+    =.  factory
+      %+  ~(put by factory)  project
+      %+  gas:big:zh  granary
+      ~[[id.wheat ;;(grain:smart [%| wheat])]]
+    [cards state]
+      %gall
+    ~|("citadel: attempting to mill a %gall app" !!)
   ==
 ::  * utils
 ++  make-diagram

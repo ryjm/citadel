@@ -26,6 +26,18 @@
             ['interface' (en-vase !>(interface.act))]
             ['types' (en-vase !>(types.act))]
         ==
+      ::
+        %mill
+      %+  frond  %mill
+      %-  pairs
+        :~  ['arena' s+arena.survey.act]
+            ['deeds' a+(turn deeds.survey.act |=(g=^deed (deed g)))]
+            ['charter' s+charter.survey.act]
+            ['bran' (en-vase !>(bran.act))]
+            ['interface' (en-vase !>(interface.act))]
+            ['types' (en-vase !>(types.act))]
+        ==
+      ::
         %save
       %+  frond  %save
       %-  pairs
@@ -33,12 +45,14 @@
             ['deeds' a+(turn deeds.survey.act |=(d=^deed (deed d)))]
             ['charter' s+charter.survey.act]
         ==
+      ::
         %desk
       %+  frond  %desk
       %-  pairs
         :~  ['from' s+from.act]
             ['name' s+name.act]
         ==
+      ::
         %diagram
       %+  frond  %diagram
       %-  pairs
@@ -86,10 +100,18 @@
     =<  %-  of  :~
       save+survey
       run+run
+      mill+mill
       delete+(su sym)
     ==
     |%
     ++  run
+      %-  ot
+      :~  survey+survey
+          bran+(at [ni ni ni ni])
+          interface+lumps
+          types+lumps
+      ==
+    ++  mill
       %-  ot
       :~  survey+survey
           bran+(at [ni ni ni ni])
@@ -103,6 +125,7 @@
       :~  arena+(cu |=(t=@ ;;(?(%contract %gall) t)) (su sym))
           deeds+(ar deed)
           charter+so
+          project+(se %tas)
       ==
     ++  deed
       ^-  $-(json ^deed)

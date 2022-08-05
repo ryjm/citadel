@@ -1,3 +1,4 @@
+/+  smart=zig-sys-smart
 |%
 ::
 ++  en-vase
@@ -162,5 +163,28 @@
      %ui  [%n `@t`(rsh [3 2] (scot %ui dat))]
      %ud  [%n `@t`(rsh [3 2] (scot %ud dat))]
   ==
-
+::
+++  de-lump
+  |=  jon=json
+  !:
+  |^
+  ?+    -.jon  ~|("invalid json lump {<jon>}" !!)
+      %o  (gulp ~(tap in p.jon))
+      %s  [%ta p.jon]
+  ==
+  ++  gulp
+    |=  lst=(list [@t json])
+    ^-  lump:smart
+    ?~  lst  *lump:smart
+    =/  tag=@tas  -.i.lst
+    (de-lump +.i.lst)
+  ++  mulp
+    |=  [tag=@tas =json]
+    ^-  lump:smart
+    !!
+  ++  aoti
+    |=  =json
+    ^-  (set iota:smart)
+    !!
+  --
 --

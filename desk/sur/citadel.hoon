@@ -46,6 +46,7 @@
     $:  arena=?(%contract %gall)
         deeds=(list deed)
         charter=@t
+        project=desk
     ==
 ::
 ::  ** locations
@@ -58,6 +59,7 @@
     [%desk from=desk name=@tas]
     [%diagram furm=(unit desk) =gram name=@tas]
     [%run =survey =bran:smart interface=lumps:smart types=lumps:smart]
+    [%mill =survey =bran:smart interface=lumps:smart types=lumps:smart]
     [%save =survey]
     [%delete project=desk]
   ==
