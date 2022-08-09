@@ -53,28 +53,17 @@
 +$  scroll  [text=(unit @t) project=(unit desk) =path]
 +$  deed  [dir=?(%lib %sur %ted %mar) =scroll]
 ::
-::  ** actions
+::  * actions
 +$  action
   $%
     [%desk from=desk name=@tas]
     [%diagram furm=(unit desk) =gram name=@tas]
     [%run =survey =bran:smart interface=lumps:smart types=lumps:smart]
+    [%test =survey grains=(list grain:smart)]
     [%mill =survey =bran:smart interface=lumps:smart types=lumps:smart]
+    [%save-grain meal=?(%rice %wheat) project=desk =grain:smart]
     [%save =survey]
     [%delete project=desk]
   ==
 ::
-::  ** contract compilation
-::  ++  turf
-::    |=  txt=@t
-::      =/  smart-txt  .^(@t %cx /(scot %p our)/zig/(scot %da now)/lib/zig/sys/smart/hoon)
-::      =/  hoon-txt  .^(@t %cx /(scot %p our)/zig/(scot %da now)/lib/zig/sys/hoon/hoon)
-::      =/  hoe  (slap !>(~) (ream hoon-txt))
-::      (slap txt (slap hoe (ream smart-txt)))
-::
-::  ** type info
-+$  audit
-  $:  main=@t
-      types=@t
-  ==
 --

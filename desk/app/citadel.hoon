@@ -2,12 +2,6 @@
 /-  *citadel, docket, *treaty, zink
 /+  mill=zig-mill, smart=zig-sys-smart, default-agent, dbug, agentio,
     *citadel, server, verb, etch, merk
-/*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
-/*  zink-cax-noun   %noun  /lib/zig/compiled/hash-cache/noun
-/*  triv-contract   %noun  /lib/zig/compiled/trivial/noun
-/*  scry-contract   %noun  /lib/zig/compiled/trivial-scry/noun
-/*  zigs-contract   %noun  /lib/zig/compiled/zigs/noun
-!:
 ::  * types
 |%
 
@@ -201,230 +195,10 @@
 ++  make-wheat
   |=  [=bran:smart interface=lumps:smart types=lumps:smart]
   ^-  [cards wheat:smart]
-  =/  =desk  ?^  mesk  -:(need mesk)  %citadel
-  =/  pax=path  ?^  mesk  +:(need mesk)  /contracts/scratch/hoon
-  =/  bek  byk.bowl
-  =/  exists=?  .^(? %cu (en-beam bek(q desk) pax))
-  ~&    >>
-    ?:  exists  "contract {<pax>} exists in clay, will overwrite"
-  "writing contract to {<pax>}"
-  =/  contract-text  code
-  =/  [raw=(list [face=term =path]) contract-hoon=hoon]
-    (parse-pile (trip contract-text))
-  =/  =cards  (~(hite play bowl desk) pax contract-text)
-  :: ~!  smart-lib-noun
-  :: =/  smart-lib=vase  ;;(vase (cue q.q.smart-lib-noun))
-  =/  smart-txt  .^(@t %cx /(scot %p our.bowl)/citadel/(scot %da now.bowl)/lib/zig/sys/smart/hoon)
-  =/  hoon-txt  .^(@t %cx /(scot %p our.bowl)/citadel/(scot %da now.bowl)/lib/zig/sys/hoon/hoon)
-  =/  hoe  (slap !>(~) (ream hoon-txt))
-  =/  smart-lib=vase  (slap hoe (ream smart-txt))
-  ::
-  =/  braw=(list hoon)
-    %+  turn  raw
-    |=  [face=term =path]
-    =/  pax=^path  (en-beam bek(q desk) path)
-    ~&  >>  building+pax
-    %-  road  |.
-    ~_  leaf/"{pax}: build failed"
-    `hoon`[%ktts face (reck pax)]
-  =/  full=hoon  [%clsg braw]
-  =/  full-nock=*  q:(~(mint ut p.smart-lib) %noun full)
-  =/  payload=vase  (slap smart-lib full)
-  =/  cont  (~(mint ut p:(slop smart-lib payload)) %noun contract-hoon)
-  :-  cards
+  =/  [cont=vase * * full-nock=*]  (compile:uq ~ `code our:bowl now:bowl)
+  :-  ~
   [`[bat=q.cont pay=full-nock] interface types bran]
-++  cid  `@ux`'citadel-contract'
-++  tid  0x0
-::  *** test mill
-::  an example fake mill.
-++  test-mill
-  =/  =yolk:smart
-  [%give [holder-2:zigs 69 [%grain holder-1:zigs]] `[%grain holder-2:zigs]]
-  =/  =shell:smart
-    [caller-1 ~ id.p:wheat:zigs 1 1.000.000 town-id 1]
-  (fondle-mill yolk shell fake-granary)
-
-::  *** fondle-mill
-::  mills yolk and shell on fake-land.
-++  fondle-mill
-  |=  [=yolk:smart =shell:smart =granary:mill]
-  =/  =egg:smart  [fake-sig shell yolk]
-  =/  =land:mill  ;;(land:mill [granary fake-populace])
-  %+  ~(mill mil miller town-id 1)
-    land
-  egg
-::  *** fake data
-::  **** mill
-::  initializes a dummy mill for testing.
-++  big  (bi:merk id:smart grain:smart)  ::  merkle engine for granary
-++  pig  (bi:merk id:smart @ud)          ::                for populace
-++  init-now  *@da
-++  town-id    0x0
-++  set-fee    7
-++  fake-sig   [0 0 0]
-++  mil
-  %~  mill  mill
-  :+    ;;(vase (cue q.q.smart-lib-noun))
-    ;;((map * @) (cue q.q.zink-cax-noun))
-  %.y
-+$  mill-result
-  [fee=@ud =land:mill burned=granary:mill =errorcode:smart hits=(list hints:zink) =crow:smart]
-::  ***** callers
-::  fake callers used in +test-mill
-++  miller    ^-  caller:smart  [0x1512.3341 1 0x1.1512.3341]
-++  caller-1  ^-  caller:smart  [0xbeef 1 0x1.beef]
-++  caller-2  ^-  caller:smart  [0xdead 1 0x1.dead]
-++  caller-3  ^-  caller:smart  [0xcafe 1 0x1.cafe]
-::  **** scry wheat
-::  fake grain representing the compiled trivial-scry contract.
-++  scry-wheat
-  ^-  grain:smart
-  =/  cont  ;;([bat=* pay=*] (cue q.q.scry-contract))
-  =/  interface=lumps:smart  ~
-  =/  types=lumps:smart  ~
-  :*  %|
-      `cont
-      interface
-      types
-      0xdada.dada  ::  id
-      0xdada.dada  ::  lord
-      0xdada.dada  ::  holder
-      town-id
-  ==
-
-::  **** granary
-::  fake granary containing all the grains used by the dummy mill.
-++  fake-granary
-  ^-  granary:mill
-  %+  gas:big  *(merk:merk id:smart grain:smart)
-  :~  [id.p:scry-wheat scry-wheat]
-      ::  [id.p:wheat:zigs wheat:zigs]
-      [id.p:beef-account:zigs beef-account:zigs]
-      [id.p:dead-account:zigs dead-account:zigs]
-      [id.p:miller-account:zigs miller-account:zigs]
-  ==
-::  **** populace
-
-++  fake-populace
-  ^-  populace:mill
-  %+  gas:pig  *(merk:merk id:smart @ud)
-  ~[[holder-1:zigs 0] [holder-2:zigs 0] [holder-3:zigs 0]]
-::  **** land
-
-++  fake-land
-  ^-  land:mill
-  [fake-granary fake-populace] 
-
-::  *** fake zigs
-::  represents the %zig contract.
-++  zigs
-  |_  =grain:smart
-::  **** grains
-::  fake grains
-++  holder-1  0xbeef
-++  holder-2  0xdead
-++  holder-3  0xcafe
-++  miller-account
-  ^-  grain:smart
-  :*  %&
-      `@`'zigs'
-      %account
-      [1.000.000 ~ `@ux`'zigs-metadata']
-      0x1.1512.3341
-      zigs-wheat-id:smart
-      0x1512.3341
-      town-id
-  ==
-++  beef-account
-  ^-  grain:smart
-  :*  %&
-      `@`'zigs'
-      %account
-      [300.000.000 ~ `@ux`'zigs-metadata']
-      0x1.beef
-      zigs-wheat-id:smart
-      holder-1
-      town-id
-  ==
-++  dead-account
-  ^-  grain:smart
-  :*  %&
-      `@`'zigs'
-      %account
-      [200.000 ~ `@ux`'zigs-metadata']
-      0x1.dead
-      zigs-wheat-id:smart
-      holder-2
-      town-id
-  ==
-++  cafe-account
-  ^-  grain:smart
-  :*  %&
-      `@`'zigs'
-      %account
-      [100.000 ~ `@ux`'zigs-metadata']
-      0x1.cafe
-      zigs-wheat-id:smart
-      holder-3
-      town-id
-  ==
-++  wheat
-  ^-  grain:smart
-  =/  cont  ;;([bat=* pay=*] (cue q.q.zigs-contract))
-  =/  interface=lumps:smart  ~
-  =/  types=lumps:smart  ~
-  :*  %|
-      `cont
-      interface
-      types
-      zigs-wheat-id:smart  ::  id
-      zigs-wheat-id:smart  ::  lord
-      zigs-wheat-id:smart  ::  holder
-      town-id
-  ==
 --
-
-::  *** parsers
-::  contract-specific parsing.
-+$  small-pile
-  $:  raw=(list [face=term =path])
-      =hoon
-  ==
-++  parse-pile
-  |=  tex=tape
-  ^-  small-pile
-  =/  [=hair res=(unit [=small-pile =nail])]  (pile-rule [1 1] tex)
-  ?^  res  small-pile.u.res
-  %-  mean  %-  flop
-  =/  lyn  p.hair
-  =/  col  q.hair
-  :~  leaf+"syntax error at [{<lyn>} {<col>}]"
-      leaf+(runt [(dec col) '-'] "^")
-      leaf+(trip (snag (dec lyn) (to-wain:format (crip tex))))
-  ==
-++  pile-rule
-  %-  full
-  %+  ifix  [gay gay]
-  ;~  plug
-    %+  rune  tis
-    ;~(plug sym ;~(pfix gap stap))
-  ::
-    %+  stag  %tssg
-    (most gap tall:vast)
-  ==
-++  pant
-  |*  fel=^rule
-  ;~(pose fel (easy ~))
-++  mast
-  |*  [bus=^rule fel=^rule]
-  ;~(sfix (more bus fel) bus)
-++  rune
-  |*  [bus=^rule fel=^rule]
-  %-  pant
-  %+  mast  gap
-  ;~(pfix fas bus gap fel)
---
-
 ::  ** mold responses
 ++  cc
   |%
@@ -502,8 +276,10 @@
   ?-    -.action
       %desk  (on-desk action)
       %diagram  (on-diagram action)
+      %test  (on-test action)
       %run  (on-run action)
       %mill  (on-mill action)
+      %save-grain  (on-save-grain action)
       %save  (on-save action)
       %delete  (on-delete action)
   ==
@@ -596,6 +372,40 @@
   ?>  ?=(%delete -.action)
   `state(projects (~(del by projects) project.action))
 ::  ** contracts
+
+::  *** TODO on-test
+++  on-test
+  |=  =action
+  ^-  (quip card _state)
+  !!
+::  *** TODO save grain
+::  saves a grain to the granary associated with the specified project.
+::  rice - salt, label, bran, data
+++  on-save-grain
+  |=  =action
+  ^-  (quip card _state)
+  ?>  ?=(%save-grain -.action)
+  =/  project  project.action
+  ?.  (~(has by projects) project)
+  ~|  "citadel: attempting to save grain to unknown project {<project>}"
+  !!
+  ?-    meal.action
+      %rice
+    =/  id  =<(id ;;(rice:smart +.grain.action))
+    =/  =granary:mill
+      =-  ?~  -  fake-granary:uq  -
+      (biff (~(get by factory) project) same)
+    =.  factory
+      %+  ~(put by factory)  project
+      %+  gas:big:uq  granary
+      ~[[id ;;(grain:smart grain.action)]]
+    [~ state]
+      %wheat
+    ~|("citadel: saving wheat not supported yet" !!)
+  ==
+::  *** TODO delete grain
+::  *** TODO update scries
+
 ::  *** on-run
 ::  currently creates a wheat from an action containing the needed bran, interface,
 ::  and types.
@@ -628,24 +438,23 @@
     ?.  (~(has by projects) project)
       ~|  "citadel: attempting to mill unknown project {<project.survey.action>}"
       !!
-
     =/  [=cards =wheat:smart]
       %^    ~(make-wheat zh charter ~)
           bran.action
         interface.action
       types.action
     =/  =granary:mill
-      =-  ?~  -  fake-granary:zh  -
+      =-  ?~  -  fake-granary:uq  -
       (biff (~(get by factory) project) same)
-    ~&  gran+granary
     =.  factory
       %+  ~(put by factory)  project
-      %+  gas:big:zh  granary
+      %+  gas:big:uq  granary
       ~[[id.wheat ;;(grain:smart [%| wheat])]]
     [cards state]
       %gall
     ~|("citadel: attempting to mill a %gall app" !!)
   ==
+
 ::  * utils
 ++  make-diagram
   |=  [=gram =desk from=(unit desk)]

@@ -1,6 +1,7 @@
 /-  *citadel
 /+  *etch
 =,  format
+!:
 ::
 |_  act=action
 ::
@@ -36,6 +37,22 @@
             ['bran' (en-vase !>(bran.act))]
             ['interface' (en-vase !>(interface.act))]
             ['types' (en-vase !>(types.act))]
+        ==
+      ::
+        %save-grain
+      %+  frond  %save-grain
+      %-  pairs
+        :~  ['meal' s+meal.act]
+            ['project' s+project.act]
+            ['grain' (en-vase !>(grain.act))]
+        ==
+    ::
+      %test
+      %+  frond  %test
+      %-  pairs
+        :~  ['survey' s+meal.act]
+            ['deeds' a+(turn deeds.survey.act |=(d=^deed (deed d)))]
+            ['grain' (en-vase !>(grain.act))]
         ==
       ::
         %save
@@ -101,24 +118,69 @@
       save+survey
       run+run
       mill+mill
+      save-grain+save-grain
       delete+(su sym)
     ==
     |%
+    ++  save-grain
+      %-  ot
+      :~  meal+(cu |=(t=@ ;;(?(%rice %wheat) t)) (su sym))
+          project+(se %tas)
+          grain+grain
+      ==
+    ++  grain
+      ^-  $-(json grain:smart)
+      ::=-  (at ~[(cu |*(* %&) bo) -])
+      =;  ric
+        |=(jon=json [%& (ric jon)])
+      ^-  $-(json rice:smart)
+      =-  (ot ~[['.y' -]])
+      |=  jon=json
+      (road |.((rice jon)))
+    ++  wheat
+      ^-  $-(json wheat:smart)
+      |=  jon=json
+      *wheat:smart
+    ++  rice
+      ^-  $-(json rice:smart)
+      %-  ot
+      :~
+        salt+ni
+        label+so
+        data+grain-data
+        id+(se %ux)
+        lord+(se %ux)
+        holder+(se %ux)
+        town-id+(se %ux)
+      ==
+    ++  test
+      %-  ot
+      :~  survey+survey
+          grains+(ar grain)
+      ==
     ++  run
       %-  ot
       :~  survey+survey
-          bran+(at [ni ni ni ni])
+          bran+(at [ni ni ni ni ~])
           interface+lumps
           types+lumps
       ==
     ++  mill
       %-  ot
       :~  survey+survey
-          bran+(at [ni ni ni ni])
+          bran+(at [ni ni ni ni ~])
           interface+lumps
           types+lumps
       ==
-    ++  lumps  ~
+    ++  lumps
+      |=  jon=json
+      *lumps:smart
+    ::
+    ++  grain-data
+      |=  jon=json
+      ?>  =(%o -.jon)
+      `*`(en-json:html jon)
+
     ++  survey
       ^-  $-(json ^survey)
       %-  ot

@@ -5,8 +5,6 @@
 /*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
 /*  zink-cax-noun   %noun  /lib/zig/compiled/hash-cache/noun
 /*  triv-contract   %noun  /lib/zig/compiled/trivial/noun
-/*  scry-contract   %noun  /lib/zig/compiled/trivial-scry/noun
-/*  zigs-contract   %noun  /lib/zig/compiled/zigs/noun
 ::  * main
 =,  clay
 |%
@@ -200,13 +198,13 @@
 
 ::  ** utils
   ++  compile
-    |=  [pax=path our=@p now=@da]
+    |=  [pax=path code=(unit @t) our=@p now=@da]
     =/  exists=?  .^(? %cu pax)
     ~&    >>
       ?:  exists  "contract {<path>} exists in clay"
-    "no contract to {<path>}"
-    ?>  exists
-    =/  contract-text  .^(@t %cx pax)
+    "no contract at {<path>}"
+
+    =/  contract-text  (fall code .^(@t %cx pax))
     =/  [raw=(list [face=term =path]) contract-hoon=hoon]
       (parse-pile (trip contract-text))
     =/  smart-txt  .^(@t %cx /(scot %p our)/citadel/(scot %da now)/lib/zig/sys/smart/hoon)
@@ -223,25 +221,19 @@
       ~_  leaf/"{pax}: build failed"
       `hoon`[%ktts face (reck pax)]
     =/  full=hoon  [%clsg braw]
-    q:(~(mint ut p.smart-lib) %noun full)
+    =/  payload=vase  (slap smart-lib full)
+    =/  cont  (~(mint ut p:(slop smart-lib payload)) %noun contract-hoon)
+    [cont smart-lib payload q:(~(mint ut p.smart-lib) %noun full)]
     ::  =/  payload  .*(full-nock pay.cont)
     ::  =/  battery  .*([full-nock payload] bat.cont)
     ::  =/  dor      [-:!>(*contract:smart) battery]
-::  *** test mill
-::  an example fake mill.
-++  test-mill
-  =/  =yolk:smart
-  [%give [holder-2:zigs 69 [%grain holder-1:zigs]] `[%grain holder-2:zigs]]
-  =/  =shell:smart
-    [caller-1 ~ id.p:wheat:zigs 1 1.000.000 town-id 1]
-  (fondle-mill yolk shell fake-granary)
 
 ::  *** fondle-mill
 ::  mills yolk and shell on fake-land.
 ++  fondle-mill
   |=  [=yolk:smart =shell:smart =granary:mill]
   =/  =egg:smart  [fake-sig shell yolk]
-  =/  =land:mill  ;;(land:mill [granary fake-populace])
+  =/  =land:mill  [granary fake-populace]
   %+  ~(mill mil miller town-id 1)
     land
   egg
@@ -271,11 +263,11 @@
 ::  fake grain representing the compiled trivial-scry contract.
 ++  scry-wheat
   ^-  grain:smart
-  =/  cont  ;;([bat=* pay=*] (cue q.q.scry-contract))
+  ::  =/  cont  ;;([bat=* pay=*] (cue q.q.scry-contract))
   =/  interface=lumps:smart  ~
   =/  types=lumps:smart  ~
   :*  %|
-      `cont
+      ~
       interface
       types
       0xdada.dada  ::  id
@@ -305,7 +297,7 @@
 
 ++  fake-land
   ^-  land:mill
-  [fake-granary fake-populace] 
+  [fake-granary fake-populace]
 
 ::  ** fake zigs
 ::  represents the %zig contract.
@@ -358,20 +350,6 @@
       0x1.cafe
       zigs-wheat-id:smart
       holder-3
-      town-id
-  ==
-++  wheat
-  ^-  grain:smart
-  =/  cont  ;;([bat=* pay=*] (cue q.q.zigs-contract))
-  =/  interface=lumps:smart  ~
-  =/  types=lumps:smart  ~
-  :*  %|
-      `cont
-      interface
-      types
-      zigs-wheat-id:smart  ::  id
-      zigs-wheat-id:smart  ::  lord
-      zigs-wheat-id:smart  ::  holder
       town-id
   ==
 --
@@ -474,7 +452,7 @@
       |=  dusk=^desk
       |^  ~|  "citadel: missing smart-lib in {<desk>}"
       (cite /lib/zig/compiled/smart-lib/noun [%noun !>((need smar))])
-      ::      
+      ::
       ++  smar
         ^-  (unit *)
         %-  file:space:userlib
