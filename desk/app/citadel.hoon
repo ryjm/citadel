@@ -351,7 +351,9 @@
   =/  [sdac=^cards =_state]
     ?:  (~(has in desks) project.survey.action)  `state
     (on-action [%diagram `%citadel [project.survey.action [%doc ~]] project.survey.action])
-  =/  dummy-json=json  .^(json cx+(en-beam byk.bowl /dummy/json))
+  =/  dummy-exists=?  .^(? %cu (en-beam byk.bowl /dummy/json))
+  =/  dummy-json=json  ?.  dummy-exists  *json
+    .^(json cx+(en-beam byk.bowl /dummy/json))
   =/  dummy-card=card
     [%give %fact ~[/citadel/types] %json !>(dummy-json)]
   =/  cards  (~(gite play [bowl q.byk.bowl]) deeds.survey.action)
