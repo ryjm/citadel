@@ -407,7 +407,7 @@
     %-  on-mill
     :*  %mill
         survey.action
-        [contract-id id:miller:uq id:miller:uq town-id:uq]
+        [contract-id contract-id contract-id town-id:uq]
         ~
         ~
     ==
