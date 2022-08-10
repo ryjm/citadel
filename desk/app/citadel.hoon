@@ -58,12 +58,24 @@
     ``noun+!>(projects)
       [%x %projects-json ~]
     ``json+!>((en-vase:etch !>(projects.state)))
-      [%x %project * ~]
+      [%x %project @ ~]
     ``noun+!>((~(get by projects) i.t.t.path))
       [%x %factory @ ~]
     ``noun+!>((~(get by factory) i.t.t.path))
       [%x %factory @ @ ~]
     ``noun+!>((get:big:uq (~(got by factory) i.t.t.path) (slav %ux i.t.t.t.path)))
+      [%x %factory-json @ ~]
+    :-  ~  :-  ~
+    :-  %json
+    !>  =-  (en-vase:etch -)
+    !>  (~(get by factory) i.t.t.path)
+      [%x %factory-json @ @ ~]
+    :-  ~  :-  ~
+    :-  %json
+    !>  =-  (en-vase:etch -)
+    !>  %+  get:big:uq
+          (~(got by factory) i.t.t.path)
+        (slav %ux i.t.t.t.path)
   ==
   --
 ::  ** on-init

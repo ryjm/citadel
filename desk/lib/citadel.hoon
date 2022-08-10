@@ -2,9 +2,9 @@
 /-  *citadel, zink
 /+  mill=zig-mill, smart=zig-sys-smart, merk
 ::  ** nouns
-/*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
-/*  zink-cax-noun   %noun  /lib/zig/compiled/hash-cache/noun
-/*  triv-contract   %noun  /lib/zig/compiled/trivial/noun
+/*  smart-lib-noun  %mime  /lib/zig/compiled/smart-lib/noun
+/*  zink-cax-noun   %mime  /lib/zig/compiled/hash-cache/noun
+/*  triv-contract   %mime  /lib/zig/compiled/trivial/noun
 ::  * main
 =,  clay
 |%
@@ -199,12 +199,10 @@
 ::  ** utils
   ++  compile
     |=  [pax=path code=(unit @t) our=@p now=@da]
-    =/  exists=?  .^(? %cu pax)
-    ~&    >>
-      ?:  exists  "contract {<path>} exists in clay"
-    "no contract at {<path>}"
-
-    =/  contract-text  (fall code .^(@t %cx pax))
+    =/  paf=(unit path)
+      =+  (weld /(scot %p our)/citadel/(scot %da now) pax)
+      ?:  .^(? %cu -)  `-  ~
+    =/  contract-text  (fall code (biff paf |=(p=path .^(@t %cx p))))
     =/  [raw=(list [face=term =path]) contract-hoon=hoon]
       (parse-pile (trip contract-text))
     =/  smart-txt  .^(@t %cx /(scot %p our)/citadel/(scot %da now)/lib/zig/sys/smart/hoon)
