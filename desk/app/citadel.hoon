@@ -343,22 +343,21 @@
     [%give %fact ~[/citadel/types] %json !>(dummy-json)]
   =/  cards  (~(gite play [bowl q.byk.bowl]) deeds.survey.action)
   =/  deeds=(list deed)  deeds.survey.action
-  =|  updated=(map desk (set deed))
   |-
   ?~  deeds
     :_  state
     (flop [dummy-card (weld cards sdac)])
-  =/  project  (fall project.scroll.i.deeds q.byk.bowl)
-  =/  dats=(unit (set deed))  (~(get by projects.state) project)
-  =/  stad=(set deed)  (biff dats same)
-  =/  desks  .^((set ^desk) %cd (en-beam byk.bowl /))
-  =/  updated=(map desk (set deed))
-    %+  ~(put by projects)  project
-    (~(put in stad) i.deeds)
+  =/  project  (fall project.scroll.i.deeds project.survey.action)
+  =/  project-deeds
+     =-  (biff - same)
+     (~(get by projects.state) project)
+  =/  all-deeds
+    %+  ~(put by projects.state)  project
+    (~(put in project-deeds) i.deeds)
   %=    $
       cards  (weld cards sdac)
       deeds  t.deeds
-      projects  updated
+      projects.state  all-deeds
   ==
 
 ::  **** TODO polish project tracking
