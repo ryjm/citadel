@@ -1,6 +1,10 @@
 /+  smart=zig-sys-smart, *mip
 |%
 ::
+++  show-json
+  |=  =vase
+  (en-json:html (en-vase vase))
+::
 ++  en-vase
   |=  [typ=type arg=*]
   ^-  json
@@ -167,7 +171,7 @@
      %uv  [%s (scot %uv dat)]
   ::
      %ui  [%n `@t`(rsh [3 2] (scot %ui dat))]
-     %ud  [%n `@t`(rsh [3 2] (scot %ud dat))]
+     %ud  [%n (scot %ud dat)]
   ==
 ::
 ++  de-lumps
