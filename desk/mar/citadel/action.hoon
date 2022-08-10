@@ -50,9 +50,10 @@
       %test
       %+  frond  %test
       %-  pairs
-        :~  ['survey' s+meal.act]
-            ['deeds' a+(turn deeds.survey.act |=(d=^deed (deed d)))]
-            ['grain' (en-vase !>(grain.act))]
+        :~  ['arena' s+arena.survey.act]
+            ['deeds' a+(turn deeds.survey.act |=(g=^deed (deed g)))]
+            ['charter' s+charter.survey.act]
+            ['grains' (en-vase !>(grains.act))]
         ==
       ::
         %save

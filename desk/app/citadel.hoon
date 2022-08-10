@@ -388,7 +388,12 @@
 ++  on-test
   |=  =action
   ^-  (quip card _state)
-  !!
+  ?>  ?=(%test -.action)
+  =/  [cont=vase * * full-nock=*]  (compile:uq ~ `charter.survey.action our:bowl now:bowl)
+::    =payload .*(library pay.cont)
+::  =battery .*([library payload] bat.cont)
+::    ()
+  ~&  >  action  [~ state]
 ::  *** TODO save grain
 ::  saves a grain to the granary associated with the specified project.
 ::  rice - salt, label, bran, data
