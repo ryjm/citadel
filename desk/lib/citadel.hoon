@@ -179,7 +179,16 @@
     -
   (welp atelier:mansion atelier)
 ::  * uqbar
-++  read-shut                                               ::  slam a door
+
+::  uqbar contracts.
+
+::  per-desk/contract module.
+++  uq
+  |_  [code=@t mesk=(unit [desk path])]
+
+::  ** utils
+::  ** vase interaction
+  ++  read-shut                                               ::  slam a door
     |=  [dor=vase arm=@tas dor-sam=vase arm-sam=vase arm-arm=?(%noun %json)]
     ^-  vase
     %+  slap
@@ -190,13 +199,7 @@
         [%cnsg [arm ~] [%$ 2] [%$ 6] ~]  ::  replace sample
       [%$ 7]
     ~
-::  uqbar contracts.
-
-::  per-desk/contract module.
-++  uq
-  |_  [code=@t mesk=(unit [desk path])]
-
-::  ** utils
+::  ** compile
   ++  compile
     |=  [pax=path code=(unit @t) our=@p now=@da]
     =/  paf=(unit path)
@@ -222,9 +225,6 @@
     =/  payload=vase  (slap smart-lib full)
     =/  cont  (~(mint ut p:(slop smart-lib payload)) %noun contract-hoon)
     [cont smart-lib payload q:(~(mint ut p.smart-lib) %noun full)]
-    ::  =/  payload  .*(full-nock pay.cont)
-    ::  =/  battery  .*([full-nock payload] bat.cont)
-    ::  =/  dor      [-:!>(*contract:smart) battery]
 
 ::  *** fondle-mill
 ::  mills yolk and shell on fake-land.
@@ -232,6 +232,8 @@
   |=  [=yolk:smart =shell:smart =granary:mill]
   =/  =egg:smart  [fake-sig shell yolk]
   =/  =land:mill  [granary fake-populace]
+  %-  road  |.
+  ~_  leaf/"citadel: mill failed\\n\\n{<yolk>}"
   %+  ~(mill mil miller town-id 1)
     land
   egg

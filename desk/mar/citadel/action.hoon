@@ -15,6 +15,12 @@
     =,  enjs
     =<
     ?-    -.act
+        %delete-grain
+      %+  frond  %delete-grain
+      %-  pairs
+      :~  ['project' s+project.act]
+          ['grain-id' s+(scot %ux grain-id.act)]
+      ==
         %delete
       (frond %delete s+project.act)
         %run
@@ -53,6 +59,7 @@
         :~  ['arena' s+arena.survey.act]
             ['deeds' a+(turn deeds.survey.act |=(g=^deed (deed g)))]
             ['charter' s+charter.survey.act]
+            ['contract-id' s+contract-id.act]
             ['grains' (en-vase !>(grains.act))]
         ==
       ::
@@ -121,6 +128,7 @@
       mill+mill
       save-grain+save-grain
       delete+(su sym)
+      delete-grain+delete-grain
     ==
     |%
     ++  save-grain
@@ -128,6 +136,11 @@
       :~  meal+(cu |=(t=@ ;;(?(%rice %wheat) t)) (su sym))
           project+(se %tas)
           grain+grain
+      ==
+    ++  delete-grain
+      %-  ot
+      :~  project+(se %tas)
+          grain-id+(se %ux)
       ==
     ++  grain
       ^-  $-(json grain:smart)
@@ -158,6 +171,7 @@
       %-  ot
       :~  survey+survey
           grains+(ar grain)
+          contract-id+(se %ux)
       ==
     ++  run
       %-  ot
@@ -179,8 +193,7 @@
     ::
     ++  grain-data
       |=  jon=json
-      ?>  =(%o -.jon)
-      `*`(en-json:html jon)
+      `*`jon
 
     ++  survey
       ^-  $-(json ^survey)

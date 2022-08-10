@@ -294,6 +294,7 @@
       %save-grain  (on-save-grain action)
       %save  (on-save action)
       %delete  (on-delete action)
+      %delete-grain  (on-delete-grain action)
   ==
 ::  ** frontend
 ::  *** on-http-request
@@ -383,17 +384,52 @@
   ?>  ?=(%delete -.action)
   `state(projects (~(del by projects) project.action))
 ::  ** contracts
-
+::  *** on-delete-grain
+++  on-delete-grain
+  |=  =action
+  ^-  (quip card _state)
+  ?>  ?=(%delete-grain -.action)
+  =/  =granary:mill
+   =-  ?~  -  fake-granary:uq  -
+  (biff (~(get by factory) project.action) same)
+  =/  purged=granary:mill  (del:big:uq granary grain-id.action)
+  `state(factory (~(put by factory) project.action purged))
 ::  *** TODO on-test
 ++  on-test
   |=  =action
   ^-  (quip card _state)
   ?>  ?=(%test -.action)
-  =/  [cont=vase * * full-nock=*]  (compile:uq ~ `charter.survey.action our:bowl now:bowl)
-::    =payload .*(library pay.cont)
-::  =battery .*([library payload] bat.cont)
-::    ()
-  ~&  >  action  [~ state]
+  =/  resu=(quip card _state)  [~ state]
+  =/  contract-id=@ux  (fall contract-id.action `@ux`project.survey.action)
+  =?  resu  !=('' charter.survey.action)
+    %-  on-mill
+    :*  %mill
+        survey.action
+        [contract-id id:miller:uq id:miller:uq town-id:uq]
+        ~
+        ~
+    ==
+  =/  =shell:smart
+    [caller-1:uq ~ contract-id 1 10.000 town-id:uq 1]
+  =/  =granary:mill
+    =-  ?~  -  fake-granary:uq  -
+    (biff (~(get by factory) project.survey.action) same)
+  =/  remaining=(list grain:smart)  grains.action
+  =|  results=(list mill-result:uq)
+  |-  ^-  (quip card _state)
+  ~&  >  remaining+remaining
+  ~&  >  results+results
+  ?~  remaining  resu
+  =/  in=*
+    ?-  -.i.remaining
+      %.n  !!
+      %.y  data.p.i.remaining
+    ==
+  ::
+  %=  $
+    results  [(fondle-mill:uq [;;(@tas -.in) +.in] shell granary) results]
+    remaining  t.remaining
+  ==
 ::  *** TODO save grain
 ::  saves a grain to the granary associated with the specified project.
 ::  rice - salt, label, bran, data

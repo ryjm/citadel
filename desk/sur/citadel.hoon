@@ -59,11 +59,12 @@
     [%desk from=desk name=@tas]
     [%diagram furm=(unit desk) =gram name=@tas]
     [%run =survey =bran:smart interface=lumps:smart types=lumps:smart]
-    [%test =survey grains=(list grain:smart)]
+    [%test =survey contract-id=(unit @ux) grains=(list grain:smart)]
     [%mill =survey =bran:smart interface=lumps:smart types=lumps:smart]
     [%save-grain meal=?(%rice %wheat) project=desk =grain:smart]
     [%save =survey]
     [%delete project=desk]
+    [%delete-grain project=desk grain-id=id:smart]
   ==
 ::
 --
