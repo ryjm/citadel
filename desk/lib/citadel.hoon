@@ -1,10 +1,12 @@
 ::  * imports
 /-  *citadel, zink
-/+  mill=zig-mill, smart=zig-sys-smart, merk
+/+  mill=zig-mill, smart=zig-sys-smart, merk, indexer=zig-indexer
 ::  ** nouns
 /*  smart-lib-noun  %mime  /lib/zig/compiled/smart-lib/noun
 /*  zink-cax-noun   %mime  /lib/zig/compiled/hash-cache/noun
 /*  triv-contract   %mime  /lib/zig/compiled/trivial/noun
+/*  zigs-contract-noun   %mime  /lib/zig/compiled/zigs/noun
+
 ::  * main
 =,  clay
 |%
@@ -186,19 +188,6 @@
 ++  uq
   |_  [code=@t mesk=(unit [desk path])]
 
-::  ** utils
-::  ** vase interaction
-  ++  read-shut                                               ::  slam a door
-    |=  [dor=vase arm=@tas dor-sam=vase arm-sam=vase arm-arm=?(%noun %json)]
-    ^-  vase
-    %+  slap
-      (slop dor (slop dor-sam arm-sam))
-    ^-  hoon
-    :-  %cnsg
-    :^    [arm-arm ~]
-        [%cnsg [arm ~] [%$ 2] [%$ 6] ~]  ::  replace sample
-      [%$ 7]
-    ~
 ::  ** compile
   ++  compile
     |=  [pax=path code=(unit @t) our=@p now=@da]
@@ -232,6 +221,7 @@
   |=  [=yolk:smart =shell:smart =granary:mill]
   =/  =egg:smart  [fake-sig shell yolk]
   =/  =land:mill  [granary fake-populace]
+  ~&  >  fake-populace
   %-  road  |.
   ~_  leaf/"citadel: mill failed\\n\\n{<yolk>}"
   %+  ~(mill mil miller town-id 1)
@@ -242,7 +232,6 @@
 ::  initializes a dummy mill for testing.
 ++  big  (bi:merk id:smart grain:smart)  ::  merkle engine for granary
 ++  pig  (bi:merk id:smart @ud)          ::                for populace
-++  init-now  *@da
 ++  town-id    0x0
 ++  set-fee    7
 ++  fake-sig   [0 0 0]
@@ -254,12 +243,12 @@
 +$  mill-result
   [fee=@ud =land:mill burned=granary:mill =errorcode:smart hits=(list hints:zink) =crow:smart]
 ::  **** callers
-::  fake callers used in +test-mill
+::  fake callers used in testing
 ++  miller    ^-  caller:smart  [0x1512.3341 1 0x1.1512.3341]
 ++  caller-1  ^-  caller:smart  [0xbeef 1 0x1.beef]
 ++  caller-2  ^-  caller:smart  [0xdead 1 0x1.dead]
 ++  caller-3  ^-  caller:smart  [0xcafe 1 0x1.cafe]
-::  *** scry wheat
+::  *** scry contract
 ::  fake grain representing the compiled trivial-scry contract.
 ++  scry-wheat
   ^-  grain:smart
@@ -275,14 +264,29 @@
       0xdada.dada  ::  holder
       town-id
   ==
-
+::  *** zigs contract
+::  fake grain representing the standard zigs contract.
+++  zigs-contract
+  ^-  grain:smart
+  =/  cont  ;;([bat=* pay=*] (cue q.q.zigs-contract-noun))
+  =/  interface=lumps:smart  ~
+  =/  types=lumps:smart  ~
+  :*  %|
+      `cont
+      interface
+      types
+      zigs-wheat-id:smart
+      zigs-wheat-id:smart
+      zigs-wheat-id:smart
+      town-id
+  ==
 ::  *** granary
 ::  fake granary containing all the grains used by the dummy mill.
 ++  fake-granary
   ^-  granary:mill
-  %+  gas:big  *(merk:merk id:smart grain:smart)
+  %+  gas:big  *(merk:smart id:smart grain:smart)
   :~  [id.p:scry-wheat scry-wheat]
-      ::  [id.p:wheat:zigs wheat:zigs]
+      [id.p:zigs-contract zigs-contract]
       [id.p:beef-account:zigs beef-account:zigs]
       [id.p:dead-account:zigs dead-account:zigs]
       [id.p:miller-account:zigs miller-account:zigs]
@@ -394,6 +398,18 @@
   %+  mast  gap
   ;~(pfix fas bus gap fel)
 --
+
+::  * json
+++  enjs
+  =,  enjs:format
+  |%
+  ++  factory
+    |=  =^factory
+    :-  %a
+    %+  turn  ~(tap by factory)
+    |=  [project=desk =granary:mill]
+    (frond project (granary:enjs:indexer granary))
+  --
 
 ::  * clay utils
 ::

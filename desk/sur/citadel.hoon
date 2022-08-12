@@ -1,4 +1,4 @@
-/+  smart=zig-sys-smart
+/+  smart=zig-sys-smart, mill=zig-mill
 :: dia definitions
 ::
 |%
@@ -6,6 +6,30 @@
 ::  ** cards
 +$  card  card:agent:gall
 +$  cards  (list card)
+::  ** state
++$  state-0  [%0 colonies=(map desk outpost)]
+::
++$  state-1
+   $:  %1
+       colonies=(map desk outpost)
+       projects=(map desk (set deed))
+       =factory
+       tests=(jar desk @t)
+       ::  metadata=(map desk metadata)
+   ==
++$  versioned-state
+  $%  state-0
+      state-1
+  ==
++$  factory  (map desk granary:mill)
++$  in-state
+  $%  [%granary =granary:mill]
+      [%factory =factory]
+      [%project project=(set deed)]
+      [%projects projects=(map desk (set deed))]
+      [%colonies colonies=(map desk outpost)]
+      [%tests tests=(jar desk @t)]
+  ==
 ::  * desk definitions
 ::  +grounds - dependencies and workshops
 ::
@@ -59,7 +83,8 @@
     [%desk from=desk name=@tas]
     [%diagram furm=(unit desk) =gram name=@tas]
     [%run =survey =bran:smart interface=lumps:smart types=lumps:smart]
-    [%test =survey contract-id=(unit @ux) grains=(list grain:smart)]
+    [%test =survey contract-id=(unit @ux) grains=(list grain:smart) yolks=(list yolk:smart)]
+    [%save-test project=desk test=@t overwrite=?]
     [%mill =survey =bran:smart interface=lumps:smart types=lumps:smart]
     [%save-grain meal=?(%rice %wheat) project=desk =grain:smart]
     [%save =survey]

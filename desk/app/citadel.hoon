@@ -5,20 +5,6 @@
 ::  * types
 |%
 
-::  ** state
-::
- +$  state-0  [%0 colonies=(map desk outpost)]
-::
- +$  state-1
-   $:  %1
-       colonies=(map desk outpost)
-       projects=(map desk (set deed))
-       factory=(map desk granary:mill)
-   ==
- +$  versioned-state
-  $%  state-0
-      state-1
-  ==
 ::
 ::  ** project types
 ::
@@ -55,23 +41,45 @@
       [%x %colonies ~]
     ``noun+!>(colonies)
       [%x %projects ~]
-    ``noun+!>(projects)
-      [%x %projects-json ~]
-    ``json+!>((en-vase:etch !>(projects.state)))
+    ``citadel-projects+!>(state)
+      [%x %tests @ ~]
+    :^  ~  ~  %json
+    !>  =-  a+(turn - (lead %s))
+    (~(got by tests) i.t.t.path)
       [%x %project @ ~]
     ``noun+!>((~(get by projects) i.t.t.path))
-      [%x %factory @ ~]
-    ``noun+!>((~(get by factory) i.t.t.path))
+      [%x %factory ~]
+    ``citadel-factory+!>(state)
+      [%x %state @tas @ ~]
+    :^  ~  ~  %citadel-state
+    !>
+    =-  (fall - *in-state)
+    =-  (bind - (corl in-state (lead i.t.t.path)))
+    ?+    i.t.t.path  ~
+        %tests
+      (some tests)
+        %factory
+      (some factory)
+        %granary
+      (~(get by factory) i.t.t.t.path)
+        %project
+      (~(get by projects) i.t.t.t.path)
+        %projects
+      (some projects)
+        %colonies
+      (some colonies)
+    ==
       [%x %factory @ @ ~]
     ``noun+!>((get:big:uq (~(got by factory) i.t.t.path) (slav %ux i.t.t.t.path)))
+      [%x %factory @ ~]
+    :^  ~  ~  %noun
+    !>  (~(get by factory) i.t.t.path)
       [%x %factory-json @ ~]
-    :-  ~  :-  ~
-    :-  %json
+    :^  ~  ~  %json
     !>  =-  (en-vase:etch -)
     !>  (~(get by factory) i.t.t.path)
       [%x %factory-json @ @ ~]
-    :-  ~  :-  ~
-    :-  %json
+    :^  ~  ~  %json
     !>  =-  (en-vase:etch -)
     !>  %+  get:big:uq
           (~(got by factory) i.t.t.path)
@@ -98,7 +106,7 @@
       ?:  ?=(%| -.maybe-old)  !<(versioned-state ole)  +.maybe-old
     =/  new=state-1
     ?-  -.old
-      %0  [%1 colonies.old *(map desk (set deed)) *(map desk granary:mill)]
+      %0  [%1 colonies.old *(map desk (set deed)) *(map desk granary:mill) *(jar desk @t)]
       %1  old
     ==
     :: TODO install docs elsewhere
@@ -116,9 +124,6 @@
     ^-  (quip card _this)
     =^  cards  state
       ?+    mark  (on-poke:def mark vase)
-          %citadel-action
-        =+  !<(poke=action vase)
-        (on-action:do poke)
           %citadel-action
         =+  !<(poke=action vase)
         (on-action:do poke)
@@ -289,6 +294,7 @@
       %desk  (on-desk action)
       %diagram  (on-diagram action)
       %test  (on-test action)
+      %save-test  (on-save-test action)
       %run  (on-run action)
       %mill  (on-mill action)
       %save-grain  (on-save-grain action)
@@ -396,7 +402,19 @@
   (biff (~(get by factory) project.action) same)
   =/  purged=granary:mill  (del:big:uq granary grain-id.action)
   `state(factory (~(put by factory) project.action purged))
-::  *** TODO on-test
+::  *** on-save-test
+++  on-save-test
+  |=  =action
+  ^-  (quip card _state)
+  ?>  ?=(%save-test -.action)
+  :-  ~
+  %_    state
+      tests
+    ?:  overwrite.action  (~(put by tests) project.action ~[test.action])
+    (~(add ja tests) project.action test.action)
+  ==
+
+::  *** on-test
 ++  on-test
   |=  =action
   ^-  (quip card _state)
@@ -412,27 +430,21 @@
         ~
     ==
   =/  =shell:smart
-    [caller-1:uq ~ contract-id 1 10.000 town-id:uq 1]
+    [caller-1:uq ~ contract-id 1 1.000.000 town-id:uq 0]
   =/  =granary:mill
     =-  ?~  -  fake-granary:uq  -
     (biff (~(get by factory) project.survey.action) same)
-  =/  remaining=(list grain:smart)  grains.action
+  =/  remaining=(list yolk:smart)  yolks.action
   =|  results=(list mill-result:uq)
   |-  ^-  (quip card _state)
   ~&  >  remaining+remaining
   ~&  >  results+results
   ?~  remaining  resu
-  =/  in=*
-    ?-  -.i.remaining
-      %.n  !!
-      %.y  data.p.i.remaining
-    ==
-  ::
   %=  $
-    results  [(fondle-mill:uq [;;(@tas -.in) +.in] shell granary) results]
+    results  [(fondle-mill:uq i.remaining shell granary) results]
     remaining  t.remaining
   ==
-::  *** TODO save grain
+::  *** save grain
 ::  saves a grain to the granary associated with the specified project.
 ::  rice - salt, label, bran, data
 ++  on-save-grain
@@ -457,9 +469,7 @@
       %wheat
     ~|("citadel: saving wheat not supported yet" !!)
   ==
-::  *** TODO delete grain
-::  *** TODO update scries
-
+::  *** delete grain
 ::  *** on-run
 ::  currently creates a wheat from an action containing the needed bran, interface,
 ::  and types.

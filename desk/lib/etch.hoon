@@ -1,4 +1,4 @@
-/+  smart=zig-sys-smart, *mip
+/+  smart=zig-sys-smart, *mip, *pprint
 |%
 ::
 ++  show-json
@@ -27,7 +27,7 @@
     ?:  &(?=([%s @t] hed) ?=([%s @t] tal))
       [%a hed tal ~]
     ?:  &(?=([%s @t] hed) !?=([%s @t] tal))
-      [%o (silt ~[[p.hed tal]])]
+      [%a hed tal ~]
     ?:  &(?=([%a *] hed) ?=([%a *] tal))
       [%a (weld p.hed p.tal)]
     ?:  ?=([%a *] tal)

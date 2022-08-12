@@ -1,7 +1,6 @@
 /-  *citadel
 /+  *etch
 =,  format
-!:
 ::
 |_  act=action
 ::
@@ -15,6 +14,13 @@
     =,  enjs
     =<
     ?-    -.act
+        %save-test
+      %+  frond  %save-test
+      %-  pairs
+      :~  ['project' s+project.act]
+          ['test' s+test.act]
+          ['overwrite' b+overwrite.act]
+      ==
         %delete-grain
       %+  frond  %delete-grain
       %-  pairs
@@ -56,11 +62,15 @@
       %test
       %+  frond  %test
       %-  pairs
-        :~  ['arena' s+arena.survey.act]
-            ['deeds' a+(turn deeds.survey.act |=(g=^deed (deed g)))]
-            ['charter' s+charter.survey.act]
-            ['contract-id' s+contract-id.act]
-            ['grains' (en-vase !>(grains.act))]
+        :~  ['survey' (survey survey.act)]
+            ['contract-id' ?~(contract-id.act ~ s+(scot %ux u.contract-id.act))]
+            ['grains' ~]
+            :-  'yolks'
+            =;  yolker
+              a+(turn yolks.act yolker)
+            |*  y=yolk:smart
+            =-  ~&  >  [y - (render-hoon (ream (crip "{<yolks.act>}")))]  -
+            s+(crip "{<q.y>}")
         ==
       ::
         %save
@@ -87,6 +97,14 @@
         ==
     ==
     |%
+    ++  survey
+      |=  s=^survey
+      %-  pairs
+        :~  ['arena' s+arena.s]
+            ['deeds' a+(turn deeds.s |=(d=^deed (deed d)))]
+            ['charter' s+charter.s]
+            ['project' s+project.s]
+        ==
     ++  gram
       |=  g=^gram
       %-  pairs
@@ -129,6 +147,8 @@
       save-grain+save-grain
       delete+(su sym)
       delete-grain+delete-grain
+      save-test+(ot ~[project+(se %tas) test+so override+bo])
+      test+test
     ==
     |%
     ++  save-grain
@@ -150,8 +170,8 @@
       ^-  $-(json rice:smart)
       =-  (ot ~[['.y' -]])
       |=  jon=json
-      (road |.((rice jon)))
-    ++  wheat
+      (rice jon)
+   ++  wheat
       ^-  $-(json wheat:smart)
       |=  jon=json
       *wheat:smart
@@ -167,11 +187,23 @@
         holder+(se %ux)
         town-id+(se %ux)
       ==
+    ++  yolk
+      ^-  $-(json yolk:smart)
+      =;  yolker
+        (cu yolker so)
+      |=  y=@t
+      %-  road  |.
+      ;;(yolk:smart q:(slap !>(~) (ream y)))
     ++  test
       %-  ot
       :~  survey+survey
-          grains+(ar grain)
-          contract-id+(se %ux)
+          contract-id+(mu (se %ux))
+          =-  :-  %grains  -
+          %+  corl  (bond =>(_smart |.(*(list grain:smart))))
+            (ar:dejs-soft:format (corl some grain))
+          =-  :-  %yolks  -
+          %+  corl  (bond =>(_smart |.(*(list yolk:smart))))
+            (ar:dejs-soft:format (corl some yolk))
       ==
     ++  run
       %-  ot
