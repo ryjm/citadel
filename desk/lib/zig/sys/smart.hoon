@@ -298,7 +298,7 @@
     (hash:pedersen yux 0)
   (hash:pedersen $(yux -.yux) $(yux +.yux))
 ::
-::  +sore: single sha-256 hash in ascending order, uses +dor as
+::  +sore: single Pedersen hash in ascending order, uses +dor as
 ::  fallback
 ::
 ++  sore
@@ -309,7 +309,7 @@
     (dor a b)
   (lth c d)
 ::
-::  +sure: double sha-256 hash in ascending order, uses +dor as
+::  +sure: double Pedersen hash in ascending order, uses +dor as
 ::  fallback
 ::
 ++  sure
@@ -542,6 +542,526 @@
     |-  ^+  b
     ?~  a  b
     $(a r.a, b $(a l.a, b (~(put in b) p.n.a)))
+  --
+::                                                      ::
+::  set, but using pedersen hash                        ::
+::  TODO jet                                            ::
+::
+++  pset
+  |$  [item]
+  $|  (tree item)
+  |=(a=(tree) ?:(=(~ a) & ~(apt pn a)))
+::
+++  pn                                                  ::  pedersen-set engine
+  =|  a=(tree)  :: (set)
+  |@
+  ++  all                                               ::  logical AND
+    |*  b=$-(* ?)
+    |-  ^-  ?
+    ?~  a
+      &
+    ?&((b n.a) $(a l.a) $(a r.a))
+  ::
+  ++  any                                               ::  logical OR
+    |*  b=$-(* ?)
+    |-  ^-  ?
+    ?~  a
+      |
+    ?|((b n.a) $(a l.a) $(a r.a))
+  ::
+  ++  apt                                               ::  check correctness
+    =<  $
+    =|  [l=(unit) r=(unit)]
+    |.  ^-  ?
+    ?~  a   &
+    ?&  ?~(l & (sore n.a u.l))
+        ?~(r & (sore u.r n.a))
+        ?~(l.a & ?&((sure n.a n.l.a) $(a l.a, l `n.a)))
+        ?~(r.a & ?&((sure n.a n.r.a) $(a r.a, r `n.a)))
+    ==
+  ::
+  ++  bif                                               ::  splits a by b
+    |*  b=*
+    ^+  [l=a r=a]
+    =<  +
+    |-  ^+  a
+    ?~  a
+      [b ~ ~]
+    ?:  =(b n.a)
+      a
+    ?:  (sore b n.a)
+      =+  c=$(a l.a)
+      ?>  ?=(^ c)
+      c(r a(l r.c))
+    =+  c=$(a r.a)
+    ?>  ?=(^ c)
+    c(l a(r l.c))
+  ::
+  ++  del                                               ::  b without any a
+    |*  b=*
+    |-  ^+  a
+    ?~  a
+      ~
+    ?.  =(b n.a)
+      ?:  (sore b n.a)
+        a(l $(a l.a))
+      a(r $(a r.a))
+    |-  ^-  [$?(~ _a)]
+    ?~  l.a  r.a
+    ?~  r.a  l.a
+    ?:  (sure n.l.a n.r.a)
+      l.a(r $(l.a r.l.a))
+    r.a(l $(r.a l.r.a))
+  ::
+  ++  dif                                               ::  difference
+    =+  b=a
+    |@
+    ++  $
+      |-  ^+  a
+      ?~  b
+        a
+      =+  c=(bif n.b)
+      ?>  ?=(^ c)
+      =+  d=$(a l.c, b l.b)
+      =+  e=$(a r.c, b r.b)
+      |-  ^-  [$?(~ _a)]
+      ?~  d  e
+      ?~  e  d
+      ?:  (sure n.d n.e)
+        d(r $(d r.d))
+      e(l $(e l.e))
+    --
+  ::
+  ++  dig                                               ::  axis of a in b
+    |=  b=*
+    =+  c=1
+    |-  ^-  (unit @)
+    ?~  a  ~
+    ?:  =(b n.a)  [~ u=(peg c 2)]
+    ?:  (sore b n.a)
+      $(a l.a, c (peg c 6))
+    $(a r.a, c (peg c 7))
+  ::
+  ++  gas                                               ::  concatenate
+    |=  b=(list _?>(?=(^ a) n.a))
+    |-  ^+  a
+    ?~  b
+      a
+    $(b t.b, a (put i.b))
+  ::  +has: does :b exist in :a?
+  ::
+  ++  has
+    |*  b=*
+    ^-  ?
+    ::  wrap extracted item type in a unit because bunting fails
+    ::
+    ::    If we used the real item type of _?^(a n.a !!) as the sample type,
+    ::    then hoon would bunt it to create the default sample for the gate.
+    ::
+    ::    However, bunting that expression fails if :a is ~. If we wrap it
+    ::    in a unit, the bunted unit doesn't include the bunted item type.
+    ::
+    ::    This way we can ensure type safety of :b without needing to perform
+    ::    this failing bunt. It's a hack.
+    ::
+    %.  [~ b]
+    |=  b=(unit _?>(?=(^ a) n.a))
+    =>  .(b ?>(?=(^ b) u.b))
+    |-  ^-  ?
+    ?~  a
+      |
+    ?:  =(b n.a)
+      &
+    ?:  (sore b n.a)
+      $(a l.a)
+    $(a r.a)
+  ::
+  ++  int                                               ::  intersection
+    =+  b=a
+    |@
+    ++  $
+      |-  ^+  a
+      ?~  b
+        ~
+      ?~  a
+        ~
+      ?.  (sure n.a n.b)
+        $(a b, b a)
+      ?:  =(n.b n.a)
+        a(l $(a l.a, b l.b), r $(a r.a, b r.b))
+      ?:  (sore n.b n.a)
+        %-  uni(a $(a l.a, r.b ~))  $(b r.b)
+      %-  uni(a $(a r.a, l.b ~))  $(b l.b)
+    --
+  ::
+  ++  put                                               ::  puts b in a, sorted
+    |*  b=*
+    |-  ^+  a
+    ?~  a
+      [b ~ ~]
+    ?:  =(b n.a)
+      a
+    ?:  (sore b n.a)
+      =+  c=$(a l.a)
+      ?>  ?=(^ c)
+      ?:  (sure n.a n.c)
+        a(l c)
+      c(r a(l r.c))
+    =+  c=$(a r.a)
+    ?>  ?=(^ c)
+    ?:  (sure n.a n.c)
+      a(r c)
+    c(l a(r l.c))
+  ::
+  ++  rep                                               ::  reduce to product
+    |*  b=_=>(~ |=([* *] +<+))
+    |-
+    ?~  a  +<+.b
+    $(a r.a, +<+.b $(a l.a, +<+.b (b n.a +<+.b)))
+  ::
+  ++  run                                               ::  apply gate to values
+    |*  b=gate
+    =+  c=`(set _?>(?=(^ a) (b n.a)))`~
+    |-  ?~  a  c
+    =.  c  (~(put in c) (b n.a))
+    =.  c  $(a l.a, c c)
+    $(a r.a, c c)
+  ::
+  ++  tap                                               ::  convert to list
+    =<  $
+    =+  b=`(list _?>(?=(^ a) n.a))`~
+    |.  ^+  b
+    ?~  a
+      b
+    $(a r.a, b [n.a $(a l.a)])
+  ::
+  ++  uni                                               ::  union
+    =+  b=a
+    |@
+    ++  $
+      ?:  =(a b)  a
+      |-  ^+  a
+      ?~  b
+        a
+      ?~  a
+        b
+      ?:  =(n.b n.a)
+        b(l $(a l.a, b l.b), r $(a r.a, b r.b))
+      ?:  (sure n.a n.b)
+        ?:  (sore n.b n.a)
+          $(l.a $(a l.a, r.b ~), b r.b)
+        $(r.a $(a r.a, l.b ~), b l.b)
+      ?:  (sore n.a n.b)
+        $(l.b $(b l.b, r.a ~), a r.a)
+      $(r.b $(b r.b, l.a ~), a l.a)
+    --
+  ::
+  ++  wyt                                               ::  size of set
+    =<  $
+    |.  ^-  @
+    ?~(a 0 +((add $(a l.a) $(a r.a))))
+  --
+::                                                      ::
+::  map logic, but with pedersen ordering               ::
+::  TODO jet                                            ::
+::
+++  pmap
+  |$  [key value]                                       ::  table
+  $|  (tree (pair key value))
+  |=(a=(tree (pair)) ?:(=(~ a) & ~(apt py a)))
+::
+++  py                                                  ::  pmap engine
+  =|  a=(tree (pair))  ::  (map)
+  =*  node  ?>(?=(^ a) n.a)
+  |@
+  ++  all                                               ::  logical AND
+    |*  b=$-(* ?)
+    |-  ^-  ?
+    ?~  a
+      &
+    ?&((b q.n.a) $(a l.a) $(a r.a))
+  ::
+  ++  any                                               ::  logical OR
+    |*  b=$-(* ?)
+    |-  ^-  ?
+    ?~  a
+      |
+    ?|((b q.n.a) $(a l.a) $(a r.a))
+  ::
+  ++  bif                                               ::  splits a by b
+    |*  [b=* c=*]
+    ^+  [l=a r=a]
+    =<  +
+    |-  ^+  a
+    ?~  a
+      [[b c] ~ ~]
+    ?:  =(b p.n.a)
+      ?:  =(c q.n.a)
+        a
+      a(n [b c])
+    ?:  (sore b p.n.a)
+      =+  d=$(a l.a)
+      ?>  ?=(^ d)
+      d(r a(l r.d))
+    =+  d=$(a r.a)
+    ?>  ?=(^ d)
+    d(l a(r l.d))
+  ::
+  ++  del                                               ::  delete at key b
+    |*  b=*
+    |-  ^+  a
+    ?~  a
+      ~
+    ?.  =(b p.n.a)
+      ?:  (sore b p.n.a)
+        a(l $(a l.a))
+      a(r $(a r.a))
+    |-  ^-  [$?(~ _a)]
+    ?~  l.a  r.a
+    ?~  r.a  l.a
+    ?:  (sure p.n.l.a p.n.r.a)
+      l.a(r $(l.a r.l.a))
+    r.a(l $(r.a l.r.a))
+  ::
+  ++  dif                                               ::  difference
+    =+  b=a
+    |@
+    ++  $
+      |-  ^+  a
+      ?~  b
+        a
+      =+  c=(bif p.n.b q.n.b)
+      ?>  ?=(^ c)
+      =+  d=$(a l.c, b l.b)
+      =+  e=$(a r.c, b r.b)
+      |-  ^-  [$?(~ _a)]
+      ?~  d  e
+      ?~  e  d
+      ?:  (sure p.n.d p.n.e)
+        d(r $(d r.d))
+      e(l $(e l.e))
+    --
+  ::
+  ++  dig                                               ::  axis of b key
+    |=  b=*
+    =+  c=1
+    |-  ^-  (unit @)
+    ?~  a  ~
+    ?:  =(b p.n.a)  [~ u=(peg c 2)]
+    ?:  (sore b p.n.a)
+      $(a l.a, c (peg c 6))
+    $(a r.a, c (peg c 7))
+  ::
+  ++  apt                                               ::  check correctness
+    =<  $
+    =|  [l=(unit) r=(unit)]
+    |.  ^-  ?
+    ?~  a   &
+    ?&  ?~(l & &((sore p.n.a u.l) !=(p.n.a u.l)))
+        ?~(r & &((sore u.r p.n.a) !=(u.r p.n.a)))
+        ?~  l.a   &
+        &((sure p.n.a p.n.l.a) !=(p.n.a p.n.l.a) $(a l.a, l `p.n.a))
+        ?~  r.a   &
+        &((sure p.n.a p.n.r.a) !=(p.n.a p.n.r.a) $(a r.a, r `p.n.a))
+    ==
+  ::
+  ++  gas                                               ::  concatenate
+    |*  b=(list [p=* q=*])
+    =>  .(b `(list _?>(?=(^ a) n.a))`b)
+    |-  ^+  a
+    ?~  b
+      a
+    $(b t.b, a (put p.i.b q.i.b))
+  ::
+  ++  get                                               ::  grab value by key
+    |*  b=*
+    =>  .(b `_?>(?=(^ a) p.n.a)`b)
+    |-  ^-  (unit _?>(?=(^ a) q.n.a))
+    ?~  a
+      ~
+    ?:  =(b p.n.a)
+      (some q.n.a)
+    ?:  (sore b p.n.a)
+      $(a l.a)
+    $(a r.a)
+  ::
+  ++  got                                               ::  need value by key
+    |*  b=*
+    (need (get b))
+  ::
+  ++  gut                                               ::  fall value by key
+    |*  [b=* c=*]
+    (fall (get b) c)
+  ::
+  ++  has                                               ::  key existence check
+    |*  b=*
+    !=(~ (get b))
+  ::
+  ++  int                                               ::  intersection
+    =+  b=a
+    |@
+    ++  $
+      |-  ^+  a
+      ?~  b
+        ~
+      ?~  a
+        ~
+      ?:  (sure p.n.a p.n.b)
+        ?:  =(p.n.b p.n.a)
+          b(l $(a l.a, b l.b), r $(a r.a, b r.b))
+        ?:  (sore p.n.b p.n.a)
+          %-  uni(a $(a l.a, r.b ~))  $(b r.b)
+        %-  uni(a $(a r.a, l.b ~))  $(b l.b)
+      ?:  =(p.n.a p.n.b)
+        b(l $(b l.b, a l.a), r $(b r.b, a r.a))
+      ?:  (sore p.n.a p.n.b)
+        %-  uni(a $(b l.b, r.a ~))  $(a r.a)
+      %-  uni(a $(b r.b, l.a ~))  $(a l.a)
+    --
+  ::
+  ++  jab
+    |*  [key=_?>(?=(^ a) p.n.a) fun=$-(_?>(?=(^ a) q.n.a) _?>(?=(^ a) q.n.a))]
+    ^+  a
+    ::
+    ?~  a  !!
+    ::
+    ?:  =(key p.n.a)
+      a(q.n (fun q.n.a))
+    ::
+    ?:  (sore key p.n.a)
+      a(l $(a l.a))
+    ::
+    a(r $(a r.a))
+  ::
+  ++  mar                                               ::  add with validation
+    |*  [b=* c=(unit *)]
+    ?~  c
+      (del b)
+    (put b u.c)
+  ::
+  ++  put                                               ::  adds key-value pair
+    |*  [b=* c=*]
+    |-  ^+  a
+    ?~  a
+      [[b c] ~ ~]
+    ?:  =(b p.n.a)
+      ?:  =(c q.n.a)
+        a
+      a(n [b c])
+    ?:  (sore b p.n.a)
+      =+  d=$(a l.a)
+      ?>  ?=(^ d)
+      ?:  (sure p.n.a p.n.d)
+        a(l d)
+      d(r a(l r.d))
+    =+  d=$(a r.a)
+    ?>  ?=(^ d)
+    ?:  (sure p.n.a p.n.d)
+      a(r d)
+    d(l a(r l.d))
+  ::
+  ++  rep                                               ::  reduce to product
+    |*  b=_=>(~ |=([* *] +<+))
+    |-
+    ?~  a  +<+.b
+    $(a r.a, +<+.b $(a l.a, +<+.b (b n.a +<+.b)))
+  ::
+  ++  rib                                               ::  transform + product
+    |*  [b=* c=gate]
+    |-  ^+  [b a]
+    ?~  a  [b ~]
+    =+  d=(c n.a b)
+    =.  n.a  +.d
+    =+  e=$(a l.a, b -.d)
+    =+  f=$(a r.a, b -.e)
+    [-.f a(l +.e, r +.f)]
+  ::
+  ++  run                                               ::  apply gate to values
+    |*  b=gate
+    |-
+    ?~  a  a
+    [n=[p=p.n.a q=(b q.n.a)] l=$(a l.a) r=$(a r.a)]
+  ::
+  ++  rut                                               ::  apply gate to nodes
+    |*  b=gate
+    |-
+    ?~  a  a
+    [n=[p=p.n.a q=(b p.n.a q.n.a)] l=$(a l.a) r=$(a r.a)]
+  ::
+  ++  tap                                               ::  listify pairs
+    =<  $
+    =+  b=`(list _?>(?=(^ a) n.a))`~
+    |.  ^+  b
+    ?~  a
+      b
+    $(a r.a, b [n.a $(a l.a)])
+  ::
+  ++  uni                                               ::  union, merge
+    =+  b=a
+    |@
+    ++  $
+      |-  ^+  a
+      ?~  b
+        a
+      ?~  a
+        b
+      ?:  =(p.n.b p.n.a)
+        b(l $(a l.a, b l.b), r $(a r.a, b r.b))
+      ?:  (sure p.n.a p.n.b)
+        ?:  (sore p.n.b p.n.a)
+          $(l.a $(a l.a, r.b ~), b r.b)
+        $(r.a $(a r.a, l.b ~), b l.b)
+      ?:  (sore p.n.a p.n.b)
+        $(l.b $(b l.b, r.a ~), a r.a)
+      $(r.b $(b r.b, l.a ~), a l.a)
+    --
+  ::
+  ++  uno                                               ::  general union
+    =+  b=a
+    |@
+    ++  $
+      |=  meg=$-([_p:node _q:node _q:node] _q:node)
+      |-  ^+  a
+      ?~  b
+        a
+      ?~  a
+        b
+      ?:  =(p.n.b p.n.a)
+        :+  [p.n.a (meg p.n.a q.n.a q.n.b)]
+          $(b l.b, a l.a)
+        $(b r.b, a r.a)
+      ?:  (sure p.n.a p.n.b)
+        ?:  (sore p.n.b p.n.a)
+          $(l.a $(a l.a, r.b ~), b r.b)
+        $(r.a $(a r.a, l.b ~), b l.b)
+      ?:  (sore p.n.a p.n.b)
+        $(l.b $(b l.b, r.a ~), a r.a)
+      $(r.b $(b r.b, l.a ~), a l.a)
+    --
+  ::
+  ++  urn                                               ::  apply gate to nodes
+    |*  b=$-([* *] *)
+    |-
+    ?~  a  ~
+    a(n n.a(q (b p.n.a q.n.a)), l $(a l.a), r $(a r.a))
+  ::
+  ++  wyt                                               ::  depth of map
+    =<  $
+    |.  ^-  @
+    ?~(a 0 +((add $(a l.a) $(a r.a))))
+  ::
+  ++  key                                               ::  set of keys
+    =<  $
+    =+  b=`(set _?>(?=(^ a) p.n.a))`~
+    |.  ^+  b
+    ?~  a   b
+    $(a r.a, b $(a l.a, b (~(put in b) p.n.a)))
+  ::
+  ++  val                                               ::  list of vals
+    =+  b=`(list _?>(?=(^ a) q.n.a))`~
+    |-  ^+  b
+    ?~  a   b
+    $(a r.a, b [q.n.a $(a l.a)])
   --
 --
 ::  ::

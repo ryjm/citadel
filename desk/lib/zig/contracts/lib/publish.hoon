@@ -1,4 +1,4 @@
-/+  *zig-sys-smart
+::  /+  *zig-sys-smart
 |%
 +$  action
   $%  $:  %deploy
@@ -10,7 +10,7 @@
       ==
       ::
       $:  %upgrade
-          to-upgrade=[%grain =id]
+          to-upgrade=id
           new-nok=[bat=* pay=*]
       ==
   ==

@@ -10,7 +10,7 @@
 ::  * main
 =,  clay
 |%
-::  * desk/diagram composition
+::  * desk composition
 ::    +fose
 
 ++  fose
@@ -181,13 +181,11 @@
     -
   (welp atelier:mansion atelier)
 ::  * uqbar
-
 ::  uqbar contracts.
-
+::
 ::  per-desk/contract module.
 ++  uq
   |_  [code=@t mesk=(unit [desk path])]
-
 ::  ** compile
   ++  compile
     |=  [pax=path code=(unit @t) our=@p now=@da]
@@ -214,20 +212,18 @@
     =/  payload=vase  (slap smart-lib full)
     =/  cont  (~(mint ut p:(slop smart-lib payload)) %noun contract-hoon)
     [cont smart-lib payload q:(~(mint ut p.smart-lib) %noun full)]
-
 ::  *** fondle-mill
 ::  mills yolk and shell on fake-land.
 ++  fondle-mill
   |=  [=yolk:smart =shell:smart =granary:mill]
   =/  =egg:smart  [fake-sig shell yolk]
   =/  =land:mill  [granary fake-populace]
-  ~&  >  fake-populace
   %-  road  |.
   ~_  leaf/"citadel: mill failed\\n\\n{<yolk>}"
   %+  ~(mill mil miller town-id 1)
     land
   egg
-::  ** fake data
+::  ** fondle data
 ::  *** mill
 ::  initializes a dummy mill for testing.
 ++  big  (bi:merk id:smart grain:smart)  ::  merkle engine for granary
@@ -303,7 +299,7 @@
   ^-  land:mill
   [fake-granary fake-populace]
 
-::  ** fake zigs
+::  ** fondle zigs
 ::  represents the %zig contract.
 ++  zigs
   |_  =grain:smart
@@ -411,7 +407,7 @@
     (frond project (granary:enjs:indexer granary))
   --
 
-::  * clay utils
+::  * clay
 ::
 ::  clay utilities
 ::

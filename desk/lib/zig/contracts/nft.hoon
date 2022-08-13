@@ -8,245 +8,131 @@
 =,  nft
 |_  =cart
 ++  write
-  |=  inp=embryo
+  |=  act=action:sur
   ^-  chick
-  |^
-  ?~  args.inp  !!
-  (process ;;(arguments:sur u.args.inp) (pin caller.inp))
-  ::
-  ++  process
-    |=  [args=arguments:sur caller-id=id]
-    ?-    -.args
-        %give
-      =/  giv=grain  -:~(val by grains.inp)
-      ?>  &(=(lord.giv me.cart) ?=(%& -.germ.giv))
-      =/  giver=account:sur  ;;(account:sur data.p.germ.giv)
-      =/  =item:sur  (~(got by items.giver) item-id.args)
-      ?>  transferrable.item  ::  asset item is transferrable
-      ?~  account.args
-        =+  (fry-rice me.cart to.args town-id.cart salt.p.germ.giv)
-        =/  new=grain
-          [- me.cart to.args town-id.cart [%& salt.p.germ.giv [metadata.giver ~ ~ ~]]]
-        :+  %|
-          :+  me.cart  town-id.cart
-          [caller.inp `[%give to.args `id.new item-id.args] (silt ~[id.giv]) (silt ~[id.new])]
-        [~ (malt ~[[id.new new]]) ~]
-      =/  rec=grain  (~(got by owns.cart) u.account.args)
-      ?>  &(=(holder.rec to.args) ?=(%& -.germ.rec))
-      =/  receiver=account:sur  ;;(account:sur data.p.germ.rec)
-      ?>  =(metadata.receiver metadata.giver)
-      =:  data.p.germ.giv  giver(items (~(del by items.giver) item-id.args))
-          data.p.germ.rec  receiver(items (~(put by items.receiver) item-id.args item))
-      ==
-      [%& (malt ~[[id.giv giv] [id.rec rec]]) ~ ~]
-    ::
-        %take
-      =/  giv=grain  (~(got by owns.cart) from-rice.args)
-      ?>  ?=(%& -.germ.giv)
-      =/  giver=account:sur  ;;(account:sur data.p.germ.giv)
-      ?>  ?|  (~(has in full-allowances.giver) caller-id)
-              (~(has ju allowances.giver) caller-id item-id.args)
-          ==
-      =/  =item:sur  (~(got by items.giver) item-id.args)
-      ?~  account.args
-        =+  (fry-rice me.cart to.args town-id.cart salt.p.germ.giv)
-        =/  new=grain
-          [- me.cart to.args town-id.cart [%& salt.p.germ.giv [metadata.giver ~ ~ ~]]]
-        :+  %|
-          :+  me.cart  town-id.cart
-          [caller.inp `[%take to.args `id.new id.giv item-id.args] ~ (silt ~[id.giv id.new])]
-        [~ (malt ~[[id.new new]]) ~]
-      =/  rec=grain  (~(got by owns.cart) u.account.args)
-      ?>  &(=(holder.rec to.args) ?=(%& -.germ.rec))
-      =/  receiver=account:sur  ;;(account:sur data.p.germ.rec)
-      ?>  =(metadata.receiver metadata.giver)
-      =:  data.p.germ.rec  receiver(items (~(put by items.receiver) item-id.args item))
-          data.p.germ.giv
-        %=  giver
-          items  (~(del by items.giver) item-id.args)
-          allowances  (~(del ju allowances.giver) caller-id item-id.args)
-        == 
-      ==
-      [%& (malt ~[[id.giv giv] [id.rec rec]]) ~ ~]
-    ::
-        %set-allowance
-      =/  acc=grain  -:~(val by grains.inp)
-      ?>  !=(who.args holder.acc)
-      ?>  &(=(lord.acc me.cart) ?=(%& -.germ.acc))
-      =/  =account:sur  ;;(account:sur data.p.germ.acc)
-      ?:  full-set.args
-        ::  give full permission
-        =.  data.p.germ.acc
-          account(full-allowances (~(put in full-allowances.account) who.args))
-        [%& (malt ~[[id.acc acc]]) ~ ~]
-      ::  loop through items.args and set individual permissions
-      =/  items=(list [@ud ?])  ~(tap by items.args)
-      |-
-      ?~  items
-        ::  revoke full permission
-        =.  full-allowances.account  (~(del in full-allowances.account) who.args)
-        [%& (malt ~[[id.acc acc(data.p.germ account)]]) ~ ~]
-      %=  $
-        items  t.items
-        ::
-          allowances.account
-        ?:  +.i.items
-          (~(put ju allowances.account) who.args -.i.items)
-        (~(del ju allowances.account) who.args -.i.items)
-      ==
-    ::
-        %mint
-      ::  expects token metadata in owns.cart
-      =/  tok=grain  (~(got by owns.cart) token.args)
-      ?>  &(=(lord.tok me.cart) ?=(%& -.germ.tok))
-      =/  meta  ;;(collection-metadata:sur data.p.germ.tok)
-      ::  first, check if token is mintable
-      ?>  &(mintable.meta ?=(^ cap.meta) ?=(^ minters.meta))
-      ::  check if mint will surpass supply cap
-      ?>  (gth u.cap.meta (add supply.meta ~(wyt in mints.args)))
-      ::  TODO validate attributes
-      ::  cleared to execute!
-      =/  next-item-id  supply.meta
-      ::  for accounts which we know rice of, find in owns.cart
-      ::  and alter. for others, generate id and add to c-call
-      =/  changed-rice  (malt ~[[id.tok tok]])
-      =/  issued-rice   *(map id grain)
-      =/  mints         ~(tap in mints.args)
-      =/  next-mints    *(set mint:sur)
-      |-
-      ?~  mints
-        ::  update metadata token with new supply
-        =.  data.p.germ.tok
-          %=  meta
-            supply    next-item-id
-            mintable  ?:(=(u.cap.meta supply.meta) %.y %.n)
-          ==
-        ::  finished minting, return chick
-        ?~  issued-rice
-          [%& changed-rice ~ ~]
-        ::  finished but need to mint to newly-issued rices
-        =/  call-grains=(set id)
-          ~(key by `(map id grain)`issued-rice)
-        :+  %|
-          :+  me.cart  town-id.cart
-          [caller.inp `[%mint token.args next-mints] ~ call-grains]
-        [changed-rice issued-rice ~]
-      ::
-      ?~  account.i.mints
-        ::  need to issue
-        =+  (fry-rice me.cart to.i.mints town-id.cart salt.meta)
-        =/  new=grain
-          [- me.cart to.i.mints town-id.cart [%& salt.meta [token.args ~ ~ ~]]]
-        %=  $
-          mints   t.mints
-          issued-rice  (~(put by issued-rice) id.new new)
-          next-mints   (~(put in next-mints) [to.i.mints `id.new items.i.mints])
-        ==
-      ::  have rice, can modify
-      =/  =grain  (~(got by owns.cart) u.account.i.mints)
-      ?>  &(=(lord.grain me.cart) ?=(%& -.germ.grain))
-      =/  acc  ;;(account:sur data.p.germ.grain)
-      ?>  =(metadata.acc token.args)
-      ::  create map of items in this mint to unify with accounts
-      =/  mint-list  ~(tap in items.i.mints)
-      =/  new-items=(map @ud item:sur)
-        =+  new-items=*(map @ud item:sur)
-        |-
-        ?~  mint-list
-          new-items
-        =+  [+(next-item-id) i.mint-list]
-        %=  $
-          mint-list     t.mint-list
-          new-items     (~(put by new-items) -.- -)
-          next-item-id  +(next-item-id)
-        ==
-      =.  data.p.germ.grain  acc(items (~(uni by items.acc) new-items))
-      $(mints t.mints, changed-rice (~(put by changed-rice) id.grain grain))
-    ::
-        %deploy
-      ::  no rice expected as input, only arguments
-      ::  if mintable, enforce minter set not empty
-      ?>  ?:(mintable.args ?=(^ minters.args) %.y)
-      ::  if !mintable, enforce distribution adds up to cap
-      ::  otherwise, enforce distribution < cap
-      =/  distribution-total=@ud
-        %+  roll
-          %+  turn  ~(tap by distribution.args)
-          |=  [@ ics=(set item-contents:sur)]
-          ~(wyt in ics)
-        add
-      ?>  ?:  mintable.args
-            (gth cap.args distribution-total)
-          =(cap.args distribution-total)
-      ::  generate salt
-      =/  salt  (sham (cat 3 caller-id symbol.args))
-      ::  generate metadata
-      =/  metadata-grain  ^-  grain
-        :*  (fry-rice me.cart me.cart town-id.cart salt)
-            me.cart
-            me.cart
-            town-id.cart
-            :+  %&  salt
-            ^-  collection-metadata:sur
-            :*  name.args
-                symbol.args
-                attributes.args
-                supply=distribution-total
-                ?:(mintable.args `cap.args ~)
-                mintable.args
-                minters.args
-                deployer=caller-id
-                salt
-        ==  ==
-      ::  generate accounts
-      =+  next-item-id=0
-      =/  accounts
-        %-  ~(gas by *(map id grain))
-        %+  turn  ~(tap by distribution.args)
-        |=  [=id items=(set item-contents:sur)]
-        =/  mint-list  ~(tap in items)
-        =/  new-items=(map @ud item:sur)
-          =+  new-items=*(map @ud item:sur)
-          |-
-          ?~  mint-list
-            new-items
-          =+  [+(next-item-id) i.mint-list]
-          %=  $
-            mint-list  t.mint-list
-            new-items      (~(put by new-items) -.- -)
-            next-item-id   +(next-item-id)
-          ==
-        =+  (fry-rice me.cart id town-id.cart salt)
-        :-  -
-        [- me.cart id town-id.cart [%& salt [id.metadata-grain new-items ~ ~]]]
-      ::  big ol issued map
-      [%& ~ (~(put by accounts) id.metadata-grain metadata-grain) ~]
+  ?-    -.act
+      %give
+    =+  (need (scry grain-id.act))
+    ?<  =(~ -)
+    ::  caller must hold NFT, this contract must be lord
+    =/  gift  (husk nft:sur - `me.cart `id.from.cart)
+    ::  NFT must be transferrable
+    ?>  transferrable.data.gift
+    ::  change holder to reflect new ownership
+    ::  clear allowances
+    =:  holder.gift  to.act
+        allowances.data.gift  ~
     ==
-  --
+    (result [[%& gift] ~] ~ ~ ~)
+  ::
+      %take
+    =+  (need (scry grain-id.act))
+    ::  this contract must be lord
+    =/  gift  (husk nft:sur - `me.cart ~)
+    ::  caller must be in allowances set
+    ?>  (~(has pn allowances.data.gift) id.from.cart)
+    ::  NFT must be transferrable
+    ?>  transferrable.data.gift
+    ::  change holder to reflect new ownership
+    ::  clear allowances
+    =:  holder.gift  to.act
+        allowances.data.gift  ~
+    ==
+    (result [[%& gift] ~] ~ ~ ~)
+  ::
+      %set-allowance
+    ::  can set many allowances in single call
+    =|  changed=(list grain)
+    |-
+    ?~  items.act
+      ::  finished
+      (result changed ~ ~ ~)
+    ::  can optimize repeats here by storing these all in pmap at start
+    =+  (need (scry grain.i.items.act))
+    ::  must hold any NFT we set allowance for
+    =/  nft  (husk nft:sur - `me.cart `id.from.cart)
+    =.  allowances.data.nft
+      ?:  allowed.i.items.act
+        (~(put pn allowances.data.nft) who.i.items.act)
+      (~(del pn allowances.data.nft) who.i.items.act)
+    %=  $
+      items.act  t.items.act
+      changed    [[%& nft] changed]
+    ==
+  ::
+      %mint
+    =+  `grain`(need (scry token.act))
+    =/  meta  (husk metadata:sur - `me.cart ~)
+    ::  ensure NFT is mintable
+    ?>  &(mintable.data.meta ?=(^ cap.data.meta))
+    ::  ensure caller is in minter-set
+    ?>  (~(has pn minters.data.meta) id.from.cart)
+    ::  set id of next possible item in collection
+    =/  next-item-id  +(supply.data.meta)
+    ::  check if mint will surpass supply cap
+    =/  new-supply  (add supply.data.meta (lent mints.act))
+    ?>  (gte u.cap.data.meta new-supply)
+    =.  supply.data.meta  new-supply
+    ::  iterate through mints
+    =|  issued=(list grain)
+    |-
+    ?~  mints.act
+      ::  finished minting
+      (result [[%& meta] ~] issued ~ ~)
+    ::  create new grain for NFT
+    ::  unique salt for each item in collection
+    =*  m  i.mints.act
+    =/  salt    (cat 3 salt.meta (scot %ud next-item-id))
+    =/  new-id  (fry-rice me.cart to.m town-id.cart salt)
+    ::  properties must match those in metadata spec!
+    ?>  =(properties.data.meta ~(key py properties.m))
+    =/  data    [next-item-id uri.m id.meta ~ properties.m transferrable.m]
+    =/  =rice   [salt %nft data new-id me.cart to.m town-id.cart]
+    %=  $
+      mints.act     t.mints.act
+      next-item-id  +(next-item-id)
+      issued        [[%& rice] issued]
+    ==
+  ::
+      %deploy
+    ::  create new NFT collection with a metadata grain
+    ::  and optional initial mint
+    =/  =metadata:sur
+      :*  name.act
+          symbol.act
+          properties.act
+          (lent initial-distribution.act)
+          cap.act
+          ?~(minters.act %.y %.n)
+          minters.act
+          id.from.cart
+          salt.act
+      ==
+    =/  =id    (fry-rice me.cart me.cart town-id.cart salt.act)
+    =/  =rice  [salt.act %metadata metadata id me.cart me.cart town-id.cart]
+    ?~  initial-distribution.act
+      (result ~ [[%& rice] ~] ~ ~)
+    ::  perform optional mint
+    =/  next  [%mint id initial-distribution.act]
+    %+  continuation
+      [me.cart town-id.cart next]^~
+    (result ~ [[%& rice] ~] ~ ~)
+  ==
 ::
 ++  read
-  |_  args=path
+  |_  =path
   ++  json
     ^-  ^json
-    ?+    args  !!
-        [%rice-data ~]
-      ?>  =(1 ~(wyt by owns.cart))
-      =/  g=grain  -:~(val by owns.cart)
-      ?>  ?=(%& -.germ.g)
-      ?.  ?=([@ @ ?(~ ^) @ ?(~ [~ @]) ? ?(~ ^) @ @] data.p.germ.g)
-        (account:enjs:lib ;;(account:sur data.p.germ.g))
-      (collection-metadata:enjs:lib ;;(collection-metadata:sur data.p.germ.g))
+    ?+    path  !!
+        [%nft @ ~]
+      =+  (need (scry (slav %ux i.t.path)))
+      =+  (husk nft:sur - ~ ~)
+      (nft:enjs:lib data.-)
     ::
-        [%rice-data @ ~]
-      =/  data  (cue (slav %ud i.t.args))
-      ?.  ?=([@ @ ?(~ ^) @ ?(~ [~ @]) ? ?(~ ^) @ @] data)
-        (account:enjs:lib ;;(account:sur data))
-      %-  collection-metadata:enjs:lib
-      ;;(collection-metadata:sur data)
-    ::
-        [%egg-args @ ~]
-      %-  arguments:enjs:lib
-      ;;(arguments:sur (cue (slav %ud i.t.args)))
+        [%metadata @ ~]
+      =+  (need (scry (slav %ux i.t.path)))
+      =+  (husk metadata:sur - ~ ~)
+      (metadata:enjs:lib data.-)
     ==
   ::
   ++  noun

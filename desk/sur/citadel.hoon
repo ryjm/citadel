@@ -73,22 +73,28 @@
         project=desk
     ==
 ::
-::  ** locations
-+$  scroll  [text=(unit @t) project=(unit desk) =path]
-+$  deed  [dir=?(%lib %sur %ted %mar) =scroll]
-::
 ::  * actions
 +$  action
   $%
+    ::  desks
     [%desk from=desk name=@tas]
     [%diagram furm=(unit desk) =gram name=@tas]
-    [%run =survey =bran:smart interface=lumps:smart types=lumps:smart]
-    [%test =survey contract-id=(unit @ux) grains=(list grain:smart) yolks=(list yolk:smart)]
-    [%save-test project=desk test=@t overwrite=?]
-    [%mill =survey =bran:smart interface=lumps:smart types=lumps:smart]
-    [%save-grain meal=?(%rice %wheat) project=desk =grain:smart]
+    ::  projects
     [%save =survey]
     [%delete project=desk]
+    ::  ::  uqbar
+    ::  contract inspector
+    :*  %test
+        =survey
+        contract-id=(unit @ux)
+        grains=(list grain:smart)
+        yolks=(list yolk:smart)]
+    ==
+    [%save-test project=desk test=@t overwrite=?]
+    [%run =survey =bran:smart interface=lumps:smart types=lumps:smart]
+    [%mill =survey =bran:smart interface=lumps:smart types=lumps:smart]
+    :: grain management
+    [%save-grain meal=?(%rice %wheat) project=desk =grain:smart]
     [%delete-grain project=desk grain-id=id:smart]
   ==
 ::

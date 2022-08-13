@@ -4,14 +4,12 @@
     *citadel, server, verb, etch, merk
 ::  * types
 |%
-
 ::
 ::  ** project types
 ::
 +$  mode  ?(%view %edit)
 --
 ::
-
 ::  * agent
 ::
 %+  verb  |
@@ -106,7 +104,13 @@
       ?:  ?=(%| -.maybe-old)  !<(versioned-state ole)  +.maybe-old
     =/  new=state-1
     ?-  -.old
-      %0  [%1 colonies.old *(map desk (set deed)) *(map desk granary:mill) *(jar desk @t)]
+      %0
+    :*  %1
+        colonies.old
+        *(map desk (set deed))
+        *(map desk granary:mill)
+        *(jar desk @t)
+    ==
       %1  old
     ==
     :: TODO install docs elsewhere
@@ -174,7 +178,7 @@
 ::  ** on-fail
 ++  on-fail   on-fail:def
 --
-::  * helper cores
+::  * cores
 |_  =bowl:gall
 ::  ** io
 ++  io    ~(. agentio bowl)
@@ -285,21 +289,25 @@
   ::
   --  --
 ::  * handlers
-::  ** main
-::  *** on-action
+::  ** action router
 ++  on-action
   |=  =action
   ^-  (quip card _state)
   ?-    -.action
+      ::  desks
       %desk  (on-desk action)
       %diagram  (on-diagram action)
+      ::  projects
+      %save  (on-save action)
+      %delete  (on-delete action)
+      ::  ::  uqbar
+      ::  contract inspector
       %test  (on-test action)
       %save-test  (on-save-test action)
       %run  (on-run action)
       %mill  (on-mill action)
+      ::  grain management
       %save-grain  (on-save-grain action)
-      %save  (on-save action)
-      %delete  (on-delete action)
       %delete-grain  (on-delete-grain action)
   ==
 ::  ** frontend
@@ -347,12 +355,15 @@
   :_  state(colonies (~(put by colonies) desk outpost), projects (~(put by projects) desk ~))
   [card ~]
 ::  ** projects
+::  projects are defined by an associated set of deeds representing each project
+::  component, scope, and associated datum.
 ::  *** on-save
+::  save each datum in the deed set to clay, at the desk specified by the deed or
+::  the survey (deed takes precedence).
 ++  on-save
   |=  =action
   ^-  (quip card _state)
   ?>  ?=(%save -.action)
-  ~&  %here
   =/  desks  .^((set ^desk) %cd (en-beam byk.bowl /))
   =/  [sdac=^cards =_state]
     ?:  (~(has in desks) project.survey.action)  `state
@@ -380,29 +391,20 @@
       deeds  t.deeds
       projects.state  all-deeds
   ==
-
-::  **** TODO polish project tracking
-::  add the saved deeds to the corresponding project(s) in the `project` map. should
-::  it update any desk files that are not in the project state yet? needs to account
-::  for dependencies?
 ::  *** on-delete
+::  delete project from citadel state. does not delete from clay.
 ++  on-delete
   |=  =action
   ^-  (quip card _state)
   ?>  ?=(%delete -.action)
   `state(projects (~(del by projects) project.action))
+::  *** TODO return types on wire
 ::  ** contracts
-::  *** on-delete-grain
-++  on-delete-grain
-  |=  =action
-  ^-  (quip card _state)
-  ?>  ?=(%delete-grain -.action)
-  =/  =granary:mill
-   =-  ?~  -  fake-granary:uq  -
-  (biff (~(get by factory) project.action) same)
-  =/  purged=granary:mill  (del:big:uq granary grain-id.action)
-  `state(factory (~(put by factory) project.action purged))
-::  *** on-save-test
+::  *** inspector
+::  contract interaction.
+::  **** saving
+::  saves test datum to state. mostly used by the frontend to validate form inputs.
+
 ++  on-save-test
   |=  =action
   ^-  (quip card _state)
@@ -413,8 +415,8 @@
     ?:  overwrite.action  (~(put by tests) project.action ~[test.action])
     (~(add ja tests) project.action test.action)
   ==
-
-::  *** on-test
+::  **** testing
+::  interacts with a contract defined in a project granary with a list of yolks.
 ++  on-test
   |=  =action
   ^-  (quip card _state)
@@ -444,35 +446,12 @@
     results  [(fondle-mill:uq i.remaining shell granary) results]
     remaining  t.remaining
   ==
-::  *** save grain
-::  saves a grain to the granary associated with the specified project.
-::  rice - salt, label, bran, data
-++  on-save-grain
-  |=  =action
-  ^-  (quip card _state)
-  ?>  ?=(%save-grain -.action)
-  =/  project  project.action
-  ?.  (~(has by projects) project)
-  ~|  "citadel: attempting to save grain to unknown project {<project>}"
-  !!
-  ?-    meal.action
-      %rice
-    =/  id  =<(id ;;(rice:smart +.grain.action))
-    =/  =granary:mill
-      =-  ?~  -  fake-granary:uq  -
-      (biff (~(get by factory) project) same)
-    =.  factory
-      %+  ~(put by factory)  project
-      %+  gas:big:uq  granary
-      ~[[id ;;(grain:smart grain.action)]]
-    [~ state]
-      %wheat
-    ~|("citadel: saving wheat not supported yet" !!)
-  ==
-::  *** delete grain
-::  *** on-run
-::  currently creates a wheat from an action containing the needed bran, interface,
-::  and types.
+::  ***** TODO find better nomenclature
+::  these aren't tests, more like probes.
+::  ***** TODO persist results to granary
+::  **** running
+::  creates a wheat from an action containing the needed bran, interface,
+::  and types. does not update citadel factory.
 ++  on-run
   |=  =action
   ^-  (quip card _state)
@@ -489,9 +468,8 @@
       %gall
     !!
   ==
-::  *** on-mill
-::  given a text representation of a contract, creates a wheat and updates the
-::  factory with the result.
+::  **** milling
+::  given a text representation of a contract, updates the factory with the created wheat.
 ++  on-mill
   |=  =action
   ^-  (quip card _state)
@@ -518,8 +496,43 @@
       %gall
     ~|("citadel: attempting to mill a %gall app" !!)
   ==
-
-::  * utils
+::  *** grains
+::  grain management.
+::  saving to granary.
+++  on-save-grain
+  |=  =action
+  ^-  (quip card _state)
+  ?>  ?=(%save-grain -.action)
+  =/  project  project.action
+  ?.  (~(has by projects) project)
+  ~|  "citadel: attempting to save grain to unknown project {<project>}"
+  !!
+  ?-    meal.action
+      %rice
+    =/  id  =<(id ;;(rice:smart +.grain.action))
+    =/  =granary:mill
+      =-  ?~  -  fake-granary:uq  -
+      (biff (~(get by factory) project) same)
+    =.  factory
+      %+  ~(put by factory)  project
+      %+  gas:big:uq  granary
+      ~[[id ;;(grain:smart grain.action)]]
+    [~ state]
+      %wheat
+    ~|("citadel: saving wheat not supported yet" !!)
+  ==
+::  deleting from granary.
+++  on-delete-grain
+  |=  =action
+  ^-  (quip card _state)
+  ?>  ?=(%delete-grain -.action)
+  =/  =granary:mill
+   =-  ?~  -  fake-granary:uq  -
+  (biff (~(get by factory) project.action) same)
+  =/  purged=granary:mill  (del:big:uq granary grain-id.action)
+  `state(factory (~(put by factory) project.action purged))
+::  * gear
+::  constructs the cards needed to create a desk from a diagram.
 ++  make-diagram
   |=  [=gram =desk from=(unit desk)]
   ^-  [outpost card]
@@ -550,7 +563,7 @@
   :-  outpost:merged
   :^  %pass  /citadel/desk/diagram  %arvo
   (~(scop play [bowl desk]) %citadel merged)
-::
+::  installs integrated apps
 ++  lore
   ^-  (quip card _state)
   =*  cha  ~(. ch q.byk.bowl)
