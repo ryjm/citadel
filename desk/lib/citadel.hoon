@@ -406,7 +406,6 @@
     |=  [project=desk =granary:mill]
     (frond project (granary:enjs:indexer granary))
   --
-
 ::  * clay
 ::
 ::  clay utilities

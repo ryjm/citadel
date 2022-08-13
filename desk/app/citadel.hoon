@@ -209,7 +209,7 @@
 
 ::  per-desk/contract module.
 ++  zh
-  |_  [code=@t mesk=(unit [desk path])]
+  |_  code=@t
 ::  *** make-wheat
 ::  creates a wheat against the current contract. runs a full compilation using the
 ::  libraries in the %zig desk.   
