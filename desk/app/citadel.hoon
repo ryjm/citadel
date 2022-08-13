@@ -460,7 +460,7 @@
   ?-    -.survey.action
       %contract
     =/  [=cards =wheat:smart]
-      %^    ~(make-wheat zh charter.survey.action ~)
+      %^    ~(make-wheat zh charter.survey.action)
           bran.action
         interface.action
       types.action
@@ -481,7 +481,7 @@
       ~|  "citadel: attempting to mill unknown project {<project.survey.action>}"
       !!
     =/  [=cards =wheat:smart]
-      %^    ~(make-wheat zh charter ~)
+      %^    ~(make-wheat zh charter)
           bran.action
         interface.action
       types.action

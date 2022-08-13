@@ -1,5 +1,5 @@
-/+  *zink-zink, smart=zig-sys-smart
-/*  triv-contract   %noun  /lib/zig/compiled/trivial/noun
+/+  *zink-zink, smart=zig-sys-smart, mill=zig-mill
+/*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
 /*  triv-txt        %hoon  /lib/zig/contracts/trivial/hoon
 |%
 ::
@@ -18,14 +18,44 @@
   =/  ht  $(n +.n)
   (hash:pedersen hh ht)
 ::
-++  build-slapped
-  |=  [hoonlib-txt=@t smartlib-txt=@t]
-  ^-  vase
-  =/  [raw=(list [face=term =path]) contract-hoon=hoon]  (parse-pile (trip triv-txt))
-  =/  smart-lib=vase  (slap (slap !>(~) (ream hoonlib-txt)) (ream smartlib-txt))
-  =/  libraries=hoon  [%clsg ~]
+++  compile-path
+  |=  pax=path
+  ^-  [bat=* pay=*]
+  =/  desk=path  (swag [0 3] pax)
+  (compile-contract desk .^(@t %cx pax))
+::
+++  compile-contract
+  |=  [desk=path txt=@t]
+  ^-  [bat=* pay=*]
+  ::  parse contract code
+  =/  [raw=(list [face=term =path]) contract-hoon=hoon]
+    (parse-pile (trip txt))
+  ::  generate initial subject containing uHoon
+  =/  smart-lib=vase  ;;(vase (cue q.q.smart-lib-noun))
+  ::  compose libraries flatly against uHoon subject
+  =/  braw=(list hoon)
+    %+  turn  raw
+    |=  [face=term =path]
+    =/  pax  (weld desk path)
+    `hoon`[%ktts face (rain pax .^(@t %cx (welp pax /hoon)))]
+  =/  libraries=hoon  [%clsg braw]
   =/  full-nock=*  q:(~(mint ut p.smart-lib) %noun libraries)
   =/  payload=vase  (slap smart-lib libraries)
+  =/  cont  (~(mint ut p:(slop smart-lib payload)) %noun contract-hoon)
+  ::
+  [bat=q.cont pay=full-nock]
+::
+++  compile-trivial
+  |=  [hoonlib-txt=@t smartlib-txt=@t]
+  ^-  vase
+  =/  [raw=(list [face=term =path]) contract-hoon=hoon]
+    (parse-pile (trip triv-txt))
+  =/  smart-lib=vase
+    ::  (slap (slap !>(~) (ream hoonlib-txt)) (ream smartlib-txt))
+    ;;(vase (cue q.q.smart-lib-noun))
+  =/  libraries=hoon  [%clsg ~]
+  =/  full-nock=*     q:(~(mint ut p.smart-lib) %noun libraries)
+  =/  payload=vase    (slap smart-lib libraries)
   ::
   (slap (slop smart-lib payload) contract-hoon)
 ::
@@ -39,42 +69,72 @@
     |=  n=@
     ^-  [* phash]
     [n (hash n ~)]
-  ~&  >>  %compiling-hoon
-  ~&  >>  %compiling-smart
-  =/  built-contract  (build-slapped hoonlib-txt smartlib-txt)
+  ~&  >>  %compiling
+  =/  built-contract  (compile-trivial hoonlib-txt smartlib-txt)
   ~&  >>  %hashing-arms
   =.  cax
     %^  cache-file  built-contract
       cax
     :~  ::  hoon
+        ::  four layers
         'add'
         'biff'
         'egcd'
         'po'
+        ::  inner layers
+        'dif:fe'
+        'all:in'
+        'all:by'
+        'get:ja'
+        'del:ju'
+        'apt:to'
+        'le:nl'
+        'abs:si'
+        'sb:ff'
         ::  smart
-        'mimes:html'
-        'aes:crypto'
-        'pass:ames'
-        'fu:number'
-        't:pedersen'
+        ::  five layers
         'pedersen'
-        ::
-        'merk'
-        ::
+        'hash'
         'ship'
         'id'
-        'husk'
+        'big'
+        ::  inner layers (reverse order)
+        'as-octs:secp:crypto'
+        'hmac-sha1:hmac:crypto'
+        'keccak-224:keccak:crypto'
+        'as:crub:crypto'
+        'sal:scr:crypto'
+        'ahem:aes:crypto'
+        'aes:crypto'
+        'as-octs:mimes:html'
+        'mimes:html'
+        'fu:number'
+        'pass:ames'
+        'hash:pedersen'
+        't:pedersen'
+        ::  'bif:bi'
+        'frond:enjs:format'
     ==
-  ~&  >>  %core-hashing
-  =/  [raw=(list [face=term =path]) contract-hoon=hoon]  (parse-pile (trip triv-txt))
-  =/  smart-lib=vase  (slap (slap !>(~) (ream hoonlib-txt)) (ream smartlib-txt))
-  =/  full=hoon  [%clsg ~]
-  =/  full-nock=*  q:(~(mint ut p.smart-lib) %noun full)
-  =/  payload=vase  (slap smart-lib full)
-  =/  cont  (~(mint ut p:(slop smart-lib payload)) %noun contract-hoon)
+  ~&  >>  %hashing-trivial-core
   ::
-  =/  gun  (~(mint ut p.cont) %noun (ream '~'))
-  =/  =book  (zebra bud cax *granary-scry [q.cont q.gun] %.n)
+  ::  =/  [raw=(list [face=term =path]) contract-hoon=hoon]  (parse-pile (trip triv-txt))
+  ::  =/  smart-lib=vase  ;;(vase (cue q.q.smart-lib-noun))
+  ::  =/  libraries=hoon  [%clsg ~]
+  ::  =/  full-nock=*  q:(~(mint ut p.smart-lib) %noun libraries)
+  ::  =/  payload=vase  (slap smart-lib libraries)
+  ::  =/  cont  (~(mint ut p:(slop smart-lib payload)) %noun contract-hoon)
+  ::  ::
+  ::  =/  gun  (~(mint ut p.cont) %noun (ream '~'))
+  ::  =/  =book  (zebra bud cax *granary-scry [q.cont q.gun] %.n)
+  ::  ~&  p.book
+  ::  cax.q.book
+  ::
+  =/  smart-lib=vase  ;;(vase (cue q.q.smart-lib-noun))
+  =/  cont=[bat=* pay=*]  (compile-contract /zig triv-txt)
+  =/  cor  .*([q.smart-lib pay.cont] bat.cont)
+  =/  dor  [-:!>(*contract:smart) cor]
+  =/  gun  (ajar:mill dor %write !>(*cart:smart) !>(*yolk:smart))
+  =/  =book  (zebra bud cax *granary-scry gun %.n)
   ~&  p.book
   cax.q.book
   ::
@@ -104,7 +164,6 @@
                (trip (rap 3 (scot %ud i) '/' (scot %ud len) ~))
            ==
     =/  n  q:(slot (arm-axis vax t) vax)
-    ~&  >>  "size: {<(met 3 (jam n))>}"
     $(lis t.lis, cax (~(put by cax) n (hash n cax)), i +(i))
   --
 ::  conq helpers
