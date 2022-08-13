@@ -6,7 +6,6 @@
 /*  zink-cax-noun   %mime  /lib/zig/compiled/hash-cache/noun
 /*  triv-contract   %mime  /lib/zig/compiled/trivial/noun
 /*  zigs-contract-noun   %mime  /lib/zig/compiled/zigs/noun
-
 ::  * main
 =,  clay
 |%
@@ -185,7 +184,7 @@
 ::
 ::  per-desk/contract module.
 ++  uq
-  |_  [code=@t mesk=(unit [desk path])]
+  |_  code=@t
 ::  ** compile
   ++  compile
     |=  [pax=path code=(unit @t) our=@p now=@da]

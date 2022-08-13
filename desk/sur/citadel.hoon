@@ -30,7 +30,7 @@
       [%colonies colonies=(map desk outpost)]
       [%tests tests=(jar desk @t)]
   ==
-::  * desk definitions
+::  * desk composition
 ::  +grounds - dependencies and workshops
 ::
 +$  grounds  [=outpost =atelier]
@@ -73,6 +73,10 @@
         project=desk
     ==
 ::
+::  ** locations
++$  scroll  [text=(unit @t) project=(unit desk) =path]
++$  deed  [dir=?(%lib %sur %ted %mar) =scroll]
+::
 ::  * actions
 +$  action
   $%
@@ -84,11 +88,11 @@
     [%delete project=desk]
     ::  ::  uqbar
     ::  contract inspector
-    :*  %test
+    $:  %test
         =survey
         contract-id=(unit @ux)
         grains=(list grain:smart)
-        yolks=(list yolk:smart)]
+        yolks=(list yolk:smart)
     ==
     [%save-test project=desk test=@t overwrite=?]
     [%run =survey =bran:smart interface=lumps:smart types=lumps:smart]
