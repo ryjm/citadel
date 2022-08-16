@@ -9,7 +9,7 @@
 ::  * main
 =,  clay
 |%
-::  * desk composition
+::  ** desk composition
 ::    +fose
 
 ++  fose
@@ -179,18 +179,19 @@
   :-  ?:  lor  (fuse seals -)
     -
   (welp atelier:mansion atelier)
-::  * uqbar
+::  ** uqbar
 ::  uqbar contracts.
 ::
 ::  per-desk/contract module.
 ++  uq
   |_  code=@t
-::  ** compile
+::  *** compile
   ++  compile
     |=  [pax=path code=(unit @t) our=@p now=@da]
     =/  paf=(unit path)
       =+  (weld /(scot %p our)/citadel/(scot %da now) pax)
       ?:  .^(? %cu -)  `-  ~
+    ~&  >  paf
     =/  contract-text  (fall code (biff paf |=(p=path .^(@t %cx p))))
     =/  [raw=(list [face=term =path]) contract-hoon=hoon]
       (parse-pile (trip contract-text))
@@ -211,7 +212,7 @@
     =/  payload=vase  (slap smart-lib full)
     =/  cont  (~(mint ut p:(slop smart-lib payload)) %noun contract-hoon)
     [cont smart-lib payload q:(~(mint ut p.smart-lib) %noun full)]
-::  *** fondle-mill
+::  **** fondle-mill
 ::  mills yolk and shell on fake-land.
 ++  fondle-mill
   |=  [=yolk:smart =shell:smart =granary:mill]
@@ -222,8 +223,8 @@
   %+  ~(mill mil miller town-id 1)
     land
   egg
-::  ** fondle data
-::  *** mill
+::  *** fondle data
+::  **** mill
 ::  initializes a dummy mill for testing.
 ++  big  (bi:merk id:smart grain:smart)  ::  merkle engine for granary
 ++  pig  (bi:merk id:smart @ud)          ::                for populace
@@ -243,7 +244,7 @@
 ++  caller-1  ^-  caller:smart  [0xbeef 1 0x1.beef]
 ++  caller-2  ^-  caller:smart  [0xdead 1 0x1.dead]
 ++  caller-3  ^-  caller:smart  [0xcafe 1 0x1.cafe]
-::  *** scry contract
+::  **** scry contract
 ::  fake grain representing the compiled trivial-scry contract.
 ++  scry-wheat
   ^-  grain:smart
@@ -259,7 +260,7 @@
       0xdada.dada  ::  holder
       town-id
   ==
-::  *** zigs contract
+::  **** zigs contract
 ::  fake grain representing the standard zigs contract.
 ++  zigs-contract
   ^-  grain:smart
@@ -275,34 +276,41 @@
       zigs-wheat-id:smart
       town-id
   ==
-::  *** granary
+::  **** granary
 ::  fake granary containing all the grains used by the dummy mill.
 ++  fake-granary
   ^-  granary:mill
-  %+  gas:big  *(merk:smart id:smart grain:smart)
+  %+  gas:big  *(merk:merk id:smart grain:smart)
   :~  [id.p:scry-wheat scry-wheat]
       [id.p:zigs-contract zigs-contract]
       [id.p:beef-account:zigs beef-account:zigs]
       [id.p:dead-account:zigs dead-account:zigs]
       [id.p:miller-account:zigs miller-account:zigs]
   ==
-::  *** populace
+::  puts mill results into granary
+++  shovel
+  |=  [milled=mill-result =granary:mill]
+  ^-  granary:mill
+  ?>  =(%0 errorcode.milled)
+  =-  (uni:big - p.land.milled)
+  (dif:big granary burned.milled)
+::  **** populace
 
 ++  fake-populace
   ^-  populace:mill
   %+  gas:pig  *(merk:merk id:smart @ud)
   ~[[holder-1:zigs 0] [holder-2:zigs 0] [holder-3:zigs 0]]
-::  *** land
+::  **** land
 
 ++  fake-land
   ^-  land:mill
   [fake-granary fake-populace]
 
-::  ** fondle zigs
+::  *** fondle zigs
 ::  represents the %zig contract.
 ++  zigs
   |_  =grain:smart
-::  *** grains
+::  **** grains
 ::  fake grains
 ++  holder-1  0xbeef
 ++  holder-2  0xdead
@@ -353,7 +361,7 @@
   ==
 --
 
-::  ** parsers
+::  *** parsers
 ::  contract-specific parsing.
 +$  small-pile
   $:  raw=(list [face=term =path])
@@ -394,7 +402,7 @@
   ;~(pfix fas bus gap fel)
 --
 
-::  * json
+::  ** json
 ++  enjs
   =,  enjs:format
   |%
@@ -405,15 +413,15 @@
     |=  [project=desk =granary:mill]
     (frond project (granary:enjs:indexer granary))
   --
-::  * clay
+::  ** clay
 ::
 ::  clay utilities
 ::
-::  ** file motion
+::  *** file motion
 ++  play
   |_  [=bowl:gall =desk]
-::  *** write
-::  **** cite
+::  **** write
+::  ****  cite
     ::    +cite
     ::
     ::  write file to desk.
@@ -427,7 +435,7 @@
       =/  fath=^path  (weld /(scot %p our.bowl)/[desk]/(scot %da now.bowl) path)
       ~&  >>  "saved to {<desk>} at {<path>}"
       (foal:space:userlib fath data)
-::  **** hite
+::  ****  hite
     ::    +hite
     ::
     ::  write text as hoon to desk.
@@ -438,7 +446,7 @@
       =/  =type  [%atom %t ~]
       =-  (cite path -)
       [mark [type ?:(=(%hoon mark) txt (need (de-json:html txt)))]]
-::  **** gite
+::  ****  gite
     ::    +gite
     ::
     ::  write deeds
@@ -454,7 +462,7 @@
       =.  desk  ?.  =(~ project)  +.project  desk
       (hite (weld /(scot %tas -.deed) path) +.text)
     ::
-::  **** smart-lib copy
+::  ****  smart-lib copy
     ::    +zuck
     ::
     ::  copies smart-lib from a ziggurat desk.
@@ -469,7 +477,7 @@
         /(scot %p our.bowl)/[dusk]/(scot %da now.bowl)/lib/zig/compiled/smart-lib/noun
       --
 
-::  ** from desk
+::  *** from desk
     ::    +scop: init desk from files in another desk.
     ::
     ::  grounds - user and dependency files to seed the desk with.

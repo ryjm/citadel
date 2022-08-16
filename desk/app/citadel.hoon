@@ -46,6 +46,8 @@
     (~(got by tests) i.t.t.path)
       [%x %project @ ~]
     ``noun+!>((~(get by projects) i.t.t.path))
+    [%x %project %id @ ~]
+    ``json+!>((en-vase:etch !>(`@ux`i.t.t.t.path)))
       [%x %factory ~]
     ``citadel-factory+!>(state)
       [%x %state @tas @ ~]
@@ -374,6 +376,21 @@
   =/  dummy-card=card
     [%give %fact ~[/citadel/types] %json !>(dummy-json)]
   =/  cards  (~(gite play [bowl q.byk.bowl]) deeds.survey.action)
+  =/  [new-cards=(list card) new-state=_state]
+    ?.  &(?=(%contract arena.survey.action) !=('' charter.survey.action))
+      [cards state]
+    =/  contract-id=@ux  `@ux`project.survey.action
+    =-  [(weld cards (head -)) (tail -)]
+    %-  on-mill
+    :*  %mill
+        survey.action
+        [contract-id contract-id contract-id town-id:uq]
+        ~
+        ~
+    ==
+  =.  state  new-state
+  =.  cards  new-cards
+  ::
   =/  deeds=(list deed)  deeds.survey.action
   |-
   ?~  deeds
@@ -421,7 +438,7 @@
   |=  =action
   ^-  (quip card _state)
   ?>  ?=(%test -.action)
-  =/  resu=(quip card _state)  [~ state]
+  =/  resu=[cards=(list card) _state]  [~ state]
   =/  contract-id=@ux  (fall contract-id.action `@ux`project.survey.action)
   =?  resu  !=('' charter.survey.action)
     %-  on-mill
@@ -437,13 +454,18 @@
     =-  ?~  -  fake-granary:uq  -
     (biff (~(get by factory) project.survey.action) same)
   =/  remaining=(list yolk:smart)  yolks.action
-  =|  results=(list mill-result:uq)
+  =|  milled=(list mill-result:uq)
   |-  ^-  (quip card _state)
   ~&  >  remaining+remaining
-  ~&  >  results+results
-  ?~  remaining  resu
+  ?~  remaining
+    =.  factory
+      %+  ~(put by factory)  project.survey.action
+      =-  (roll milled -)
+      |:  [m=*mill-result:uq g=granary]
+      (shovel:uq m g)
+    [cards.resu state(factory factory)]
   %=  $
-    results  [(fondle-mill:uq i.remaining shell granary) results]
+    milled  [(fondle-mill:uq i.remaining shell granary) milled]
     remaining  t.remaining
   ==
 ::  ***** TODO find better nomenclature
@@ -477,9 +499,6 @@
   ?-    -.survey.action
       %contract
     =,  survey.action
-    ?.  (~(has by projects) project)
-      ~|  "citadel: attempting to mill unknown project {<project.survey.action>}"
-      !!
     =/  [=cards =wheat:smart]
       %^    ~(make-wheat zh charter)
           bran.action
