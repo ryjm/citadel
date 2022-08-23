@@ -1,0 +1,5 @@
+:~
+  [[~sampel-palnet %base [%da ~2022.7.18..20.53.47..b9b2]] /lib/csv/hoon]
+  [[~sampel-palnet %landscape [%da ~2022.7.18..20.53.47..b9b2]] /sur/graph-store/hoon]
+  [[~sampel-palnet %bitcoin [%da ~2022.7.18..20.53.47..b9b2]] /lib/btc/hoon]
+==
