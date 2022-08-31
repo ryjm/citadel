@@ -1,5 +1,4 @@
 :~
-  [[~sampel-palnet %base [%da ~2022.7.18..20.53.47..b9b2]] /lib/csv/hoon]
-  [[~sampel-palnet %landscape [%da ~2022.7.18..20.53.47..b9b2]] /sur/graph-store/hoon]
-  [[~sampel-palnet %bitcoin [%da ~2022.7.18..20.53.47..b9b2]] /lib/btc/hoon]
+  [[~locdev-midsum-salrux %landscape [%da ~2022.8.31..00.36.13..95c6]] /sur/graph-store/hoon]
+  [[~locdev-midsum-salrux %bitcoin [%da ~2022.8.31..00.36.13..95c6]] /lib/btc/hoon]
 ==
