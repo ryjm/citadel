@@ -1,4 +1,4 @@
 |%
 +$  herd  (list beef)
-+$  beef  beam
++$  beef  [who=$@(%our ship) des=desk ver=$@(%trak case)]
 --

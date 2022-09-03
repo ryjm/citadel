@@ -18,24 +18,27 @@
   ++  spit-beef
     |=  =beef:hd
     ^-  tape
-    =/  [[=ship =desk =case] =path]  beef
+    =/  [who=$@(%our ship) des=desk ver=$@(%trak case)]  beef
     ;:  weld
-      "  [["
-      (trip (scot %p ship))  " "
-      "%"  (trip desk)  " "
-      (spit-case case)
-      "] "
-      (trip (spat path))
+      "  ["
+      ?+  who  (trip (scot %p who))
+        %our  "%our"
+      ==  " "
+      "%"  (trip des)  " "
+      (spit-ver ver)
       "]\0a"
     ==
-  ++  spit-case
-    |=  =case
+  ++  spit-ver
+    |=  ver=$@(%trak case)
     ^-  tape
-    ;:  weld
-      "["
-      "%"  (trip -.case)  " "
-      (trip (scot -.case +.case))
-      "]"
+    ?+  ver
+      ;:  weld
+        "["
+        "%"  (trip -.ver)  " "
+        (trip (scot -.ver +.ver))
+        "]"
+      ==
+      %trak  "%trak"
     ==
   --
 ++  grab
