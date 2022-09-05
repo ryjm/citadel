@@ -1,6 +1,6 @@
 /-  spider
 /-  *herd
-/+  sio=strandio
+/+  strandio
 =,  strand=strand:spider
 |^  ted
 +$  fuse-source  [who=ship des=desk ver=$@(%trak case)]
@@ -11,17 +11,17 @@
   =/  arguments
     !<  (unit [@tas @tas])  arg
   =/  [dev=@tas build=@tas]  (need arguments)
-  ;<  our=@p  bind:m  get-our:sio
+  ;<  our=@p  bind:m  get-our:strandio
   ;<  ~  bind:m
-    %:  poke:sio  [our %hood]
-      [%kiln-fuse !>([build ~])]
-    ==
+    %+  poke:strandio  [our %hood]
+    [%kiln-fuse !>([build ~])]
   ;<  ~  bind:m
-    (poke:sio [our %hood] [%kiln-commit !>([dev %.n])])
-  ;<  ~  bind:m  (sleep:sio ~s2)
-  ;<  now=@da  bind:m  get-time:sio
+    %+  poke:strandio  [our %hood]
+    [%kiln-commit !>([dev %.n])]
+  ;<  ~  bind:m  (sleep:strandio ~s1)
+  ;<  now=@da  bind:m  get-time:strandio
   ;<  herdfile=cage  bind:m
-    (read-file:sio [[our dev da+now] /desk/herd])
+    (read-file:strandio [[our dev da+now] /desk/herd])
   =/  =herd
     !<(herd q.herdfile)
   =/  fuse-herd=(list fuse-source)
@@ -38,7 +38,7 @@
         ~[[[our dev %trak] %take-that]]
     ==
   ;<  ~  bind:m
-    %:  poke:sio  [our %hood]
+    %:  poke:strandio  [our %hood]
       [%kiln-fuse !>([build [%.y [our %base [%ud 1]] fus]])]
     ==
   (pure:m !>(~))

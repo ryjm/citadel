@@ -19,27 +19,13 @@
     |=  =beef:hd
     ^-  tape
     =/  [who=$@(%our ship) des=desk ver=$@(%trak case)]  beef
-    ;:  weld
-      "  ["
-      ?+  who  (trip (scot %p who))
-        %our  "%our"
-      ==  " "
-      "%"  (trip des)  " "
-      (spit-ver ver)
-      "]\0a"
-    ==
+    =-  "[{-} {<des>} {(spit-ver ver)}]\0a"
+    ?:  =(%our who)  <who>  <(scot %p who)>
   ++  spit-ver
     |=  ver=$@(%trak case)
     ^-  tape
-    ?+  ver
-      ;:  weld
-        "["
-        "%"  (trip -.ver)  " "
-        (trip (scot -.ver +.ver))
-        "]"
-      ==
-      %trak  "%trak"
-    ==
+    ?@  ver  <ver>
+     "[{<ver>} {<(scot -.ver p.ver)>}]"
   --
 ++  grab
   |%
