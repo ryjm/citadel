@@ -13,6 +13,10 @@
   =/  [dev=@tas build=@tas]  (need arguments)
   ;<  our=@p  bind:m  get-our:sio
   ;<  ~  bind:m
+    %:  poke:sio  [our %hood]
+      [%kiln-fuse !>([build ~])]
+    ==
+  ;<  ~  bind:m
     (poke:sio [our %hood] [%kiln-commit !>([dev %.n])])
   ;<  ~  bind:m  (sleep:sio ~s2)
   ;<  now=@da  bind:m  get-time:sio
@@ -27,15 +31,15 @@
         des.beef
         ver.beef
     ==
-  =/  fus=(list [fuse-source $?(%mate %meet-this %init)])
+  =/  fus=(list [fuse-source $?(%take-that)])
     ?~  fuse-herd  ~
     %-  zing
-    :~  (turn fuse-herd |=(=fuse-source [fuse-source %mate]))
-        ~[[[our dev %trak] %meet-this]]
+    :~  (turn fuse-herd |=(=fuse-source [fuse-source %take-that]))
+        ~[[[our dev %trak] %take-that]]
     ==
   ;<  ~  bind:m
     %:  poke:sio  [our %hood]
-      [%kiln-fuse !>([dev [%.y [our %base [%ud 0]] fus]])]
+      [%kiln-fuse !>([build [%.y [our %base [%ud 1]] fus]])]
     ==
   (pure:m !>(~))
 --
