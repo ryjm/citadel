@@ -38,8 +38,7 @@
         ~[[[our dev %trak] %take-that]]
     ==
   ;<  ~  bind:m
-    %:  poke:strandio  [our %hood]
-      [%kiln-fuse !>([build [%.y [our %base [%ud 1]] fus]])]
-    ==
+    %+  poke:strandio  [our %hood]
+    [%kiln-fuse !>([build [%.y [our %base [%ud 1]] fus]])]
   (pure:m !>(~))
 --

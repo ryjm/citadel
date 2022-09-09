@@ -1,0 +1,28 @@
+::  This is your herdfile, where you'll define the dependencies
+::  for your project. It's a list of beefs, where a beef is:
+::  [who=$@(%our ship) des=desk ver=$@(%trak case)]
+::
+::  who=$@(%our ship)
+::  This is the ship the desk comes from. Currently you'll
+::  want to use %our, which means the local ship.
+::
+::  des=desk
+::  This is the desk you want to import as a dependency.
+::  Don't worry; you won't run any of the agents from this desk
+::  unless you specifically put it in your desk.bill
+::
+::  ver=$@(%trak case)
+::  This is the version of that desk you want to import.
+::  %trak means to always import the latest version and
+::  to keep updating your build desk as it changes.
+::  You can also use a case, which is one of these options:
+::  [%da p=@da]            the desk at a certain date
+::  [%tas p=@tas]          the desk at a labelled version
+::  [%ud p=@ud]            the desk at a certain revision number
+::  Examples of all of these are below.
+::
+:~  [%our %base %trak]
+::  [~sampel-palnet %landscape [%da ~2022.9.9]]
+::  [~palnet-sampel %my-desk [%tas %my-release]]
+::  [~palpel-samnet %another-desk [%ud 1]]
+==
