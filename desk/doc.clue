@@ -3,6 +3,7 @@
 ::
 :~  [/overview/udon 'overview']
     [/changelog/udon 'changelog']
+    [/herd/udon 'herd']
 ==
 :: Developer docs
 ::
