@@ -169,6 +169,18 @@
   :-  foundation
   :~  /dia/gen/app/gen/hoon
   ==
+::  +rancher - herd
+++  rancher
+  %^  build-estate  |  ~
+  :~  /dia/hrd/desk/herd
+      /dia/hrd/desk/bill
+      /dia/hrd/mar/herd/hoon
+      /dia/hrd/mar/mime/hoon
+      /dia/hrd/mar/bill/hoon
+      /dia/hrd/mar/kelvin/hoon
+      /dia/hrd/sur/herd/hoon
+      /dia/hrd/sys/kelvin
+  ==
 ::    +build-estate
 ::  raises the roof
 ++  build-estate

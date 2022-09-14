@@ -1,0 +1,57 @@
+;>
+
+# Herd
+
+Herd is a desk-based dependency management system. Rather than manually including all the files your project needs, you can get them from other desks on your ship.
+
+When using herd, you'll have a *dev desk* that you commit code to, and a *build desk* that you run your app from and eventually distribute.
+
+If you're developing an app named foo, it's customary to name your dev desk `%foo-dev` and your build desk `%foo`
+
+## Usage
+
+The interface for herd is a pair of threads.
+
+`-citadel!herd-init [%dev-desk %build-desk]`
+
+This command will create a dev desk and a build desk that include all the files you need to manage dependencies with herd.
+
+`citadel!commit [%dev-desk %build-desk]`
+
+When developing with herd, you will use this command instead of `|commit`. It both commits changes to your dev desk and builds your build desk. After running this command, you can install your app and run its agents with `|install %build-desk`
+
+## desk.herd
+
+This is your herdfile, where you'll define the dependencies for your project. It's a list of beefs, where a beef is:
+
+`[who=$@(%our ship) des=desk ver=$@(%trak case)]`
+
+Element by element:
+
+`who=$@(%our ship)`
+
+This is the ship the desk comes from. Currently you'll want to use %our, which means the local ship.
+
+`des=desk`
+This is the desk you want to import as a dependency. Don't worry; you won't run any of the agents from this desk unless you specifically put it in your desk.bill
+
+`ver=$@(%trak case)`
+This is the version of that desk you want to import. `%trak` means to always import the latest version and to keep updating your build desk as it changes.\
+
+You can also use a case, which is one of these options:
+
+`[%da p=@da]`
+the desk at a certain date\
+`[%tas p=@tas]`
+the desk at a labelled version\
+`[%ud p=@ud]`
+the desk at a certain revision number\
+
+Here's an example herdfile:
+
+`:~`\
+`[%our %base %trak]`\
+`[~sampel-palnet %landscape [%da ~2022.9.9]]`\
+`[~palnet-sampel %my-desk [%tas %my-release]]`\
+`[~palpel-samnet %another-desk [%ud 1]]`\
+`==`

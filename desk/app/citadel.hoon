@@ -214,7 +214,7 @@
   |_  code=@t
 ::  *** make-wheat
 ::  creates a wheat against the current contract. runs a full compilation using the
-::  libraries in the %zig desk.   
+::  libraries in the %zig desk.
 ++  make-wheat
   |=  [=bran:smart interface=lumps:smart types=lumps:smart]
   ^-  [cards wheat:smart]
@@ -572,6 +572,7 @@
       %cli  valet
       %hel  crier
       %prt  [(fuse press foundation) ~]
+      %hrd  rancher
     ==
   ~&  >>  grounds
   =/  merged=^grounds

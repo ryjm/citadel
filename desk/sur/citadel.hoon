@@ -53,6 +53,7 @@
       [%hel ~]                    ::  hello world
       [%prt ~]                    ::  printers
       [%doc ~]                    ::  docs
+      [%hrd ~]                    ::  herd
   ==  ==
 +$  app  [desk=term title=@t]
 ::  *** customizable
