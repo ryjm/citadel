@@ -11,6 +11,7 @@
     !<  (unit [@tas @tas])  arg
   =/  [dev=@tas build=@tas]  (need arguments)
   ;<  our=@p  bind:m  get-our:strandio
+  ;<  now=@da  bind:m  get-time:strandio
   =/  =action
     ::  create the dev desk based on the herd template
     [%diagram ~ [dev [%hrd ~]] dev]
@@ -19,6 +20,6 @@
     [%citadel-action !>(action)]
   ;<  ~  bind:m
     %+  poke:strandio  [our %hood]
-    [%kiln-merge !>([build our %base [%ud 1] %auto])]
+    [%kiln-merge !>([build our %base [%da now] %auto])]
   (pure:m !>(~))
 --
