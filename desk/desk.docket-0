@@ -3,6 +3,8 @@
   info+'desk/agent/app creation tool'
   color+0xef.86b4
   version+[0 1 0]
+  color+0xf4.c564
+  image+'https://nyc3.digitaloceanspaces.com/archiv/littel-wolfur/2022.9.03..03.11.32-image.png'
   website+'https://github.com/ryjm/citadel'
   license+'MIT'
   base+'citadel'

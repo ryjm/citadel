@@ -199,7 +199,7 @@
   |_  code=@t
 ::  *** compile
   ++  compile
-    |=  [pax=path code=(unit @t) our=@p now=@da]
+    |=  [pax=path code=(unit @t) our=@p now=@da =desk]
     =/  paf=(unit path)
       =+  (weld /(scot %p our)/citadel/(scot %da now) pax)
       ?:  .^(? %cu -)  `-  ~
@@ -215,7 +215,7 @@
     =/  braw=(list hoon)
       %+  turn  raw
       |=  [face=term =path]
-      =/  pax=^path  (weld /(scot %p our)/citadel/(scot %da now) path)
+      =/  pax=^path  (weld /(scot %p our)/[desk]/(scot %da now) path)
       ~&  >>  building+pax
       %-  road  |.
       ~_  leaf/"{pax}: build failed"

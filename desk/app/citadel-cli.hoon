@@ -1,20 +1,30 @@
 /-  *citadel
 /+  *citadel, default-agent, verb, dbug, pp=pprint,
-    auto=language-server-complete, shoe, sole
+    auto=language-server-complete, shoe, sole, mill=zig-mill
 ::
 |%
 +$  card  card:shoe
+::  * state
 ::
 +$  versioned-state
   $%  state-0
+      state-1
   ==
 ::
 +$  state-0
-  $:  audience=(set target)                         ::  active targets
+  $:  %0
+      audience=(set target)                         ::  active targets
       width=@ud                                     ::  display width
       eny=@uvJ                                      ::  entropy
   ==
++$  state-1
+  $:  %1
+      width=@ud                                     ::  display width
+      eny=@uvJ                                      ::  entropy
+      arena=?(%contract %gall)
+  ==
 ::
+::  * commands
 +$  target  [in-group=? =ship =path]
 ::
 +$  command
@@ -24,11 +34,15 @@
       [%update-kelvin (set desk) weft]          ::  create a new desk
       [%colony desk]
       [%colonies ~]
+      [%mode ~]
+      [%toggle ~]
+      [%granary desk]
       [%settings ~]
   ==
 ::
+::  * agent
 --
-=|  state-0
+=|  state-1
 =*  state  -
 ::
 %-  agent:dbug
@@ -54,8 +68,14 @@
   ++  on-load
     |=  old-state=vase
     ^-  (quip card _this)
-    =/  old  !<(versioned-state old-state)
-    =^  cards  state  (prep:cc `old)
+    =/  maybe-old  (mule |.(!<(versioned-state old-state)))
+    =/  old=versioned-state
+      ?:  ?=(%| -.maybe-old)  *state-1  p.maybe-old
+    =^  cards  state
+    ?-  -.old
+      %0  (prep:cc ~)
+      %1  (prep:cc `old)
+    ==
     [cards this]
   ::
   ++  on-poke
@@ -101,9 +121,18 @@
   ::
   ++  tab-list
     |=  sole-id=@ta
-    %+  turn  tab-list:sh:cc
-    |=  [term=cord detail=tank]
-    [(cat 3 ';' term) detail]
+    =/  tuck
+      |=  [term=cord detail=tank]
+      [(cat 3 ';' term) detail]
+    ;:  weld
+      ~[['--common--' leaf+"common commands"]]
+      %+  turn  comm:tab-list:sh:cc  tuck
+      ?:  ?=(%contract arena)
+      ::  ~[['--contract--' leaf+"contract commands"]]
+        %+  turn  cont:tab-list:sh:cc  tuck
+      ::  ~[['--gall--' leaf+"gall commands"]]
+      %+  turn  gall:tab-list:sh:cc  tuck
+    ==
   ::
   ++  on-command
     |=  [sole-id=@ta =command]
@@ -120,8 +149,10 @@
   ++  on-disconnect   on-disconnect:des
   --
 ::
+::  * helpers
 =|  cards=(list card)
 |_  =bowl:gall
+::  ** misc
 ::  +this: self
 ::
 ++  this  .
@@ -134,11 +165,10 @@
     =^  cards  state
       :-  ~[connect]
       %_  state
-        audience  [[| our-self /citadel] ~ ~]
         width     80
       ==
     [cards state]
-  [~ state(width 80, audience [[| our-self /citadel] ~ ~])]
+  [~ state(width 80)]
 ::
 ++  emit
   |=  car=card
@@ -164,14 +194,6 @@
   [%pass /citadel %agent [our-self %citadel] %watch /citadel-primary]
 ::
 ++  our-self  our.bowl
-::  +target-to-path: prepend ship to the path
-::
-++  target-to-path
-  |=  target
-  ^-  ^path
-  %+  weld
-    ?:(in-group ~ /~)
-  [(scot %p ship) path]
 ::  +poke-noun: debug helpers
 ::
 ++  poke-noun
@@ -180,7 +202,7 @@
   ?:  ?=(%connect a)
     abet:(emit connect)
   [~ state]
-::
+::  ** sh
 ::  +sh: handle user input
 ::
 ++  sh
@@ -194,6 +216,19 @@
     |^
       %+  stag  |
       =-  ;~(pfix mic -)
+      ;~  pose
+        ;~(plug (tag %help) (easy ~))
+        ;~(plug (tag %toggle) (easy ~))
+        ;~(plug (tag %mode) (easy ~))
+        ?:  =(%gall arena)
+          gull
+        cont
+      ==
+::  *** contracts
+    ++  cont
+      ;~(plug (tag %granary) proj)
+::  *** gall
+    ++  gull
       ;~  pose
         ;~(plug (tag %help) (easy ~))
         ::  ;desk new-desk from-desk diagram
@@ -216,6 +251,7 @@
     ++  dusk  ;~(pose (cold ~ spado) (punt spade))
     ++  spado  ;~(pfix ace sig)
     ++  spade  ;~(pfix ace sym)
+    ++  proj  ;~(pfix ace ;~(pfix cen sym))
     ++  spads
       %+  cook  ~(gas in *(set desk))
       (most ;~(plug com (star ace)) sym)
@@ -226,18 +262,35 @@
         (cold %& (jest '%.n'))
       ==
   --
+::  *** tab-list
   ::  +tab-list: static list of autocomplete entries
   ::
   ++  tab-list
-    ^-  (list [@t tank])
-    :~
-      [%help leaf+";help"]
+    |%
+    ++  comm
+      ^-  (list [@t tank])
+      :~
+        [%help leaf+";help"]
+        [%settings leaf+";settings"]
+        [%toggle leaf+";toggle"]
+        [%mode leaf+";mode"]
+      ==
+    ++  cont
+      ^-  (list [@t tank])
+      :~
+        [%granary leaf+";granary"]
+      ==
+    ++  gall
+      ^-  (list [@t tank])
+      :~
       [%desk leaf+";desk [desk-name] [from (optional)] [diagram (optional)]"]
       [%update-kelvin leaf+";update-kelvin deska, deskb %zuse 418"]
       [%colony leaf+";colony [desk]"]
       [%colonies leaf+";colonies"]
       [%settings leaf+";settings"]
-    ==
+      ==
+    --
+::  ***  work
   ::  +work: run user command
   ::
   ++  work
@@ -246,11 +299,14 @@
     =/  cmd  (print:sh-out "args: {<+.job>}")
     |^  ?-  -.job
           %help      abet:help
+          %toggle    abet:toggle
+          %granary   abet:(show-granary +.job)
           %desk      abet:(emit:(new-desk +.job) cmd)
           %colonies  abet:show-colonies
           %colony    abet:(show-colony +.job)
           %update-kelvin  abet:(emit:(update-kelvin +.job) cmd)
           %settings  abet:show-settings
+          %mode  abet:help
         ==
     ::  +act: build action card
     ::
@@ -312,6 +368,17 @@
         !>  ^-  action
         [%diagram from style title]
         ==
+      ::
+      ++  show-granary
+        |=  [project=desk]
+        ^+  this
+        =/  granary=(unit granary:mill)
+          (scry-for (unit granary:mill) %citadel /factory/[project])
+        %-  emil
+        :~  (prant:sh-out ~[(vase-to-tank:pp !>(granary))])
+            (note:sh-out "end of granary")
+        ==
+      ::
       ++  update-kelvin
         |=  [deks=(set desk) kelvin=*]
         ^+  this
@@ -342,7 +409,17 @@
     ++  help
       ^+  this
       %-  emit
-      (print:sh-out "see https://github.com/ryjm/citadel")
+      =-  (print-more:sh-out -)
+      :~
+        ">> {<arena>} mode ({<`@tas`(end [3 1] arena)>})"
+        ">> see https://github.com/ryjm/citadel"
+      ==
+    ::  +toggle: switch arenas
+    ::
+    ++  toggle
+      =.  arena  ?:(?=(%gall arena) %contract %gall)
+      %-  emit
+      prompt:sh-out
     --
   --
 ::
@@ -392,7 +469,7 @@
     %+  effect  %pro
     :+  &  %citadel-line
     ^-  tape
-    "> "
+    " ({<`@tas`(end [3 1] arena)>})> "
   ::
   --
 ::
