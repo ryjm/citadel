@@ -218,7 +218,7 @@
 ++  make-wheat
   |=  [=bran:smart interface=lumps:smart types=lumps:smart]
   ^-  [cards wheat:smart]
-  =/  [cont=vase * * full-nock=*]  (compile:uq ~ `code our:bowl now:bowl)
+  =/  [cont=vase * * full-nock=*]  (compile:uq ~ `code our:bowl now:bowl q.byk.bowl)
   :-  ~
   [`[bat=q.cont pay=full-nock] interface types bran]
 --

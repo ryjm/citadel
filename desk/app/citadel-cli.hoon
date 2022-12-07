@@ -31,7 +31,7 @@
   $%
       [%help ~]                                     ::  print usage info
       [%desk desk (unit desk) (unit desk)]          ::  create a new desk
-      [%update-kelvin (set desk) weft]          ::  create a new desk
+      [%update-kelvin (set desk) waft:clay]          ::  create a new desk
       [%colony desk]
       [%colonies ~]
       [%mode ~]
@@ -246,7 +246,7 @@
     ::
     ++  dall  (cold *(set desk) (jest '%all'))
     ++  wuft
-      %+  cook  weft
+      %+  cook  waft:clay
       ;~(plug ;~(pfix cen sym) ;~(pfix ace dem))
     ++  dusk  ;~(pose (cold ~ spado) (punt spade))
     ++  spado  ;~(pfix ace sig)
@@ -383,7 +383,7 @@
         |=  [deks=(set desk) kelvin=*]
         ^+  this
         =+  .^  =dais:clay  %cb
-        /(scot %p our.bowl)/[q.byk.bowl]/(scot %da now.bowl)/kelvin
+        /(scot %p our.bowl)/base/(scot %da now.bowl)/kelvin
         ==
         =/  res  (mule |.((vale.dais kelvin)))
         ?:  ?=(%| -.res)
