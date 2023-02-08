@@ -116,11 +116,11 @@
   ::
   ++  on-fail   on-fail:def
   ++  command-parser
-    |=  sole-id=@ta
+    |=  =sole-id:sole
     parser:sh:cc
   ::
   ++  tab-list
-    |=  sole-id=@ta
+    |=  =sole-id:sole
     =/  tuck
       |=  [term=cord detail=tank]
       [(cat 3 ';' term) detail]
@@ -135,13 +135,13 @@
     ==
   ::
   ++  on-command
-    |=  [sole-id=@ta =command]
+    |=  [=sole-id:sole =command]
     =^  cards  state
       (work:sh:cc command)
     [cards this]
   ::
   ++  on-connect
-    |=  sole-id=@ta
+    |=  =sole-id:sole
     ^-  (quip card _this)
     [[prompt:sh-out:cc ~] this]
   ::
