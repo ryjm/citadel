@@ -26,7 +26,7 @@
     ?~  hed  tal
     ?:  &(?=([%s @t] hed) ?=([%s @t] tal))
       [%a hed tal ~]
-    ?:  &(?=([%s @t] hed) !?=([%s @t] tal))
+    ?:  &(?=([%s @t] hed) !?=([%s @t] tal) !?=([%a *] tal) !=(~ tal))
       [%a hed tal ~]
     ?:  &(?=([%a *] hed) ?=([%a *] tal))
       [%a (weld p.hed p.tal)]
