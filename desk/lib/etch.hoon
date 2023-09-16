@@ -1,4 +1,4 @@
-/+ *mip, *pprint
+/+  *mip, *pprint
 |%
 ::
 ++  show-json
@@ -172,6 +172,5 @@
   ::
      %ui  [%n `@t`(rsh [3 2] (scot %ui dat))]
      %ud  [%n (scot %ud dat)]
-==
-  --
+  ==
 --
