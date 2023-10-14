@@ -276,11 +276,11 @@
 ::  fake grain representing the standard zigs contract.
 ++  zigs-contract
   ^-  grain:smart
-  =/  cont  ;;([bat=* pay=*] (cue q.zigs-contract-noun))
+  ::  =/  cont  ;;([bat=* pay=*] (cue q.q.zigs-contract-noun))
   =/  interface=lumps:smart  ~
   =/  types=lumps:smart  ~
   :*  %|
-      `cont
+      ~
       interface
       types
       zigs-wheat-id:smart
