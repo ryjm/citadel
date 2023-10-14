@@ -245,8 +245,8 @@
 ++  fake-sig   [0 0 0]
 ++  mil
   %~  mill  mill
-  :+    ;;(vase (cue q.q.smart-lib-noun))
-    ;;((map * @) (cue q.q.zink-cax-noun))
+  :+    ;;(vase (cue q.smart-lib-noun))
+    ;;((map * @) (cue q.zink-cax-noun))
   %.y
 +$  mill-result
   [fee=@ud =land:mill burned=granary:mill =errorcode:smart hits=(list hints:zink) =crow:smart]
@@ -276,7 +276,7 @@
 ::  fake grain representing the standard zigs contract.
 ++  zigs-contract
   ^-  grain:smart
-  =/  cont  ;;([bat=* pay=*] (cue q.q.zigs-contract-noun))
+  =/  cont  ;;([bat=* pay=*] (cue q.zigs-contract-noun))
   =/  interface=lumps:smart  ~
   =/  types=lumps:smart  ~
   :*  %|
@@ -457,7 +457,7 @@
       =/  =mark  (rear path)
       =/  =type  [%atom %t ~]
       =-  (cite path -)
-      [mark [type ?:(=(%hoon mark) txt (need (de-json:html txt)))]]
+      [mark [type ?:(=(%hoon mark) txt (need (de:json:html txt)))]]
 ::  ****  gite
     ::    +gite
     ::
@@ -521,9 +521,9 @@
       %-  ~(urn by all)
       |=  [des=@tas files=(list path)]
       ^-  (list [path page:clay])
-      =/  [=ship orig=^desk =case:clay]  bek
+      =/  [=ship orig=^desk =case]  bek
       =+  .^(=rang:clay %cx /(scot %p our.bowl)//(scot %da now.bowl)/rang)
-      =+  .^(=dome:clay %cv (en-beam bek(q from) /))
+      =+  .^(dome=domo %cv (en-beam bek(q from) /))
       =/  =yaki
         %-  ~(got by hut.rang)
         %-  ~(got by hit.dome)

@@ -1,0 +1,101 @@
+imports:
+    arvo: ./full-desk
+    base-dev: ./full-desk
+    landscape: ./full-desk
+    landscape-dev: ./full-desk
+    suite: ./full-desk
+    docs: ./full-desk
+git module docs:
+  url: https://github.com/tinnus-napbus/docs-app
+  export: bare-desk
+  rev: main
+  pick:
+    - bare-desk/mar/clue.hoon
+    - bare-desk/sur/docs.hoon
+
+git module suite:
+  url: https://github.com/Fang-/suite
+  export: desk
+  move:
+    lib: desk/lib
+  pick:
+    - desk/lib/rudder.hoon
+
+git module landscape:
+  url: https://github.com/tloncorp/landscape
+  export: main
+  move:
+    desk-dev: main
+    desk/sur: main/sur
+  pick:
+    - main/lib
+    - main/sur/treaty.hoon
+    - main/sur/docket.hoon
+    - main/mar
+
+git module landscape-dev:
+  url: https://github.com/tloncorp/landscape-apps
+  export: landscape-dev
+  pick:
+    - landscape-dev/lib
+    - landscape-dev/sur
+  drop:
+    - landscape-dev/sur/hark-store.hoon
+
+git module base-dev:
+  url: https://github.com/urbit/urbit
+  move:
+    pkg/base-dev: main
+  export: main
+  pick:
+    - main/mar/js.hoon
+    - main/mar/json.hoon
+    - main/mar/kelvin.hoon
+    - main/mar/mime.hoon
+    - main/mar/png.hoon
+    - main/mar/bill.hoon
+    - main/mar/ship.hoon
+    - main/mar/xml.hoon
+    - main/mar/css.hoon
+    - main/mar/hoon.hoon
+    - main/mar/html.hoon
+    - main/mar/udon.hoon
+    - main/lib/verb.hoon
+    - main/lib/agentio.hoon
+    - main/lib/cram.hoon
+    - main/lib/server.hoon
+    - main/lib/language-server
+    - main/lib/shoe.hoon
+    - main/lib/sole.hoon
+    - main/lib/skeleton.hoon
+    - main/lib/jose.hoon
+    - main/lib/ethereum.hoon
+    - main/lib/ethio.hoon
+    - main/lib/azimuthio.hoon
+    - main/lib/strand.hoon
+    - main/lib/strandio.hoon
+    - main/lib/dbug.hoon
+    - main/mar/woff2.hoon
+    - main/mar/txt.hoon
+    - main/lib/default-agent.hoon
+    - main/sur/json
+    - main/sur/sole.hoon
+    - main/sur/spider.hoon
+    - main/sur/verb.hoon
+
+git module arvo:
+  url: https://github.com/urbit/urbit
+  export: main
+  copy:
+    pkg/arvo/lib: ./main/lib
+    pkg/arvo/sur: ./main/sur
+    pkg/arvo/mar: ./main/mar
+  pick:
+    - main/lib/plume.hoon
+    - main/lib/pprint.hoon
+    - main/sur/plum.hoon
+    - main/sur/dice.hoon
+    - main/sur/xray.hoon
+    - main/lib/tiny.hoon
+    - main/lib/xray.hoon
+    - main/mar/jam.hoon
