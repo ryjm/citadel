@@ -1,7 +1,6 @@
 ::  * imports
-/-  *citadel, docket, *treaty, zink
-/+  mill=zig-mill, smart=zig-sys-smart, default-agent, dbug, agentio,
-    *citadel, server, verb, etch, merk
+/-  *citadel, docket, *treaty
+/+  dbug, default-agent, agentio, *citadel, server, verb, etch
 ::  * types
 |%
 ::
@@ -48,20 +47,12 @@
     ``noun+!>((~(get by projects) i.t.t.path))
     [%x %project %id @ ~]
     ``json+!>((en-vase:etch !>(`@ux`i.t.t.t.path)))
-      [%x %factory ~]
-    ``citadel-factory+!>(state)
       [%x %state @tas @ ~]
     :^  ~  ~  %citadel-state
     !>
     =-  (fall - *in-state)
     =-  (bind - (corl in-state (lead i.t.t.path)))
     ?+    i.t.t.path  ~
-        %tests
-      (some tests)
-        %factory
-      (some factory)
-        %granary
-      (~(get by factory) i.t.t.t.path)
         %project
       (~(get by projects) i.t.t.t.path)
         %projects
@@ -69,21 +60,6 @@
         %colonies
       (some colonies)
     ==
-      [%x %factory @ @ ~]
-    ``noun+!>((get:big:uq (~(got by factory) i.t.t.path) (slav %ux i.t.t.t.path)))
-      [%x %factory @ ~]
-    :^  ~  ~  %noun
-    !>  (~(get by factory) i.t.t.path)
-      [%x %factory-json @ ~]
-    :^  ~  ~  %json
-    !>  =-  (en-vase:etch -)
-    !>  (~(get by factory) i.t.t.path)
-      [%x %factory-json @ @ ~]
-    :^  ~  ~  %json
-    !>  =-  (en-vase:etch -)
-    !>  %+  get:big:uq
-          (~(got by factory) i.t.t.path)
-        (slav %ux i.t.t.t.path)
   ==
   --
 ::  ** on-init
@@ -99,31 +75,32 @@
 ::  ** on-load
 ++  on-load
   |=  ole=vase
-    ^-  (quip card _this)
-    ~&  >  [dap.bowl %load-citadel]
-    =/  maybe-old  (mule |.(!<(versioned-state ole)))
-    =/  old=versioned-state
-      ?:  ?=(%| -.maybe-old)  !<(versioned-state ole)  +.maybe-old
-    =/  new=state-1
-    ?-  -.old
-      %0
-    :*  %1
-        colonies.old
-        *(map desk (set deed))
-        *(map desk granary:mill)
-        *(jar desk @t)
+  ^-  (quip card _this)
+  ~&  >  [dap.bowl %load-citadel]
+  =/  maybe-old  (mule |.(!<(versioned-state ole)))
+  =/  old=versioned-state
+    ?.  ?=(%| -.maybe-old)  p.maybe-old
+    ~&  >>>  "bad state, nuking"
+    *state-1
+  =/  new=state-1
+  ?-  -.old
+    %0
+  :*  %1
+      colonies.old
+      *(map desk (set deed))
+      *(jar desk @t)
+  ==
+    %1  old
+  ==
+  :: TODO install docs elsewhere
+  :: =^  cards  state  lore:do
+  =/  bindings
+    :~
+      [%pass /eyre %arvo %e %connect [~ /citadel/types] dap.bowl]
+      [%pass /eyre %arvo %e %connect [~ /citadel] dap.bowl]
+      [%pass /citadel/types %agent [our.bowl dap.bowl] %watch /citadel/types]
     ==
-      %1  old
-    ==
-    :: TODO install docs elsewhere
-    :: =^  cards  state  lore:do
-    =/  bindings
-      :~
-        [%pass /eyre %arvo %e %connect [~ /citadel/types] dap.bowl]
-        [%pass /eyre %arvo %e %connect [~ /citadel] dap.bowl]
-        [%pass /citadel/types %agent [our.bowl dap.bowl] %watch /citadel/types]
-      ==
-    [bindings this(state new)]
+  [bindings this(state new)]
 ::  ** on-poke
 ++  on-poke
     |=  [=mark =vase]
@@ -154,29 +131,29 @@
   [cards this]
 ::  ** on-watch
 ++  on-watch
-    |=  =path
-    ^-  (quip card _this)
-    =^  cards  state
-      ?+  path  (on-watch:def path)
-        [%http-response *]  [~ state]
-        [%citadel %types *]  [~ state]
-        [%citadel-primary *]  (peer-citadel-primary:do t.path)
-      ==
-    [cards this]
+  |=  =path
+  ^-  (quip card _this)
+  =^  cards  state
+    ?+  path  (on-watch:def path)
+      [%http-response *]  [~ state]
+      [%citadel %types *]  [~ state]
+      [%citadel-primary *]  (peer-citadel-primary:do t.path)
+    ==
+  [cards this]
 ::  ** on-agent
 ++  on-agent
-    |=  [=wire =sign:agent:gall]
-    |^  ^-  (quip card _this)
-    ?+    -.sign  (on-agent:def wire sign)
-        %kick  `this
-        %fact
-      ?+    wire  (on-agent:def wire sign)
-         [%citadel %types ~]
-           ~&  >>  %citadel-wire
-           `this
-        ==
-      ==
-   --
+  |=  [=wire =sign:agent:gall]
+  |^  ^-  (quip card _this)
+  ?+    -.sign  (on-agent:def wire sign)
+      %kick  `this
+      %fact
+    ?+    wire  (on-agent:def wire sign)
+        [%citadel %types ~]
+          ~&  >>  %citadel-wire
+          `this
+    ==
+  ==
+  --
 ::  ** on-fail
 ++  on-fail   on-fail:def
 --
@@ -206,22 +183,7 @@
     |=  [=ship remote=^desk]
     (poke-our:(pass /docket-install) %docket (docket-install:cg ship remote))
   --
-::  ** uqbar
-::  uqbar contracts.
-
 ::  per-desk/contract module.
-++  zh
-  |_  code=@t
-::  *** make-wheat
-::  creates a wheat against the current contract. runs a full compilation using the
-::  libraries in the %zig desk.
-++  make-wheat
-  |=  [=bran:smart interface=lumps:smart types=lumps:smart]
-  ^-  [cards wheat:smart]
-  =/  [cont=vase * * full-nock=*]  (compile:uq ~ `code our:bowl now:bowl q.byk.bowl)
-  :-  ~
-  [`[bat=q.cont pay=full-nock] interface types bran]
---
 ::  ** mold responses
 ++  cc
   |%
@@ -302,15 +264,6 @@
       ::  projects
       %save  (on-save action)
       %delete  (on-delete action)
-      ::  ::  uqbar
-      ::  contract inspector
-      %test  (on-test action)
-      %save-test  (on-save-test action)
-      %run  (on-run action)
-      %mill  (on-mill action)
-      ::  grain management
-      %save-grain  (on-save-grain action)
-      %delete-grain  (on-delete-grain action)
   ==
 ::  ** frontend
 ::  *** on-http-request
@@ -377,17 +330,7 @@
     [%give %fact ~[/citadel/types] %json !>(dummy-json)]
   =/  cards  (~(gite play [bowl q.byk.bowl]) deeds.survey.action)
   =/  [new-cards=(list card) new-state=_state]
-    ?.  &(?=(%contract arena.survey.action) !=('' charter.survey.action))
       [cards state]
-    =/  contract-id=@ux  `@ux`project.survey.action
-    =-  [(weld cards (head -)) (tail -)]
-    %-  on-mill
-    :*  %mill
-        survey.action
-        [contract-id contract-id contract-id town-id:uq]
-        ~
-        ~
-    ==
   =.  state  new-state
   =.  cards  new-cards
   ::
@@ -415,141 +358,6 @@
   ^-  (quip card _state)
   ?>  ?=(%delete -.action)
   `state(projects (~(del by projects) project.action))
-::  *** TODO return types on wire
-::  ** contracts
-::  *** inspector
-::  contract interaction.
-::  **** saving
-::  saves test datum to state. mostly used by the frontend to validate form inputs.
-
-++  on-save-test
-  |=  =action
-  ^-  (quip card _state)
-  ?>  ?=(%save-test -.action)
-  :-  ~
-  %_    state
-      tests
-    ?:  overwrite.action  (~(put by tests) project.action ~[test.action])
-    (~(add ja tests) project.action test.action)
-  ==
-::  **** testing
-::  interacts with a contract defined in a project granary with a list of yolks.
-++  on-test
-  |=  =action
-  ^-  (quip card _state)
-  ?>  ?=(%test -.action)
-  =/  resu=[cards=(list card) _state]  [~ state]
-  =/  contract-id=@ux  (fall contract-id.action `@ux`project.survey.action)
-  =?  resu  !=('' charter.survey.action)
-    %-  on-mill
-    :*  %mill
-        survey.action
-        [contract-id contract-id contract-id town-id:uq]
-        ~
-        ~
-    ==
-  =/  =shell:smart
-    [caller-1:uq ~ contract-id 1 1.000.000 town-id:uq 0]
-  =/  =granary:mill
-    =-  ?~  -  fake-granary:uq  -
-    (biff (~(get by factory) project.survey.action) same)
-  =/  remaining=(list yolk:smart)  yolks.action
-  =|  milled=(list mill-result:uq)
-  |-  ^-  (quip card _state)
-  ~&  >  remaining+remaining
-  ?~  remaining
-    =.  factory
-      %+  ~(put by factory)  project.survey.action
-      =-  (roll milled -)
-      |:  [m=*mill-result:uq g=granary]
-      (shovel:uq m g)
-    [cards.resu state(factory factory)]
-  %=  $
-    milled  [(fondle-mill:uq i.remaining shell granary) milled]
-    remaining  t.remaining
-  ==
-::  ***** TODO find better nomenclature
-::  these aren't tests, more like probes.
-::  ***** TODO persist results to granary
-::  **** running
-::  creates a wheat from an action containing the needed bran, interface,
-::  and types. does not update citadel factory.
-++  on-run
-  |=  =action
-  ^-  (quip card _state)
-  ?>  ?=(%run -.action)
-  ~&  >>  action
-  ?-    -.survey.action
-      %contract
-    =/  [=cards =wheat:smart]
-      %^    ~(make-wheat zh charter.survey.action)
-          bran.action
-        interface.action
-      types.action
-    [cards state]
-      %gall
-    !!
-  ==
-::  **** milling
-::  given a text representation of a contract, updates the factory with the created wheat.
-++  on-mill
-  |=  =action
-  ^-  (quip card _state)
-  ?>  ?=(%mill -.action)
-  ?-    -.survey.action
-      %contract
-    =,  survey.action
-    =/  [=cards =wheat:smart]
-      %^    ~(make-wheat zh charter)
-          bran.action
-        interface.action
-      types.action
-    =/  =granary:mill
-      =-  ?~  -  fake-granary:uq  -
-      (biff (~(get by factory) project) same)
-    =.  factory
-      %+  ~(put by factory)  project
-      %+  gas:big:uq  granary
-      ~[[id.wheat ;;(grain:smart [%| wheat])]]
-    [cards state]
-      %gall
-    ~|("citadel: attempting to mill a %gall app" !!)
-  ==
-::  *** grains
-::  grain management.
-::  saving to granary.
-++  on-save-grain
-  |=  =action
-  ^-  (quip card _state)
-  ?>  ?=(%save-grain -.action)
-  =/  project  project.action
-  ?.  (~(has by projects) project)
-  ~|  "citadel: attempting to save grain to unknown project {<project>}"
-  !!
-  ?-    meal.action
-      %rice
-    =/  id  =<(id ;;(rice:smart +.grain.action))
-    =/  =granary:mill
-      =-  ?~  -  fake-granary:uq  -
-      (biff (~(get by factory) project) same)
-    =.  factory
-      %+  ~(put by factory)  project
-      %+  gas:big:uq  granary
-      ~[[id ;;(grain:smart grain.action)]]
-    [~ state]
-      %wheat
-    ~|("citadel: saving wheat not supported yet" !!)
-  ==
-::  deleting from granary.
-++  on-delete-grain
-  |=  =action
-  ^-  (quip card _state)
-  ?>  ?=(%delete-grain -.action)
-  =/  =granary:mill
-   =-  ?~  -  fake-granary:uq  -
-  (biff (~(get by factory) project.action) same)
-  =/  purged=granary:mill  (del:big:uq granary grain-id.action)
-  `state(factory (~(put by factory) project.action purged))
 ::  * gear
 ::  constructs the cards needed to create a desk from a diagram.
 ++  make-diagram

@@ -13,7 +13,6 @@
    $:  %1
        colonies=(map desk outpost)
        projects=(map desk (set deed))
-       =factory
        tests=(jar desk @t)
        ::  metadata=(map desk metadata)
    ==
@@ -21,17 +20,12 @@
   $%  state-0
       state-1
   ==
-+$  factory  (map desk granary:mill)
 +$  in-state
-  $%  [%granary =granary:mill]
-      [%factory =factory]
-      [%project project=(set deed)]
+  $%  [%project project=(set deed)]
       [%projects projects=(map desk (set deed))]
       [%colonies colonies=(map desk outpost)]
       [%tests tests=(jar desk @t)]
   ==
-::  * desk composition
-::  +grounds - dependencies and workshops
 ::
 +$  grounds  [=outpost =atelier]
 ::  +atelier - diagram paths
@@ -87,20 +81,6 @@
     ::  projects
     [%save =survey]
     [%delete project=desk]
-    ::  ::  uqbar
-    ::  contract inspector
-    $:  %test
-        =survey
-        contract-id=(unit @ux)
-        grains=(list grain:smart)
-        yolks=(list yolk:smart)
-    ==
-    [%save-test project=desk test=@t overwrite=?]
-    [%run =survey =bran:smart interface=lumps:smart types=lumps:smart]
-    [%mill =survey =bran:smart interface=lumps:smart types=lumps:smart]
-    :: grain management
-    [%save-grain meal=?(%rice %wheat) project=desk =grain:smart]
-    [%delete-grain project=desk grain-id=id:smart]
   ==
 ::
 --

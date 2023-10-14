@@ -1,6 +1,6 @@
 /-  *citadel
 /+  *citadel, default-agent, verb, dbug, pp=pprint,
-    auto=language-server-complete, shoe, sole, mill=zig-mill
+    auto=language-server-complete, shoe, sole
 ::
 |%
 +$  card  card:shoe
@@ -36,7 +36,6 @@
       [%colonies ~]
       [%mode ~]
       [%toggle ~]
-      [%granary desk]
       [%settings ~]
   ==
 ::
@@ -129,7 +128,7 @@
       %+  turn  comm:tab-list:sh:cc  tuck
       ?:  ?=(%contract arena)
       ::  ~[['--contract--' leaf+"contract commands"]]
-        %+  turn  cont:tab-list:sh:cc  tuck
+        %+  turn  gall:tab-list:sh:cc  tuck
       ::  ~[['--gall--' leaf+"gall commands"]]
       %+  turn  gall:tab-list:sh:cc  tuck
     ==
@@ -222,11 +221,8 @@
         ;~(plug (tag %mode) (easy ~))
         ?:  =(%gall arena)
           gull
-        cont
+        gull
       ==
-::  *** contracts
-    ++  cont
-      ;~(plug (tag %granary) proj)
 ::  *** gall
     ++  gull
       ;~  pose
@@ -275,11 +271,6 @@
         [%toggle leaf+";toggle"]
         [%mode leaf+";mode"]
       ==
-    ++  cont
-      ^-  (list [@t tank])
-      :~
-        [%granary leaf+";granary"]
-      ==
     ++  gall
       ^-  (list [@t tank])
       :~
@@ -300,7 +291,6 @@
     |^  ?-  -.job
           %help      abet:help
           %toggle    abet:toggle
-          %granary   abet:(show-granary +.job)
           %desk      abet:(emit:(new-desk +.job) cmd)
           %colonies  abet:show-colonies
           %colony    abet:(show-colony +.job)
@@ -367,16 +357,6 @@
         :-  %citadel-action
         !>  ^-  action
         [%diagram from style title]
-        ==
-      ::
-      ++  show-granary
-        |=  [project=desk]
-        ^+  this
-        =/  granary=(unit granary:mill)
-          (scry-for (unit granary:mill) %citadel /factory/[project])
-        %-  emil
-        :~  (prant:sh-out ~[(vase-to-tank:pp !>(granary))])
-            (note:sh-out "end of granary")
         ==
       ::
       ++  update-kelvin
